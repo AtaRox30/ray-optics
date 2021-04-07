@@ -935,6 +935,8 @@ var canvasPainter = {
       for (var i = 0; i < obj.path.length - 1; i++)
       {
         //ii=i%(obj.path.length);
+        //Si le prochain point est un arc mais que l'actuel n'en est pas un
+        //et n'est pas un des deux derniers points
         if (obj.path[(i + 1)].arc && !obj.path[i].arc && i < obj.path.length - 2)
         {
           p1 = graphs.point(obj.path[i].x, obj.path[i].y);
@@ -3962,7 +3964,7 @@ var canvasPainter = {
             draggingPart_ = {};
             if (objTypes[objs[i].type].clicked(objs[i], mouse_nogrid, mouse, draggingPart_))
             {
-              //clicked()Renvoie true pour indiquer que la souris a cliqué sur l'objet
+              //clicked() Renvoie true pour indiquer que la souris a cliqué sur l'objet
 
               if (draggingPart_.targetPoint)
               {
@@ -4199,7 +4201,6 @@ var canvasPainter = {
 
 
   }
-
 
   function canvas_ondblclick(e) {
     console.log("dblclick");
