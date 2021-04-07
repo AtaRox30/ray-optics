@@ -2553,15 +2553,15 @@ var canvasPainter = {
 
   };
 
-  //"ruler"物件
+  //objet "règle"
   objTypes['ruler'] = {
 
-  //======================================建立物件=========================================
+  //====================================Créer un objet===========================================
   create: function(mouse) {
     return {type: 'ruler', p1: mouse, p2: mouse};
   },
 
-  //使用lineobj原型
+  //Utiliser le prototype lineobj
   c_mousedown: objTypes['lineobj'].c_mousedown,
   c_mousemove: objTypes['lineobj'].c_mousemove,
   c_mouseup: objTypes['lineobj'].c_mouseup,
@@ -2569,7 +2569,7 @@ var canvasPainter = {
   clicked: objTypes['lineobj'].clicked,
   dragging: objTypes['lineobj'].dragging,
 
-  //=================================將物件畫到Canvas上====================================
+  //============================Dessiner des objets sur le canevas=========================================
   draw: function(obj, canvas, aboveLight) {
   //var ctx = canvas.getContext('2d');
   if (aboveLight)return;
@@ -2682,18 +2682,18 @@ var canvasPainter = {
   //"protractor"物件
   objTypes['protractor'] = {
 
-  //======================================建立物件=========================================
+  //==========================================Créer un objet=====================================
   create: function(mouse) {
     return {type: 'protractor', p1: mouse, p2: mouse};
   },
 
-  //使用lineobj原型
+  //Utiliser le prototype lineobj
   c_mousedown: objTypes['lineobj'].c_mousedown,
   c_mousemove: function(obj, mouse, ctrl, shift) {objTypes['lineobj'].c_mousemove(obj, mouse, false, shift)},
   c_mouseup: objTypes['lineobj'].c_mouseup,
   move: objTypes['lineobj'].move,
 
-  //==========================繪圖區被按下時(判斷物件被按下的部分)===========================
+  //=========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
     if (mouseOnPoint(mouse_nogrid, obj.p1) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p2))
     {
@@ -2710,18 +2710,18 @@ var canvasPainter = {
     if (Math.abs(graphs.length(obj.p1, mouse_nogrid) - graphs.length_segment(obj)) < clickExtent_line)
     {
       draggingPart.part = 0;
-      draggingPart.mouse0 = mouse; //開始拖曳時的滑鼠位置
-      draggingPart.mouse1 = mouse; //拖曳時上一點的滑鼠位置
+      draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
+      draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
       draggingPart.snapData = {};
       return true;
     }
     return false;
   },
 
-  //=================================拖曳物件時====================================
+  //==================================Lorsque vous faites glisser un objet===================================
   dragging: function(obj, mouse, draggingPart, ctrl, shift) {objTypes['lineobj'].dragging(obj, mouse, draggingPart, false, shift)},
 
-  //=================================將物件畫到Canvas上====================================
+  //================================Dessiner des objets sur le canevas=====================================
   draw: function(obj, canvas, aboveLight) {
   //var ctx = canvas.getContext('2d');
   if (!aboveLight)
@@ -2743,14 +2743,14 @@ var canvasPainter = {
 
     if (r * scale_step * Math.PI / 180 < scale_width_limit)
     {
-      //刻度太小
+      //L'échelle est trop petite
       scale_step = 2;
       scale_step_mid = 10;
       scale_step_long = 30;
     }
     if (r * scale_step * Math.PI / 180 < scale_width_limit)
     {
-      //刻度太小
+      //L'échelle est trop petite
       scale_step = 5;
       scale_step_mid = 10;
       scale_step_long = 30;
@@ -2761,7 +2761,7 @@ var canvasPainter = {
     }
     if (r * scale_step * Math.PI / 180 < scale_width_limit)
     {
-      //刻度太小
+      //L'échelle est trop petite
       scale_step = 10;
       scale_step_mid = 30;
       scale_step_long = 90;
@@ -2822,30 +2822,30 @@ var canvasPainter = {
 
   var canvas;
   var ctx;
-  var mouse; //滑鼠位置
-  var mouse_lastmousedown; //上一次按下滑鼠時的滑鼠位置
-  var objs = []; //物件
-  var objCount = 0; //物件數量
-  var isConstructing = false; //正在建立新的物件
-  var constructionPoint; //建立物件的起始位置
-  var draggingObj = -1; //拖曳中的物件編號(-1表示沒有拖曳,-3表示整個畫面,-4表示觀察者)
-  var positioningObj = -1; //輸入座標中的物件編號(-1表示沒有,-4表示觀察者)
-  var draggingPart = {}; //拖曳的部份與滑鼠位置資訊
-  var selectedObj = -1; //選取的物件編號(-1表示沒有選取)
-  var AddingObjType = ''; //拖曳空白處新增物件的類型
-  var waitingRays = []; //待處理光線
-  var waitingRayCount = 0; //待處理光線數量
-  var rayDensity_light = 0.1; //光線密度(光線相關模式)
-  var rayDensity_images = 1; //光線密度(像相關模式)
-  var extendLight = false; //觀察者的影像
-  var showLight = true; //顯示光線
-  var gridSize = 20; //格線大小
-  var origin = {x: 0, y: 0}; //格線原點座標
-  var undoArr = []; //復原資料
-  var undoIndex = 0; //目前復原的位置
-  var undoLimit = 20; //復原步數上限
-  var undoUBound = 0; //目前復原資料上界
-  var undoLBound = 0; //目前復原資料下界
+  var mouse; //Position de la souris
+  var mouse_lastmousedown; //Position de la souris lors du dernier clic de la souris
+  var objs = []; //objet
+  var objCount = 0; //Nombre d'objets
+  var isConstructing = false; //Créer un nouvel objet
+  var constructionPoint; //Créer la position de départ de l'objet
+  var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
+  var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
+  var draggingPart = {}; //Informations sur la pièce et la position de la souris déplacées
+  var selectedObj = -1; //Numéro d'objet sélectionné (-1 signifie non sélectionné)
+  var AddingObjType = ''; //Faites glisser l'espace vide pour ajouter le type de l'objet
+  var waitingRays = []; //Lumière à traiter
+  var waitingRayCount = 0; //Nombre de lumière à traiter
+  var rayDensity_light = 0.1; //Densité lumineuse (mode dépendant de la lumière)
+  var rayDensity_images = 1; //Densité lumineuse (mode lié à l'image)
+  var extendLight = false; //L'image de l'observateur
+  var showLight = true; //Montrer la lumière
+  var gridSize = 20; //Taille de la grille
+  var origin = {x: 0, y: 0}; //Coordonnées d'origine de la grille
+  var undoArr = []; //Données de récupération
+  var undoIndex = 0; //Emplacement actuel restauré
+  var undoLimit = 20; //Nombre maximum d'étapes de récupération
+  var undoUBound = 0; //Limite supérieure des données de récupération actuelles
+  var undoLBound = 0; //Limite inférieure des données de récupération actuelles
   var observer;
   var mode = 'light';
   var timerID = -1;
@@ -2853,10 +2853,10 @@ var canvasPainter = {
   var hasExceededTime = false;
   var forceStop = false;
   var lastDrawTime = -1;
-  var stateOutdated = false; //上次繪圖完後狀態已經變更
-  var minShotLength = 1e-6; //光線兩次作用的最短距離(小於此距離的光線作用會被忽略)
+  var stateOutdated = false; //L'état a changé depuis le dernier dessin
+  var minShotLength = 1e-6; //La distance la plus courte entre les deux effets de lumière (les effets de lumière inférieurs à cette distance seront ignorés)
   var minShotLength_squared = minShotLength * minShotLength;
-  var snapToDirection_lockLimit_squared = 900; //拖曳物件且使用吸附至方向功能時鎖定吸附之方向所需的拖曳距離之平方
+  var snapToDirection_lockLimit_squared = 900; //Le carré de la distance de déplacement nécessaire pour verrouiller la direction de l'accrochage lors du déplacement d'un objet et de l'utilisation de la fonction d'accrochage à la direction
   var clickExtent_line = 10;
   var clickExtent_point = 10;
   var clickExtent_point_construct = 10;
@@ -3060,12 +3060,12 @@ var canvasPainter = {
     };
     document.getElementById('zoom').onmouseup = function()
     {
-      setScale(this.value / 100); //為了讓不支援oninput的瀏覽器可使用
+      setScale(this.value / 100); //Pour le rendre disponible aux navigateurs qui ne prennent pas en charge oninput
       createUndoPoint();
     };
     document.getElementById('zoom').ontouchend = function()
     {
-      setScale(this.value / 100); //為了讓不支援oninput的瀏覽器可使用
+      setScale(this.value / 100); //Pour le rendre disponible aux navigateurs qui ne prennent pas en charge oninput
       createUndoPoint();
     };
     cancelMousedownEvent('rayDensity');
@@ -3088,13 +3088,13 @@ var canvasPainter = {
     };
     document.getElementById('rayDensity').onmouseup = function()
     {
-      setRayDensity(Math.exp(this.value)); //為了讓不支援oninput的瀏覽器可使用
+      setRayDensity(Math.exp(this.value)); //Pour le rendre disponible aux navigateurs qui ne prennent pas en charge oninput
       draw();
       createUndoPoint();
     };
     document.getElementById('rayDensity').ontouchend = function()
     {
-      setRayDensity(Math.exp(this.value)); //為了讓不支援oninput的瀏覽器可使用
+      setRayDensity(Math.exp(this.value)); //Pour le rendre disponible aux navigateurs qui ne prennent pas en charge oninput
       draw();
       createUndoPoint();
     };
@@ -3346,10 +3346,10 @@ var canvasPainter = {
     //Dessiner des objets
     for (var i = 0; i < objs.length; i++)
     {
-      objTypes[objs[i].type].draw(objs[i], canvas); //畫出objs[i]
+      objTypes[objs[i].type].draw(objs[i], canvas); //Dessiner l'objet [i]
       if (objTypes[objs[i].type].shoot)
       {
-        objTypes[objs[i].type].shoot(objs[i]); //若objs[i]能射出光線,讓它射出
+        objTypes[objs[i].type].shoot(objs[i]); //Si objs [i] peut tirer de la lumière, laissez-la tirer
       }
     }
     shootWaitingRays();
@@ -3369,15 +3369,15 @@ var canvasPainter = {
 
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
-  //========================================光線處理區==================================================
+  //========================================Zone de traitement de la lumière==================================================
   //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  //====================將一道光放入等待區=========================
+  //======================Mettez une lumière dans la zone d'attente=======================
   function addRay(ray) {
     waitingRays[waitingRays.length] = ray;
   }
 
-  //==================取得目前模式的光線密度======================
+  //====================Obtenez la densité lumineuse du mode actuel====================
   function getRayDensity()
   {
     if (mode == 'images' || mode == 'observer')
@@ -3391,7 +3391,7 @@ var canvasPainter = {
   }
 
 
-  //====================射出等待區的光線=========================
+  //====================Lumière de la zone d'attente=========================
   function shootWaitingRays() {
     timerID = -1;
     var st_time = new Date();
@@ -3427,10 +3427,10 @@ var canvasPainter = {
         //Reposez-vous pendant 10 ms avant de continuer (pour éviter que le programme ne réponde)
         document.getElementById('status').innerHTML = shotRayCount + ' rays (' + leftRayCount + ' waiting)'; //顯示狀態
         hasExceededTime = true;
-        timerID = setTimeout(shootWaitingRays, 10); //10ms後再回來此function
+        timerID = setTimeout(shootWaitingRays, 10); //10ms Revenez ici plus tard function
         document.getElementById('forceStop').style.display = '';
         //console.log(timerID)
-        return; //跳出此function
+        return; //Hors de la function
       }
 
       leftRayCount = 0; //Recommencer le calcul du nombre de rayons restants
@@ -3441,44 +3441,44 @@ var canvasPainter = {
       {
         if (waitingRays[j] && waitingRays[j].exist)
         {
-          //若waitingRays[j]存在
-          //開始射出waitingRays[j](等待區的最後一條光線)
+          //Si waitingRays[j] existe
+          //Commencer la prise de vuewaitingRays[j](La dernière lumière dans la zone d'attente)
           //Déterminez quel objet cette lumière frappera en premier après son tir
 
-          //↓搜尋每一個"與這道光相交的物件",尋找"[物件與光線的交點]離[光線的頭]最近的物件"
-          s_obj = null; //"到目前為止,已檢查的物件中[與光線的交點]離[光線的頭]最近的物件"
+          //↓Recherchez chaque "objet qui croise cette lumière", et trouvez "l'objet qui est l'intersection de l'objet et du rayon] et l'objet le plus proche de [la tête du rayon]"
+          s_obj = null; //"Jusqu'à présent, parmi les objets vérifiés, [l'intersection avec le rayon] est la plus proche de [la tête du rayon]"
           s_obj_index = -1;
-          s_point = null;  //s_obj與光線的交點
-          surfaceMerging_objs = []; //要與射到的物件進行界面融合的物件
+          s_point = null;  //L'intersection de s_obj et du rayon
+          surfaceMerging_objs = []; //L'objet à interfacer avec l'objet tiré
           //surfaceMerging_obj_index=-1;
           //s_len=Infinity;
-          s_lensq = Infinity; //將 "[s_obj與光線的交點]和[光線的頭]之間的距離平方" 設為無限大(因為目前尚未檢查任何物件,而現在是要尋找最小值)
-          observed = false; //waitingRays[j]是否被觀察者看到
+          s_lensq = Infinity; //Réglez "Le carré de la distance entre [s_obj et l'intersection du rayon] et [la tête du rayon] à l'infini (car aucun objet n'a encore été vérifié, et maintenant je recherche la valeur minimale)
+          observed = false; //waitingRays[j]Vu par les observateurs
           for (var i = 0; i < objs.length; i++)
           {
-            //↓若objs[i]會影響到光
+            //↓Siobjs[i]Affectera la lumière
             if (objTypes[objs[i].type].rayIntersection) {
-              //↓判斷objs[i]是否與這道光相交
+              //↓Détermine si objs [i] croise cette lumière
               s_point_temp = objTypes[objs[i].type].rayIntersection(objs[i], waitingRays[j]);
               if (s_point_temp)
               {
-                //此時代表objs[i]是"與這道光相交的物件",交點是s_point_temp
-                s_lensq_temp = graphs.length_squared(waitingRays[j].p1, s_point_temp); //交點到[光線的頭]的距離
+                //À ce stade, cela signifie que objs [i] est "l'objet qui croise cette lumière", et que le point d'intersection est s_point_temp
+                s_lensq_temp = graphs.length_squared(waitingRays[j].p1, s_point_temp); //La distance entre l'intersection et [la tête du rayon]
                 if (s_point && graphs.length_squared(s_point_temp, s_point) < minShotLength_squared && (objTypes[objs[i].type].supportSurfaceMerging || objTypes[s_obj.type].supportSurfaceMerging))
                 {
-                  //這道光同時射到兩個物件,且至少有一個支援界面融合
+                  //Cette lumière frappe deux objets en même temps, et au moins un prend en charge la fusion d'interface
 
                   if (objTypes[s_obj.type].supportSurfaceMerging)
                   {
                     if (objTypes[objs[i].type].supportSurfaceMerging)
                     {
-                      //兩個都支援界面融合(例如兩個折射鏡以一條邊相連)
+                      //Les deux supportent la fusion d'interface (par exemple, deux réfracteurs sont connectés d'un côté)
                       surfaceMerging_objs[surfaceMerging_objs.length] = objs[i];
                     }
                     else
                     {
-                      //只有先射到的界面支援界面融合
-                      //將擬定射到的物件設為不支援界面融合者(如折射鏡邊界與一遮光片重合,則只執行遮光片的動作)
+                      //Seule la première interface de prise de vue prend en charge la fusion d'interface
+                      //Définissez l'objet à tirer sur un objet qui ne prend pas en charge la fusion d'interface (si la limite du réfracteur chevauche un écran anti-lumière, seule l'action de l'écran anti-lumière sera effectuée)
                       s_obj = objs[i];
                       s_obj_index = i;
                       s_point = s_point_temp;
@@ -3490,12 +3490,12 @@ var canvasPainter = {
                 }
                 else if (s_lensq_temp < s_lensq && s_lensq_temp > minShotLength_squared)
                 {
-                  //↑若 "[objs[i]與光線的交點]和[光線的頭]之間的的距離" 比 "到目前為止,已檢查的物件中[與光線的交點]離[光線的頭]最近的物件"的還短
+                  //↑Si "la distance entre l'intersection de [objs [i] et le rayon] et [la tête du rayon]" est supérieure à "l'objet qui a été vérifié jusqu'à présent, [l'intersection avec le rayon] est la plus proche de [ la tête du rayon] "C'est encore court
 
-                  s_obj = objs[i]; //更新"到目前為止,已檢查的物件中[物件與光線的交點]離[光線的頭]最近的物件"
+                  s_obj = objs[i]; //Mise à jour "Jusqu'à présent, parmi les objets vérifiés, [l'intersection de l'objet et du rayon] est la plus proche de [la tête du rayon]"
                   s_obj_index = i;
-                  s_point = s_point_temp; //s_point也一起更新
-                  s_lensq = s_lensq_temp; //s_len也一起更新
+                  s_point = s_point_temp; //s_point est également mis à jour
+                  s_lensq = s_lensq_temp; //s_len est également mis à jour ensemble
 
                   surfaceMerging_objs = [];
                 }
@@ -3503,12 +3503,12 @@ var canvasPainter = {
             }
           }
           ctx.globalAlpha = alpha0 * waitingRays[j].brightness;
-          //↓若光線沒有射到任何物件
+          //↓Si la lumière ne frappe aucun objet
           if (s_lensq == Infinity)
           {
             if (mode == 'light' || mode == 'extended_light')
             {
-              canvasPainter.draw(waitingRays[j], 'rgb(255,255,128)'); //畫出這條光線
+              canvasPainter.draw(waitingRays[j], 'rgb(255,255,128)'); //Dessine cette lumière
               //if(waitingRays[j].gap)canvasPainter.draw(waitingRays[j],canvas,"rgb(0,0,255)");
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)
@@ -3518,7 +3518,7 @@ var canvasPainter = {
 
             if (mode == 'observer')
             {
-              //使用即時觀察者
+              //Utiliser l'observateur instantané
               observed_point = graphs.intersection_line_circle(waitingRays[j], observer)[2];
               if (observed_point)
               {
@@ -3529,27 +3529,27 @@ var canvasPainter = {
               }
             }
 
-            //waitingRays[j]=null  //將這條光線從等待區中移除
-            //這道光已射到無窮遠處,不需要再處理
+            //waitingRays[j]=null  //Retirez cette lumière de la zone d'attente
+            //Cette lumière a atteint l'infini, pas besoin de s'en occuper
           }
           else
           {
-            //此時,代表光線會在射出經過s_len(距離)後,在s_point(位置)撞到s_obj(物件)
+            //A ce moment, la lumière représentative frappera s_obj (objet) à s_point (position) après avoir passé s_len (distance).
             if (mode == 'light' || mode == 'extended_light')
             {
-              canvasPainter.draw(graphs.segment(waitingRays[j].p1, s_point), 'rgb(255,255,128)'); //畫出這段光線
+              canvasPainter.draw(graphs.segment(waitingRays[j].p1, s_point), 'rgb(255,255,128)'); //Dessine cette lumière
               //if(waitingRays[j].gap)canvasPainter.draw(graphs.segment(waitingRays[j].p1,s_point),canvas,"rgb(0,0,255)");
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)
             {
-              canvasPainter.draw(graphs.ray(waitingRays[j].p1, graphs.point(waitingRays[j].p1.x * 2 - waitingRays[j].p2.x, waitingRays[j].p1.y * 2 - waitingRays[j].p2.y)), 'rgb(255,128,0)'); //畫出這條光的延長線
-              canvasPainter.draw(graphs.ray(s_point, graphs.point(s_point.x * 2 - waitingRays[j].p1.x, s_point.y * 2 - waitingRays[j].p1.y)), 'rgb(80,80,80)'); //畫出這條光向前的延長線
+              canvasPainter.draw(graphs.ray(waitingRays[j].p1, graphs.point(waitingRays[j].p1.x * 2 - waitingRays[j].p2.x, waitingRays[j].p1.y * 2 - waitingRays[j].p2.y)), 'rgb(255,128,0)'); //Dessinez l'extension de cette lumière
+              canvasPainter.draw(graphs.ray(s_point, graphs.point(s_point.x * 2 - waitingRays[j].p1.x, s_point.y * 2 - waitingRays[j].p1.y)), 'rgb(80,80,80)'); //Tracez cette longue ligne de lumière vers l'avant
 
             }
 
             if (mode == 'observer')
             {
-              //使用即時觀察者
+              //Utiliser l'observateur instantané
               observed_point = graphs.intersection_line_circle(waitingRays[j], observer)[2];
 
               if (observed_point)
@@ -3566,16 +3566,16 @@ var canvasPainter = {
           }
           if (mode == 'observer' && last_ray)
           {
-            //模式:即時觀察者
+            //Mode: observateur instantané
             if (!waitingRays[j].gap)
             {
-              observed_intersection = graphs.intersection_2line(waitingRays[j], last_ray); //觀察到的光線之交點
+              observed_intersection = graphs.intersection_2line(waitingRays[j], last_ray); //L'intersection des rayons observés
 
               if (observed)
               {
                 if (last_intersection && graphs.length_squared(last_intersection, observed_intersection) < 25)
                 {
-                  //當交點彼此相當靠近
+                  //Lorsque les intersections sont assez proches les unes des autres
                   if (graphs.intersection_is_on_ray(observed_intersection, graphs.ray(observed_point, waitingRays[j].p1)) && graphs.length_squared(observed_point, waitingRays[j].p1) > 1e-5)
                   {
 
@@ -3592,13 +3592,13 @@ var canvasPainter = {
                     }
                     if (rpd < 0)
                     {
-                      //虛像
-                      canvasPainter.draw(observed_intersection, 'rgb(255,128,0)'); //畫出像
+                      //Image virtuelle
+                      canvasPainter.draw(observed_intersection, 'rgb(255,128,0)'); //Dessiner comme
                     }
                     else if (rpd < s_lensq)
                     {
-                      //實像
-                      canvasPainter.draw(observed_intersection, 'rgb(255,255,128)'); //畫出像
+                      //Image réelle
+                      canvasPainter.draw(observed_intersection, 'rgb(255,255,128)'); //Dessiner comme
                     }
                     canvasPainter.draw(graphs.segment(observed_point, observed_intersection), 'rgb(0,0,255)'); //畫出連線
                   }
@@ -3631,7 +3631,7 @@ var canvasPainter = {
 
           if (mode == 'images' && last_ray)
           {
-            //模式:像
+            //Mode: comme
             if (!waitingRays[j].gap)
             {
 
@@ -3643,27 +3643,27 @@ var canvasPainter = {
                 if (s_point)
                 {
                   rpd = (observed_intersection.x - waitingRays[j].p1.x) * (s_point.x - waitingRays[j].p1.x) + (observed_intersection.y - waitingRays[j].p1.y) * (s_point.y - waitingRays[j].p1.y);
-                  //(observed_intersection-waitingRays[j].p1)與(s_point-waitingRays[j].p1)之內積
+                  //(observed_intersection-waitingRays[j].p1)與(s_point-waitingRays[j].p1)Produit intérieur
                 }
                 else
                 {
                   rpd = (observed_intersection.x - waitingRays[j].p1.x) * (waitingRays[j].p2.x - waitingRays[j].p1.x) + (observed_intersection.y - waitingRays[j].p1.y) * (waitingRays[j].p2.y - waitingRays[j].p1.y);
-                  //(observed_intersection-waitingRays[j].p1)與(waitingRays[j].p2-waitingRays[j].p1)之內積
+                  //(observed_intersection-waitingRays[j].p1)與(waitingRays[j].p2-waitingRays[j].p1)Produit intérieur
                 }
 
                 if (rpd < 0)
                 {
-                  //虛像
+                  //Image virtuelle
                   canvasPainter.draw(observed_intersection, 'rgb(255,128,0)'); //畫出像
                 }
                 else if (rpd < s_lensq)
                 {
-                  //實像
+                  //Image réelle
                   canvasPainter.draw(observed_intersection, 'rgb(255,255,128)'); //畫出像
                 }
                 else
                 {
-                  //虛物
+                  //Imaginaire
                   canvasPainter.draw(observed_intersection, 'rgb(80,80,80)'); //畫出像
                 }
               }
@@ -3696,12 +3696,12 @@ var canvasPainter = {
             waitingRays[j] = null;
           }
 
-          shotRayCount = shotRayCount + 1; //已處理光線數量+1
+          shotRayCount = shotRayCount + 1; //Nombre de rayons traités +1
           if (waitingRays[j] && waitingRays[j].exist)
           {
             leftRayCount = leftRayCount + 1;
           }
-          //這道光線處理完畢
+          //Cette lumière est traitée
         }
       }
 
@@ -3711,12 +3711,12 @@ var canvasPainter = {
     //{
       for (var i = 0; i < objs.length; i++)
         {
-        objTypes[objs[i].type].draw(objs[i], canvas, true); //畫出objs[i]
+        objTypes[objs[i].type].draw(objs[i], canvas, true); //Dessiner objs[i]
         }
     //}
     if (mode == 'observer')
     {
-      //畫出即時觀察者
+      //Dessinez un observateur instantané
       //var ctx = canvas.getContext('2d');
       ctx.globalAlpha = 1;
       ctx.beginPath();
@@ -3745,7 +3745,7 @@ var canvasPainter = {
 
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
-  //========================================滑鼠動作區==================================================
+  //==========================================Zone d'action de la souris================================================
   //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -3762,7 +3762,7 @@ var canvasPainter = {
   function mouseOnSegment(mouse, segment)
   {
     var d_per = Math.pow((mouse.x - segment.p1.x) * (segment.p1.y - segment.p2.y) + (mouse.y - segment.p1.y) * (segment.p2.x - segment.p1.x), 2) / ((segment.p1.y - segment.p2.y) * (segment.p1.y - segment.p2.y) + (segment.p2.x - segment.p1.x) * (segment.p2.x - segment.p1.x)); //類似於滑鼠與直線垂直距離
-    var d_par = (segment.p2.x - segment.p1.x) * (mouse.x - segment.p1.x) + (segment.p2.y - segment.p1.y) * (mouse.y - segment.p1.y); //類似於滑鼠在直線上投影位置
+    var d_par = (segment.p2.x - segment.p1.x) * (mouse.x - segment.p1.x) + (segment.p2.y - segment.p1.y) * (mouse.y - segment.p1.y); //Similaire à la position de projection de la souris sur une ligne droite
     return d_per < clickExtent_line * clickExtent_line && d_par >= 0 && d_par <= graphs.length_segment_squared(segment);
   }
 
@@ -3772,7 +3772,7 @@ var canvasPainter = {
     return d_per < clickExtent_line * clickExtent_line;
   }
 
-  //將滑鼠位置吸附至指定的方向中之最接近者(該方向直線上之投影點)
+  //Accrochez la position de la souris à la position la plus proche dans la direction spécifiée (le point de projection sur la ligne droite dans cette direction)
   function snapToDirection(mouse, basePoint, directions, snapData)
   {
     var x = mouse.x - basePoint.x;
@@ -3780,7 +3780,7 @@ var canvasPainter = {
 
     if (snapData && snapData.locked)
     {
-      //已經鎖定吸附對象
+      //L'objet d'accrochage a été verrouillé
       var k = (directions[snapData.i0].x * x + directions[snapData.i0].y * y) / (directions[snapData.i0].x * directions[snapData.i0].x + directions[snapData.i0].y * directions[snapData.i0].y);
       return graphs.point(basePoint.x + k * directions[snapData.i0].x, basePoint.y + k * directions[snapData.i0].y);
     }
@@ -3801,7 +3801,7 @@ var canvasPainter = {
 
       if (snapData && x * x + y * y > snapToDirection_lockLimit_squared)
       {
-        //鎖定吸附對象
+        //Verrouiller l'objet d'accrochage
         snapData.locked = true;
         snapData.i0 = i0;
       }
@@ -3814,7 +3814,7 @@ var canvasPainter = {
   //================================================================================================================================
   //=========================================================MouseDown==============================================================
   function canvas_onmousedown(e) {
-  //滑鼠按下時
+  //Lorsque la souris est enfoncée
   //console.log(e.which);
   if (e.changedTouches) {
     var et = e.changedTouches[0];
@@ -3841,13 +3841,13 @@ var canvasPainter = {
   //if(document.getElementById("grid").checked || e.altKey)
   if (document.getElementById('grid').checked)
   {
-    //使用格線
+    //Utiliser la grille
     mouse = graphs.point(Math.round(((et.pageX - e.target.offsetLeft - origin.x) / scale) / gridSize) * gridSize, Math.round(((et.pageY - e.target.offsetTop - origin.y) / scale) / gridSize) * gridSize);
 
   }
   else
   {
-    //不使用格線
+    //N'utilisez pas de grille
     mouse = mouse_nogrid;
   }
 
@@ -3857,8 +3857,8 @@ var canvasPainter = {
   {
     if ((e.which && e.which == 1) || (e.changedTouches))
     {
-      //只有滑鼠左鍵才反應
-      //若有一個物件正在被建立,則將動作直接傳給它
+      //Seul le bouton gauche de la souris réagira
+      //Si un objet est en cours de création, transmettez-lui l'action directement
       objTypes[objs[objs.length - 1].type].c_mousedown(objs[objs.length - 1], mouse);
     }
   }
@@ -3869,7 +3869,7 @@ var canvasPainter = {
     //var returndata;
     if ((!(document.getElementById('lockobjs').checked) != (e.altKey && AddingObjType != '')) && !(e.which == 3))
     {
-      //搜尋每個物件,尋找滑鼠按到的物件
+      //Rechercher chaque objet, trouver l'objet cliqué par la souris
 
       draggingPart = {};
 
@@ -3877,12 +3877,12 @@ var canvasPainter = {
       {
         if (graphs.length_squared(mouse_nogrid, observer.c) < observer.r * observer.r)
         {
-          //滑鼠按到觀察者
+          //Clic de souris pour observer
           draggingObj = -4;
           draggingPart = {};
           //draggingPart.part=0;
-          draggingPart.mouse0 = mouse; //開始拖曳時的滑鼠位置
-          draggingPart.mouse1 = mouse; //拖曳時上一點的滑鼠位置
+          draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
+          draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
           draggingPart.snapData = {};
           return;
         }
@@ -3903,24 +3903,24 @@ var canvasPainter = {
             draggingPart_ = {};
             if (objTypes[objs[i].type].clicked(objs[i], mouse_nogrid, mouse, draggingPart_))
             {
-              //clicked()回傳true表示滑鼠按到了該物件
+              //clicked()Renvoie true pour indiquer que la souris a cliqué sur l'objet
 
               if (draggingPart_.targetPoint)
               {
-                //滑鼠按到一個點
-                targetIsPoint = true; //一旦發現能夠按到點,就必須按到點
+                //Clic de souris jusqu'à un point
+                targetIsPoint = true; //Une fois que vous trouvez que vous pouvez atteindre le point, vous devez atteindre le point
                 click_lensq_temp = graphs.length_squared(mouse_nogrid, draggingPart_.targetPoint);
                 if (click_lensq_temp <= click_lensq)
                 {
-                  targetObj_index = i; //按到點的情況下,選擇最接近滑鼠的
+                  targetObj_index = i; //Lorsque le point est atteint, sélectionnez celui le plus proche de la souris
                   click_lensq = click_lensq_temp;
                   draggingPart = draggingPart_;
                 }
               }
               else if (!targetIsPoint)
               {
-                //滑鼠按到的不是點,且到目前為止未按到點
-                targetObj_index = i; //按到非點的情況下,選擇最後建立的
+                //Le clic de souris n'est pas un point, et le point n'a pas été cliqué jusqu'à présent
+                targetObj_index = i; //Dans le cas d'un non-point, sélectionnez le dernier créé
                 draggingPart = draggingPart_;
               }
 
@@ -3929,9 +3929,9 @@ var canvasPainter = {
         }
         if (targetObj_index != -1)
         {
-          //最後決定選擇targetObj_index
+          //Enfin décidé de choisir targetObj_index
           selectObj(targetObj_index);
-          draggingPart.originalObj = JSON.parse(JSON.stringify(objs[targetObj_index])); //暫存拖曳前的物件狀態
+          draggingPart.originalObj = JSON.parse(JSON.stringify(objs[targetObj_index])); //Stocker temporairement l'état de l'objet avant de le faire glisser
           draggingPart.hasDuplicated = false;
           draggingObj = targetObj_index;
           return;
@@ -3940,15 +3940,15 @@ var canvasPainter = {
 
     if (draggingObj == -1)
       {
-      //====================滑鼠按到了空白處=============================
+      //=======================La souris a cliqué dans un espace vide==========================
        if ((AddingObjType == '') || (e.which == 3))
        {
-       //====================準備平移整個畫面===========================
+       //=========================Prêt à faire un panoramique sur tout l'écran======================
          draggingObj = -3;
          draggingPart = {};
          //draggingPart.part=0;
-         draggingPart.mouse0 = mouse; //開始拖曳時的滑鼠位置
-         draggingPart.mouse1 = mouse; //拖曳時上一點的滑鼠位置
+         draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
+         draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
          draggingPart.mouse2 = origin; //Original origin.
          draggingPart.snapData = {};
          document.getElementById('obj_settings').style.display = 'none';
@@ -3956,7 +3956,7 @@ var canvasPainter = {
        }
        else
        {
-       //=======================建立新的物件========================
+       //======================Créer un nouvel objet=========================
         objs[objs.length] = objTypes[AddingObjType].create(mouse);
         isConstructing = true;
         constructionPoint = mouse;
@@ -3964,7 +3964,7 @@ var canvasPainter = {
         {
           if (hasSameAttrType(objs[selectedObj], objs[objs.length - 1]))
           {
-            objs[objs.length - 1].p = objs[selectedObj].p; //讓此物件的附加屬性與上一個選取的物件相同(若類型相同)
+            objs[objs.length - 1].p = objs[selectedObj].p; //Rendre les propriétés supplémentaires de cet objet identiques à celles du dernier objet sélectionné (si le type est le même)
           }
         }
         selectObj(objs.length - 1);
@@ -4006,7 +4006,7 @@ var canvasPainter = {
 
   if (isConstructing)
   {
-    //若有一個物件正在被建立,則將動作直接傳給它
+    //Si un objet est en cours de création, transmettez-lui l'action directement
     objTypes[objs[objs.length - 1].type].c_mousemove(objs[objs.length - 1], mouse, e.ctrlKey, e.shiftKey);
   }
   else
@@ -4021,16 +4021,16 @@ var canvasPainter = {
       else
       {
         var mouse_snapped = mouse;
-        draggingPart.snapData = {}; //放開shift時解除原先之拖曳方向鎖定
+        draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez la touche Maj
       }
 
-      var mouseDiffX = (mouse_snapped.x - draggingPart.mouse1.x); //目前滑鼠位置與上一次的滑鼠位置的X軸差
-      var mouseDiffY = (mouse_snapped.y - draggingPart.mouse1.y); //目前滑鼠位置與上一次的滑鼠位置的Y軸差
+      var mouseDiffX = (mouse_snapped.x - draggingPart.mouse1.x); //La différence sur l'axe X entre la position actuelle de la souris et la dernière position de la souris
+      var mouseDiffY = (mouse_snapped.y - draggingPart.mouse1.y); //La différence de l'axe Y entre la position actuelle de la souris et la dernière position de la souris
 
       observer.c.x += mouseDiffX;
       observer.c.y += mouseDiffY;
 
-      //更新滑鼠位置
+      //Mettre à jour la position de la souris
       draggingPart.mouse1 = mouse_snapped;
       draw();
     }
@@ -4038,10 +4038,10 @@ var canvasPainter = {
     var returndata;
     if (draggingObj >= 0)
       {
-       //此時,代表滑鼠正在拖曳一個物件
+       //À ce stade, cela signifie que la souris fait glisser un objet
 
       objTypes[objs[draggingObj].type].dragging(objs[draggingObj], mouse, draggingPart, e.ctrlKey, e.shiftKey);
-      //如果正在拖曳整個物件,則按Ctrl鍵時複製原物件
+      //Si l'objet entier est déplacé, l'objet d'origine sera copié lorsque la touche Ctrl est enfoncée
       if (draggingPart.part == 0)
       {
         if (e.ctrlKey && !draggingPart.hasDuplicated)
@@ -4062,8 +4062,8 @@ var canvasPainter = {
 
     if (draggingObj == -3)
     {
-      //====================平移整個畫面===========================
-      //此時mouse為目前滑鼠位置,draggingPart.mouse1為上一次的滑鼠位置
+      //========================Panoramique sur tout l'écran=======================
+      //À ce stade, la souris est la position actuelle de la souris, draggingPart.mouse1 est la dernière position de la souris
 
       if (e.shiftKey)
       {
@@ -4072,11 +4072,11 @@ var canvasPainter = {
       else
       {
         var mouse_snapped = mouse_nogrid;
-        draggingPart.snapData = {}; //放開shift時解除原先之拖曳方向鎖定
+        draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez la touche Maj
       }
 
-      var mouseDiffX = (mouse_snapped.x - draggingPart.mouse1.x); //目前滑鼠位置與上一次的滑鼠位置的X軸差
-      var mouseDiffY = (mouse_snapped.y - draggingPart.mouse1.y); //目前滑鼠位置與上一次的滑鼠位置的Y軸差
+      var mouseDiffX = (mouse_snapped.x - draggingPart.mouse1.x); //La différence sur l'axe X entre la position actuelle de la souris et la dernière position de la souris
+      var mouseDiffY = (mouse_snapped.y - draggingPart.mouse1.y); //La différence de l'axe Y entre la position actuelle de la souris et la dernière position de la souris
       /*for (var i = 0; i < objs.length; i++)
       {
         objTypes[objs[i].type].move(objs[i], mouseDiffX, mouseDiffY);
@@ -4156,7 +4156,7 @@ var canvasPainter = {
         if (graphs.length_squared(mouse, observer.c) < observer.r * observer.r)
         {
 
-          //滑鼠按到觀察者
+          //Clic de souris pour observer
           positioningObj = -4;
           draggingPart = {};
           draggingPart.targetPoint = graphs.point(observer.c.x, observer.c.y);
@@ -4179,7 +4179,7 @@ var canvasPainter = {
       }
 
 
-      //搜尋每個物件,尋找滑鼠按到的物件
+      //Rechercher chaque objet, trouver l'objet cliqué par la souris
       var draggingPart_ = {};
       var click_lensq = Infinity;
       var click_lensq_temp;
@@ -4195,16 +4195,16 @@ var canvasPainter = {
             draggingPart_ = {};
             if (objTypes[objs[i].type].clicked(objs[i], mouse, mouse, draggingPart_))
             {
-              //clicked()回傳true表示滑鼠按到了該物件
+              //clicked()Renvoie true pour indiquer que la souris a cliqué sur l'objet
 
               if (draggingPart_.targetPoint)
               {
-                //滑鼠按到一個點
-                //targetIsPoint=true; //一旦發現能夠按到點,就必須按到點
+                //Clic de souris jusqu'à un point
+                //targetIsPoint=true; //Une fois que vous trouvez que vous pouvez atteindre le point, vous devez atteindre le point
                 click_lensq_temp = graphs.length_squared(mouse, draggingPart_.targetPoint);
                 if (click_lensq_temp <= click_lensq)
                 {
-                  targetObj_index = i; //按到點的情況下,選擇最接近滑鼠的
+                  targetObj_index = i; //Lorsque le point est atteint, sélectionnez celui le plus proche de la souris
                   click_lensq = click_lensq_temp;
                   draggingPart = draggingPart_;
                 }
@@ -4215,9 +4215,9 @@ var canvasPainter = {
         if (targetObj_index != -1)
         {
           selectObj(targetObj_index);
-          draggingPart.originalObj = JSON.parse(JSON.stringify(objs[targetObj_index])); //暫存拖曳前的物件狀態
+          draggingPart.originalObj = JSON.parse(JSON.stringify(objs[targetObj_index])); //Stocker temporairement l'état de l'objet avant de le faire glisser
           draggingPart.hasDuplicated = false;
-          positioningObj = targetObj_index; //輸入位置的物件設為i
+          positioningObj = targetObj_index; //L'objet de la position d'entrée est défini sur i
 
           document.getElementById('xybox').style.left = (draggingPart.targetPoint.x * scale + origin.x) + 'px';
           document.getElementById('xybox').style.top = (draggingPart.targetPoint.y * scale + origin.y) + 'px';
@@ -4249,7 +4249,7 @@ var canvasPainter = {
   {
     if (index < 0 || index >= objs.length)
     {
-      //若此物件不存在
+      //Si cet objet n'existe pas
       selectedObj = -1;
       document.getElementById('obj_settings').style.display = 'none';
       return;
@@ -4258,7 +4258,7 @@ var canvasPainter = {
     document.getElementById('obj_name').innerHTML = document.getElementById('tool_' + objs[index].type).dataset['n'];
     if (objTypes[objs[index].type].p_name)
     {
-      //若此物件有可調整的參數(如折射率)
+      //Si cet objet a des paramètres ajustables (tels que l'indice de réfraction)
       document.getElementById('p_box').style.display = '';
       var p_temp = objs[index].p;
       //document.getElementById('p_name').innerHTML=objTypes[objs[index].type].p_name;
@@ -4273,7 +4273,7 @@ var canvasPainter = {
       {
         if (i != selectedObj && hasSameAttrType(objs[i], objs[selectedObj]))
         {
-          //若有另一個相同type的物件,則顯示"套用全部"選項
+          //S'il existe un autre objet du même type, l'option "Appliquer tout" sera affichée
           document.getElementById('setAttrAll_box').style.display = '';
           //document.getElementById('setAttrAll').checked=false;
           break;
@@ -4322,18 +4322,18 @@ var canvasPainter = {
   {
     var xyData = JSON.parse('[' + document.getElementById('xybox').value.replace(/\(|\)/g, '') + ']');
     //if(xyData.length==2)
-    //只有當輸入兩個數值(座標)時才進行動作
+    //Ce n'est que lorsque deux valeurs (coordonnées) sont entrées que l'action sera entreprise
     if (xyData.length == 2)
     {
       if (positioningObj == -4)
       {
-        //觀察者
+        //Observateur
         observer.c.x = xyData[0];
         observer.c.y = xyData[1];
       }
       else
       {
-        //物件
+        //objet
         objTypes[objs[positioningObj].type].dragging(objs[positioningObj], graphs.point(xyData[0], xyData[1]), draggingPart, ctrl, shift);
       }
       draw();
@@ -4371,7 +4371,7 @@ var canvasPainter = {
     undoArr[undoIndex] = document.getElementById('textarea1').value;
     if (undoUBound == undoLBound)
     {
-      //復原步數已達上限
+      //Le nombre d'étapes de récupération a atteint la limite supérieure
       undoLBound = (undoLBound + 1) % undoLimit;
     }
   }
@@ -4380,7 +4380,7 @@ var canvasPainter = {
   {
     if (isConstructing)
     {
-      //假如按下復原時,使用者正在建立一個物件,則此時只將建立動作終止,而不做真正的復原
+      //Si l'utilisateur crée un objet en appuyant sur restaurer, alors seule l'action de création sera terminée à ce moment, et aucune restauration réelle ne sera effectuée
 
       isConstructing = false;
       objs.length--;
@@ -4391,12 +4391,12 @@ var canvasPainter = {
     }
     if (positioningObj != -1)
     {
-      //假如按下復原時,使用者正在輸入座標,則此時只將輸入座標動作終止,而不做真正的復原
+      //Si l'utilisateur entre des coordonnées en appuyant sur la touche de restauration, alors seule l'action de saisie de coordonnées sera terminée à ce moment et aucune restauration réelle ne sera effectuée.
       endPositioning();
       return;
     }
     if (undoIndex == undoLBound)
-        //已達復原資料下界
+        //Atteint la limite inférieure des données de récupération
         return;
     undoIndex = (undoIndex + (undoLimit - 1)) % undoLimit;
     document.getElementById('textarea1').value = undoArr[undoIndex];
@@ -4404,7 +4404,7 @@ var canvasPainter = {
     document.getElementById('redo').disabled = false;
     if (undoIndex == undoLBound)
     {
-      //已達復原資料下界
+      //Atteint la limite inférieure des données de récupération
       document.getElementById('undo').disabled = true;
     }
 
@@ -4415,7 +4415,7 @@ var canvasPainter = {
     isConstructing = false;
     endPositioning();
     if (undoIndex == undoUBound)
-      //已達復原資料下界
+      //Atteint la limite inférieure des données de récupération
       return;
     undoIndex = (undoIndex + 1) % undoLimit;
     document.getElementById('textarea1').value = undoArr[undoIndex];
@@ -4423,7 +4423,7 @@ var canvasPainter = {
     document.getElementById('undo').disabled = false;
     if (undoIndex == undoUBound)
     {
-      //已達復原資料下界
+      //Atteint la limite inférieure des données de récupération
       document.getElementById('redo').disabled = true;
     }
   }
@@ -4436,11 +4436,11 @@ var canvasPainter = {
     selectObj(-1);
 
     //AddingObjType="";
-    rayDensity_light = 0.1; //光線密度(光線相關模式)
-    rayDensity_images = 1; //光線密度(像相關模式)
+    rayDensity_light = 0.1; //Densité lumineuse (mode dépendant de la lumière)
+    rayDensity_images = 1; //Densité lumineuse (mode lié à l'image)
     window.toolBarViewModel.rayDensity.value(rayDensity_light);
-    extendLight = false; //觀察者的影像
-    showLight = true; //顯示光線
+    extendLight = false; //L'image de l'observateur
+    showLight = true; //Montrer la lumière
     origin = {x: 0, y: 0};
     observer = null;
     scale = 1;
@@ -4628,7 +4628,7 @@ var canvasPainter = {
   };
 
 
-  //=========================================JSON輸出/輸入====================================================
+  //=========================================JSONSortie entrée====================================================
   function JSONOutput()
   {
     document.getElementById('textarea1').value = JSON.stringify({version: 2, objs: objs, mode: mode, rayDensity_light: rayDensity_light, rayDensity_images: rayDensity_images, observer: observer, origin: origin, scale: scale});
@@ -4643,7 +4643,7 @@ var canvasPainter = {
     //console.log(jsonData);
     if (!jsonData.version)
     {
-      //為"線光學模擬1.0"或之前的格式
+      //"Line Optics Simulation 1.0" ou format antérieur
       //var str1=document.getElementById("textarea1").value.replace(/"point"|"xxa"/g,"1").replace(/"circle"|"xxf"/g,"5");
       var str1 = document.getElementById('textarea1').value.replace(/"point"|"xxa"|"aH"/g, '1').replace(/"circle"|"xxf"/g, '5').replace(/"k"/g, '"objs"').replace(/"L"/g, '"p1"').replace(/"G"/g, '"p2"').replace(/"F"/g, '"p3"').replace(/"bA"/g, '"exist"').replace(/"aa"/g, '"parallel"').replace(/"ba"/g, '"mirror"').replace(/"bv"/g, '"lens"').replace(/"av"/g, '"notDone"').replace(/"bP"/g, '"lightAlpha"').replace(/"ab"|"observed_light"|"observed_images"/g, '"observer"');
       jsonData = JSON.parse(str1);
@@ -4671,12 +4671,12 @@ var canvasPainter = {
     }
     if (jsonData.version == 1)
     {
-      //"線光學模擬1.1"至"線光學模擬1.2"
+      //"Line Optics Simulation 1.1" à "Line Optics Simulation 1.2"
       jsonData.origin = {x: 0, y: 0};
     }
     if (jsonData.version > 2)
     {
-      //為比此版本新的檔案版本
+      //Est une version de fichier plus récente que cette version
       return;
     }
     //TODO: Create new version.
@@ -4825,8 +4825,8 @@ var canvasPainter = {
   {
     //document.getElementById("tool_"+AddingObjType).className="toolbtn";
 
-    var selected_toolbtn; //先前被按下的toolbtn
-    var selecting_toolbtnwithlist; //這個toollistbtn所屬的toolbtnwithlist
+    var selected_toolbtn; //Toolbtn précédemment pressé
+    var selecting_toolbtnwithlist; //Toolbtn avec la liste à laquelle appartient ce toollistbtn
     tools_withList.forEach(function(element, index)
     {
       if (document.getElementById('tool_' + element).className == 'toolbtnwithlisthover')
@@ -4841,7 +4841,7 @@ var canvasPainter = {
     //console.log([selected_toolbtn,selecting_toolbtnwithlist]);
     if (!selecting_toolbtnwithlist)
     {
-      selecting_toolbtnwithlist = selected_toolbtn; //這個toollistbtn屬於先前被按下的toolbtn
+      selecting_toolbtnwithlist = selected_toolbtn; //Ce toollistbtn appartient au toolbtn précédemment pressé
     }
     //console.log(selecting_toolbtnwithlist);
     tools_normal.forEach(function(element, index)
