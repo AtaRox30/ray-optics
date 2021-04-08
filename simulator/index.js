@@ -280,7 +280,6 @@ var canvasPainter = {
   //==============================Creation d'objet (clic)=======================================
   c_mousedown: function(obj, mouse)
   {
-    console.log("Test c_mousedown for lineobject");
     obj.p2 = mouse;
     if (!mouseOnPoint_construct(mouse, obj.p1))
     {
@@ -290,7 +289,6 @@ var canvasPainter = {
   //==============================Creation d'objet (mouvement)=======================================
   c_mousemove: function(obj, mouse, ctrl, shift)
   {
-    console.log("Test c_mousemove for lineobject");
     //var basePoint=ctrl?graphs.midpoint(obj):obj.p1;
 
     //if(!obj.p2
@@ -317,7 +315,6 @@ var canvasPainter = {
   //==============================Creation d'objet (relachement)=======================================
   c_mouseup: function(obj, mouse)
   {
-    console.log("Test c_mouseup for lineobject");
     if (!mouseOnPoint_construct(mouse, obj.p1))
     {
       isConstructing = false;
@@ -326,7 +323,6 @@ var canvasPainter = {
 
   //=================================Traduit l'objet====================================
   move: function(obj, diffX, diffY) {
-    console.log("Test move for lineobject");
     //Deplacement du premier point du segment de ligne
     obj.p1.x = obj.p1.x + diffX;
     obj.p1.y = obj.p1.y + diffY;
@@ -338,7 +334,6 @@ var canvasPainter = {
 
   //==========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)===========================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Test clicked for lineobject");
     if (mouseOnPoint(mouse_nogrid, obj.p1) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p2))
     {
       draggingPart.part = 1;
@@ -365,7 +360,6 @@ var canvasPainter = {
   //==================================Lorsque vous faites glisser un objet===================================
   dragging: function(obj, mouse, draggingPart, ctrl, shift) {
     var basePoint;
-    console.log("Test dragging for lineobject");
     if (draggingPart.part == 1)
     {
       //Faire glisser le premier point de terminaison
@@ -416,7 +410,6 @@ var canvasPainter = {
 
   //=================Déterminez si une lumière atteindra cet objet (si c'est le cas, renvoyez le point d'intersection)=======================
   rayIntersection: function(obj, ray) {
-    console.log("Test rayIntersection for lineobject");
     var rp_temp = graphs.intersection_2line(graphs.line(ray.p1, ray.p2), graphs.line(obj.p1, obj.p2));   //Trouvez l'intersection de (la ligne d'extension) de la lumière et de l'objet (la ligne d'extension)
 
     if (graphs.intersection_is_on_segment(rp_temp, obj) && graphs.intersection_is_on_ray(rp_temp, ray))
@@ -441,7 +434,6 @@ var canvasPainter = {
 
   //===================================Créer un objet============================================
   create: function(mouse) {
-    console.log("Test create for halfplane");
     return {type: 'halfplane', p1: mouse, p2: mouse, p: 1.5};
   },
 
@@ -453,7 +445,6 @@ var canvasPainter = {
 
   //=========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Test clicked for halfplane");
     if (mouseOnPoint(mouse_nogrid, obj.p1) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p2))
     {
       draggingPart.part = 1;
@@ -479,7 +470,6 @@ var canvasPainter = {
 
   //=============================Lorsque vous faites glisser un objet========================================
   dragging: function(obj, mouse, draggingPart, ctrl, shift) {
-    console.log("Test dragging for halfplane");
     var basePoint;
     if (draggingPart.part == 1)
     {
@@ -531,7 +521,6 @@ var canvasPainter = {
 
   //===================Déterminez si une lumière atteindra cet objet (si c'est le cas, renvoyez le point d'intersection)=====================
   rayIntersection: function(obj, ray) {
-    console.log("Test rayIntersection for halfplane");
     if (obj.p <= 0)return;
     var rp_temp = graphs.intersection_2line(graphs.line(ray.p1, ray.p2), graphs.line(obj.p1, obj.p2));   //Trouvez l'intersection de (la ligne d'extension) de la lumière et de l'objet
 
@@ -545,7 +534,6 @@ var canvasPainter = {
 
   //=============================Dessiner des objets sur le canevas========================================
   draw: function(obj, canvas, aboveLight) {
-  console.log("Test draw for halfplane");
   if (!aboveLight)
   {
     var len = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
@@ -574,7 +562,6 @@ var canvasPainter = {
 
   //============================Lorsque l'objet est frappé par la lumière=================================
   shot: function(obj, ray, rayIndex, rp, surfaceMerging_objs) {
-    console.log("Test shot for halfplane");
     //ray.exist=false;
 
     var rdots = (ray.p2.x - ray.p1.x) * (obj.p2.x - obj.p1.x) + (ray.p2.y - ray.p1.y) * (obj.p2.y - obj.p1.y); //ray與此線段之內積
@@ -637,7 +624,6 @@ var canvasPainter = {
   },
 
   getShotType: function(obj, ray) {
-    console.log("Test getShotType for halfplane");
     var rcrosss = (ray.p2.x - ray.p1.x) * (obj.p2.y - obj.p1.y) - (ray.p2.y - ray.p1.y) * (obj.p2.x - obj.p1.x);
     if (rcrosss > 0)
     {
@@ -664,7 +650,6 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    console.log("Test create for circlelens");
     return {type: 'circlelens', p1: mouse, p2: mouse, p: 1.5};
   },
 
@@ -676,7 +661,6 @@ var canvasPainter = {
 
   //===========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)==========================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Test clicked for circlelens");
     if (mouseOnPoint(mouse_nogrid, obj.p1) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p2))
     {
       draggingPart.part = 1;
@@ -705,7 +689,6 @@ var canvasPainter = {
 
   //===================Déterminez si une lumière atteindra cet objet (si c'est le cas, renvoyez le point d'intersection)=====================
   rayIntersection: function(obj, ray) {
-    console.log("Test rayIntersection for circlelens");
     if (obj.p <= 0)return;
     var rp_temp = graphs.intersection_line_circle(graphs.line(ray.p1, ray.p2), graphs.circle(obj.p1, obj.p2));   //Trouvez l'intersection de (la ligne d'extension) de la lumière et du miroir
     var rp_exist = [];
@@ -727,7 +710,6 @@ var canvasPainter = {
 
   //==================================Dessiner des objets sur le canevas===================================
   draw: function(obj, canvas, aboveLight) {
-    console.log("Test draw for circlelens");
   if (!aboveLight)
   {
     ctx.beginPath();
@@ -748,7 +730,6 @@ var canvasPainter = {
 
   //===========================Lorsque l'objet est frappé par la lumière==================================
   shot: function(obj, ray, rayIndex, rp, surfaceMerging_objs) {
-    console.log("Test shot for circlelens");
     var midpoint = graphs.midpoint(graphs.line_segment(ray.p1, rp));
     var d = graphs.length_squared(obj.p1, obj.p2) - graphs.length_squared(obj.p1, midpoint);
     if (d > 0)
@@ -810,7 +791,6 @@ var canvasPainter = {
   },
 
   getShotType: function(obj, ray) {
-    console.log("Test getShotType for circlelens");
     var midpoint = graphs.midpoint(graphs.line_segment(ray.p1, this.rayIntersection(obj, ray)));
     var d = graphs.length_squared(obj.p1, obj.p2) - graphs.length_squared(obj.p1, midpoint);
 
@@ -839,14 +819,12 @@ var canvasPainter = {
   supportSurfaceMerging: true, //Intégration de l'interface de support
   //=================================Créer un objet==============================================
   create: function(mouse) {
-    console.log("Test create for refractor");
     return {type: 'refractor', path: [{x: mouse.x, y: mouse.y, arc: false}], notDone: true, p: 1.5};
   },
 
   //=================================Clic de souris lors de la création de l'objet====================================
   c_mousedown: function(obj, mouse)
   {
-    console.log("Test c_mousedown for refractor");
     if (obj.path.length > 1)
     {
       if (obj.path.length > 3 && mouseOnPoint(mouse, obj.path[0]))
@@ -864,7 +842,6 @@ var canvasPainter = {
   //===============================Mouvement de la souris lors de la création d'objet======================================
   c_mousemove: function(obj, mouse, ctrl, shift)
   {
-    console.log("Test c_mousemove for refractor");
     if (!obj.notDone) {return;}
     if (typeof obj.path[obj.path.length - 1].arc != 'undefined')
     {
@@ -883,7 +860,6 @@ var canvasPainter = {
   //=================================Relâchez la souris lors de la création de l'objet====================================
   c_mouseup: function(obj, mouse)
   {
-    console.log("Test c_mouseup for refractor");
     if (!obj.notDone) {
       isConstructing = false;
       draw();
@@ -913,7 +889,6 @@ var canvasPainter = {
   },
   //===================================Dessiner des objets sur le canevas==================================
   draw: function(obj, canvas, aboveLight) {
-    console.log("Test draw for refractor");
     //var ctx = canvas.getContext('2d');
     var p1;
     var p2;
@@ -928,23 +903,31 @@ var canvasPainter = {
     if (obj.notDone)
     {
       //L'utilisateur n'a pas fini de dessiner l'objet
-
+      //console.log("Enter obj.notDone");
+      //console.log("First line");
+      //console.log(JSON.stringify(obj.path[0]));
+      //if(obj.path[1] != undefined) console.log(JSON.stringify(obj.path[1]));
+      //if(obj.path[2] != undefined) console.log(JSON.stringify(obj.path[2]));
+      //console.log("Last line");
       ctx.beginPath();
       ctx.moveTo(obj.path[0].x, obj.path[0].y);
 
       for (var i = 0; i < obj.path.length - 1; i++)
       {
+        console.log("Enter obj.notDone > for 1");
         //ii=i%(obj.path.length);
         //Si le prochain point est un arc mais que l'actuel n'en est pas un
         //et n'est pas un des deux derniers points
         if (obj.path[(i + 1)].arc && !obj.path[i].arc && i < obj.path.length - 2)
         {
+          console.log("Enter obj.notDone > for 1 > if 1");
           p1 = graphs.point(obj.path[i].x, obj.path[i].y);
           p2 = graphs.point(obj.path[(i + 2)].x, obj.path[(i + 2)].y);
           p3 = graphs.point(obj.path[(i + 1)].x, obj.path[(i + 1)].y);
           center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(p1, p3)), graphs.perpendicular_bisector(graphs.line(p2, p3)));
           if (isFinite(center.x) && isFinite(center.y))
           {
+            console.log("Enter obj.notDone > for 1 > if 1 > if 1");
             r = graphs.length(center, p3);
             a1 = Math.atan2(p1.y - center.y, p1.x - center.x);
             a2 = Math.atan2(p2.y - center.y, p2.x - center.x);
@@ -955,6 +938,7 @@ var canvasPainter = {
           }
           else
           {
+            console.log("Enter obj.notDone > for 1 > else 1");
             //Les trois points de l'arc sont colinéaires et traités comme un segment de ligne
             //arcInvalid=true;
             ctx.lineTo(obj.path[(i + 2)].x, obj.path[(i + 2)].y);
@@ -964,6 +948,7 @@ var canvasPainter = {
         }
         else if (!obj.path[(i + 1)].arc && !obj.path[i].arc)
         {
+          console.log("Enter obj.notDone > for 1 > else 1 > if 1");
           ctx.lineTo(obj.path[(i + 1)].x, obj.path[(i + 1)].y);
         }
       }
@@ -975,22 +960,26 @@ var canvasPainter = {
     }
     else if (!aboveLight)
     {
+      console.log("Enter object done");
       //L'objet a été dessiné
       ctx.beginPath();
       ctx.moveTo(obj.path[0].x, obj.path[0].y);
 
       for (var i = 0; i < obj.path.length; i++)
       {
+        console.log("Enter object done > for 1");
         //ii=i%(obj.path.length);
         if (obj.path[(i + 1) % obj.path.length].arc && !obj.path[i % obj.path.length].arc)
         {
+          console.log("Enter object done > for 1 > if 1");
           p1 = graphs.point(obj.path[i % obj.path.length].x, obj.path[i % obj.path.length].y);
           p2 = graphs.point(obj.path[(i + 2) % obj.path.length].x, obj.path[(i + 2) % obj.path.length].y);
           p3 = graphs.point(obj.path[(i + 1) % obj.path.length].x, obj.path[(i + 1) % obj.path.length].y);
           center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(p1, p3)), graphs.perpendicular_bisector(graphs.line(p2, p3)));
-          //console.log([center.x,center.y]);
+          console.log([center.x,center.y]);
           if (isFinite(center.x) && isFinite(center.y))
           {
+            console.log("Enter object done > for 1 > if 1 > if 2");
             r = graphs.length(center, p3);
             a1 = Math.atan2(p1.y - center.y, p1.x - center.x);
             a2 = Math.atan2(p2.y - center.y, p2.x - center.x);
@@ -1001,6 +990,7 @@ var canvasPainter = {
           }
           else
           {
+            console.log("Enter object done > for 1 > if 1 > else 2");
             //Les trois points de l'arc sont colinéaires et traités comme un segment de ligne
             ctx.lineTo(obj.path[(i + 2) % obj.path.length].x, obj.path[(i + 2) % obj.path.length].y);
           }
@@ -1008,6 +998,7 @@ var canvasPainter = {
         }
         else if (!obj.path[(i + 1) % obj.path.length].arc && !obj.path[i % obj.path.length].arc)
         {
+          console.log("Enter object done > for 1 > else 1");
           ctx.lineTo(obj.path[(i + 1) % obj.path.length].x, obj.path[(i + 1) % obj.path.length].y);
         }
       }
@@ -1018,16 +1009,19 @@ var canvasPainter = {
 
     for (var i = 0; i < obj.path.length; i++)
     {
+      console.log("Enter for 2");
       if (typeof obj.path[i].arc != 'undefined')
       {
         if (obj.path[i].arc)
         {
+          console.log("Enter for 2 > if 1");
           ctx.fillStyle = 'rgb(255,0,255)';
           //ctx.fillStyle="indigo";
           ctx.fillRect(obj.path[i].x - 2, obj.path[i].y - 2, 3, 3);
         }
         else
         {
+          console.log("Enter for 2 > else 1");
           ctx.fillStyle = 'rgb(255,0,0)';
           ctx.fillRect(obj.path[i].x - 2, obj.path[i].y - 2, 3, 3);
         }
@@ -1037,7 +1031,6 @@ var canvasPainter = {
 
   fillGlass: function(n)
   {
-    console.log("Test fillGlass for refractor");
     if (n >= 1)
     {
       ctx.globalCompositeOperation = 'lighter';
@@ -1067,7 +1060,6 @@ var canvasPainter = {
 
   //===============================Traduire l'objet==============================
   move: function(obj, diffX, diffY) {
-    console.log("Test move for refractor");
     for (var i = 0; i < obj.path.length; i++)
     {
       obj.path[i].x += diffX;
@@ -1078,7 +1070,7 @@ var canvasPainter = {
 
   //=======================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)==============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Test clicked for refractor");
+    console.log("Clicked !");
     var p1;
     var p2;
     var p3;
@@ -1170,7 +1162,6 @@ var canvasPainter = {
 
   //===============================Lorsque vous faites glisser un objet======================================
   dragging: function(obj, mouse, draggingPart, ctrl, shift) {
-    console.log("Test dragging for refractor");
     if (draggingPart.part == 1)
     {
       obj.path[draggingPart.index].x = mouse.x;
@@ -1197,7 +1188,6 @@ var canvasPainter = {
 
   //===================Déterminez si une lumière atteindra cet objet (si c'est le cas, renvoyez le point d'intersection)=====================
   rayIntersection: function(obj, ray) {
-    console.log("Test rayIntersection for refractor");
     if (obj.notDone || obj.p <= 0)return;
 
     var s_lensq = Infinity;
@@ -1290,7 +1280,6 @@ var canvasPainter = {
 
   //============================Lorsque l'objet est frappé par la lumière=================================
   shot: function(obj, ray, rayIndex, rp, surfaceMerging_objs) {
-    console.log("Test shot for refractor");
     if (obj.notDone) {return;}
     //var ctx = canvas.getContext('2d');
     //ctx.beginPath();
@@ -1354,13 +1343,11 @@ var canvasPainter = {
 
   //=======================Juger l'émission de lumière interne / externe================================
   getShotType: function(obj, ray) {
-    console.log("Test getShotType for refractor");
     return this.getShotData(obj, ray).shotType;
   },
 
 
   getShotData: function(obj, ray) {
-    console.log("Test getShotData for refractor");
     //=========Déterminez où la lumière frappe l'objet==========
     var s_lensq = Infinity;
     var s_lensq_temp;
@@ -1587,7 +1574,6 @@ var canvasPainter = {
   //========================Traitement de la réfraction===============================
   refract: function(ray, rayIndex, s_point, normal, n1)
   {
-    console.log("Test refract for refractor");
     var normal_len = Math.sqrt(normal.x * normal.x + normal.y * normal.y);
     var normal_x = normal.x / normal_len;
     var normal_y = normal.y / normal_len;
@@ -1659,7 +1645,6 @@ var canvasPainter = {
 
   //=======================================Créer un objet========================================
   create: function(mouse) {
-    console.log("Test create laser");
     return {type: 'laser', p1: mouse, p2: mouse};
   },
 
@@ -1699,7 +1684,6 @@ var canvasPainter = {
 
   //=====================================Créer un objet==========================================
   create: function(mouse) {
-    console.log("Test create mirror");
     return {type: 'mirror', p1: mouse, p2: mouse};
   },
 
@@ -1714,7 +1698,6 @@ var canvasPainter = {
 
   //===============================Dessiner des objets sur le canevas======================================
   draw: function(obj, canvas) {
-    console.log("Test draw mirror");
     //ctx.lineWidth=1.5;
     ctx.strokeStyle = 'rgb(168,168,168)';
     ctx.beginPath();
@@ -1728,7 +1711,6 @@ var canvasPainter = {
 
   //==============================Lorsque l'objet est frappé par la lumière===============================
   shot: function(mirror, ray, rayIndex, rp) {
-    console.log("Test shot mirror");
     //À ce stade, cela signifie que la lumière doit frapper le miroir, 
     //il suffit de trouver le point d'intersection, pas besoin de juger si elle frappe vraiment le miroir
     var rx = ray.p1.x - rp.x;
@@ -1755,7 +1737,6 @@ var canvasPainter = {
 
   //========================================Créer un objet=======================================
   create: function(mouse) {
-    console.log("Test create lens");
     return {type: 'lens', p1: mouse, p2: mouse, p: 100};
   },
 
@@ -1770,7 +1751,6 @@ var canvasPainter = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  console.log("Test draw lens");
   //var ctx = canvas.getContext('2d');
 
   var len = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
@@ -1847,7 +1827,6 @@ var canvasPainter = {
 
   //=============================Lorsque l'objet est frappé par la lumière================================
   shot: function(lens, ray, rayIndex, shootPoint) {
-    console.log("Test shot lens");
     var lens_length = graphs.length_segment(lens);
     var main_line_unitvector_x = (-lens.p1.y + lens.p2.y) / lens_length;
     var main_line_unitvector_y = (lens.p1.x - lens.p2.x) / lens_length;
@@ -1902,7 +1881,6 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    console.log("Test create idealmirror");
     return {type: 'idealmirror', p1: mouse, p2: graphs.point(mouse.x + gridSize, mouse.y), p: 100};
   },
 
@@ -1917,7 +1895,6 @@ var canvasPainter = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  console.log("Test draw idealmirror");
   //var ctx = canvas.getContext('2d');
 
   var len = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
@@ -2033,7 +2010,6 @@ var canvasPainter = {
 
   //==============================Lorsque l'objet est frappé par la lumière===============================
   shot: function(obj, ray, rayIndex, shootPoint) {
-    console.log("Test shot idealmirror");
     //En tant que combinaison de lentille idéale et de miroir plat
     objTypes['lens'].shot(obj, ray, rayIndex, graphs.point(shootPoint.x, shootPoint.y));
 
@@ -2058,7 +2034,6 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    console.log("Test create blackline");
     return {type: 'blackline', p1: mouse, p2: mouse};
   },
 
@@ -2073,7 +2048,6 @@ var canvasPainter = {
 
   //================================Dessiner des objets sur le canevas=====================================
   draw: function(obj, canvas) {
-  console.log("Test draw blackline");
   //var ctx = canvas.getContext('2d');
   ctx.strokeStyle = 'rgb(70,35,10)';
   ctx.lineWidth = 3;
@@ -2087,7 +2061,6 @@ var canvasPainter = {
 
   //=============================Lorsque l'objet est frappé par la lumière================================
   shot: function(obj, ray, rayIndex, rp) {
-    console.log("Test shot blackline");
     ray.exist = false;
   }
 
@@ -2103,20 +2076,17 @@ var canvasPainter = {
 
   //==================================Créer un objet=============================================
   create: function(mouse) {
-  console.log("Test create radiant");
   return {type: 'radiant', x: mouse.x, y: mouse.y, p: 0.5};
   },
 
   //==============================Clic de souris lors de la création de l'objet=======================================
   c_mousedown: function(obj, mouse)
   {
-    console.log("Test c_mousedown radiant");
     draw();
   },
   //=================================Mouvement de la souris lors de la création d'objet====================================
   c_mousemove: function(obj, mouse, ctrl, shift)
   {
-    console.log("Test c_mousemove radiant");
     /*
     obj.x=mouse.x;
     obj.y=mouse.y;
@@ -2126,13 +2096,11 @@ var canvasPainter = {
   //==================================Relâchez la souris lors de la création de l'objet===================================
   c_mouseup: function(obj, mouse)
   {
-    console.log("Test c_mouseup radiant");
     isConstructing = false;
   },
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  console.log("Test draw radiant");
   //var ctx = canvas.getContext('2d');
   ctx.fillStyle = 'rgb(0,255,0)';
   ctx.fillRect(obj.x - 2, obj.y - 2, 5, 5);
@@ -2141,7 +2109,6 @@ var canvasPainter = {
 
   //=================================Traduire l'objet====================================
   move: function(obj, diffX, diffY) {
-    console.log("Test move radiant");
     obj.x = obj.x + diffX;
     obj.y = obj.y + diffY;
     return obj;
@@ -2150,7 +2117,6 @@ var canvasPainter = {
 
   //=========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Test clicked radiant");
     if (mouseOnPoint(mouse_nogrid, obj))
     {
       draggingPart.part = 0;
@@ -2164,7 +2130,6 @@ var canvasPainter = {
 
   //==================================Lorsque vous faites glisser un objet===================================
   dragging: function(obj, mouse, draggingPart, ctrl, shift) {
-    console.log("Test dragging radiant");
     if (shift)
     {
       var mouse_snapped = snapToDirection(mouse, draggingPart.mouse0, [{x: 1, y: 0},{x: 0, y: 1}], draggingPart.snapData);
@@ -2183,7 +2148,6 @@ var canvasPainter = {
 
   //===================================Tirez sur la lumière===========================================
   shoot: function(obj) {
-    console.log("Test shoot radiant");
   var s = Math.PI * 2 / parseInt(getRayDensity() * 500);
   var i0 = (mode == 'observer') ? (-s * 2 + 1e-6) : 0; //Pour éviter les compartiments noirs lors de l'utilisation d'observateurs
   for (var i = i0; i < (Math.PI * 2 - 1e-5); i = i + s)
@@ -2214,7 +2178,6 @@ var canvasPainter = {
 
   //====================================Créer un objet===========================================
   create: function(mouse) {
-    console.log("Test create parrallel");
     return {type: 'parallel', p1: mouse, p2: mouse, p: 0.5};
   },
 
@@ -2228,7 +2191,6 @@ var canvasPainter = {
 
   //===================================Dessiner des objets sur le canevas==================================
   draw: function(obj, canvas) {
-    console.log("Test draw parrallel");
     //var ctx = canvas.getContext('2d');
     var a_l = Math.atan2(obj.p1.x - obj.p2.x, obj.p1.y - obj.p2.y) - Math.PI / 2;
     ctx.strokeStyle = 'rgb(0,255,0)';
@@ -2254,7 +2216,6 @@ var canvasPainter = {
 
   //====================================Tirez sur la lumière==========================================
   shoot: function(obj) {
-    console.log("Test shoot parrallel");
     var n = graphs.length_segment(obj) * getRayDensity();
     var stepX = (obj.p2.x - obj.p1.x) / n;
     var stepY = (obj.p2.y - obj.p1.y) / n;
@@ -2287,14 +2248,12 @@ var canvasPainter = {
 
   //=========================================Créer un objet======================================
   create: function(mouse) {
-    console.log("Test create arcmirror");
     return {type: 'arcmirror', p1: mouse};
   },
 
   //=================================Clic de souris lors de la création de l'objet====================================
   c_mousedown: function(obj, mouse)
   {
-    console.log("Test c_mousedown arcmirror");
     if (!obj.p2 && !obj.p3)
     {
       draw();
@@ -2312,7 +2271,6 @@ var canvasPainter = {
   //==================================Mouvement de la souris lors de la création d'objet===================================
   c_mousemove: function(obj, mouse, ctrl, shift)
   {
-    console.log("Test c_mousemove arcmirror");
     if (!obj.p3 && !mouseOnPoint_construct(mouse, obj.p1))
     {
       if (shift)
@@ -2340,7 +2298,6 @@ var canvasPainter = {
   //=================================Relâchez la souris lors de la création de l'objet====================================
   c_mouseup: function(obj, mouse)
   {
-    console.log("Test c_mouseup arcmirror");
     if (obj.p2 && !obj.p3 && !mouseOnPoint_construct(mouse, obj.p1))
     {
       obj.p3 = mouse;
@@ -2357,7 +2314,6 @@ var canvasPainter = {
 
   //===============================Dessiner des objets sur le canevas======================================
   draw: function(obj, canvas) {
-    console.log("Test draw arcmirror");
     //var ctx = canvas.getContext('2d');
     ctx.fillStyle = 'rgb(255,0,255)';
     //ctx.lineWidth=1.5;
@@ -2410,7 +2366,6 @@ var canvasPainter = {
 
   //==============================Traduire l'objet=======================================
   move: function(obj, diffX, diffY) {
-    console.log("Test move arcmirror");
     //Déplacer le premier point du segment de ligne
     obj.p1.x = obj.p1.x + diffX;
     obj.p1.y = obj.p1.y + diffY;
@@ -2426,7 +2381,6 @@ var canvasPainter = {
 
   //=========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Test clicked arcmirror");
     if (mouseOnPoint(mouse_nogrid, obj.p1) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p2) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p3))
     {
       draggingPart.part = 1;
@@ -2481,7 +2435,6 @@ var canvasPainter = {
 
   //===============================Lorsque vous faites glisser un objet======================================
   dragging: function(obj, mouse, draggingPart, ctrl, shift) {
-    console.log("Test dragging arcmirror");
     var basePoint;
     if (draggingPart.part == 1)
     {
@@ -2545,7 +2498,6 @@ var canvasPainter = {
 
   //=================Déterminez si une lumière atteindra cet objet (si c'est le cas, renvoyez le point d'intersection)=======================
   rayIntersection: function(obj, ray) {
-    console.log("Test rayIntersection arcmirror");
     if (!obj.p3) {return;}
     var center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(obj.p1, obj.p3)), graphs.perpendicular_bisector(graphs.line(obj.p2, obj.p3)));
     if (isFinite(center.x) && isFinite(center.y))
@@ -2579,7 +2531,6 @@ var canvasPainter = {
 
   //===========================Lorsque l'objet est frappé par la lumière==================================
   shot: function(obj, ray, rayIndex, rp) {
-    console.log("Test shot arcmirror");
     //alert("")
     var center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(obj.p1, obj.p3)), graphs.perpendicular_bisector(graphs.line(obj.p2, obj.p3)));
     if (isFinite(center.x) && isFinite(center.y))
@@ -2614,7 +2565,6 @@ var canvasPainter = {
 
   //====================================Créer un objet===========================================
   create: function(mouse) {
-    console.log("Test create ruler");
     return {type: 'ruler', p1: mouse, p2: mouse};
   },
 
@@ -2628,7 +2578,6 @@ var canvasPainter = {
 
   //============================Dessiner des objets sur le canevas=========================================
   draw: function(obj, canvas, aboveLight) {
-    console.log("Test draw ruler");
   //var ctx = canvas.getContext('2d');
   if (aboveLight)return;
   ctx.globalCompositeOperation = 'lighter';
@@ -2742,7 +2691,6 @@ var canvasPainter = {
 
   //==========================================Créer un objet=====================================
   create: function(mouse) {
-    console.log("Test create protractor");
     return {type: 'protractor', p1: mouse, p2: mouse};
   },
 
@@ -2754,7 +2702,6 @@ var canvasPainter = {
 
   //=========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Test clicked protractor");
     if (mouseOnPoint(mouse_nogrid, obj.p1) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p2))
     {
       draggingPart.part = 1;
@@ -2779,11 +2726,10 @@ var canvasPainter = {
   },
 
   //==================================Lorsque vous faites glisser un objet===================================
-  dragging: function(obj, mouse, draggingPart, ctrl, shift) {console.log("Test dragging protractor"); objTypes['lineobj'].dragging(obj, mouse, draggingPart, false, shift)},
+  dragging: function(obj, mouse, draggingPart, ctrl, shift) {objTypes['lineobj'].dragging(obj, mouse, draggingPart, false, shift)},
 
   //================================Dessiner des objets sur le canevas=====================================
   draw: function(obj, canvas, aboveLight) {
-    console.log("Test draw protractor");
   //var ctx = canvas.getContext('2d');
   if (!aboveLight)
   {
