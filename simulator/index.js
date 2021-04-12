@@ -1070,7 +1070,6 @@ var canvasPainter = {
 
   //=======================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)==============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Clicked !");
     var p1;
     var p2;
     var p3;
@@ -1079,7 +1078,6 @@ var canvasPainter = {
     var a1;
     var a2;
     var a3;
-
 
     var click_lensq = Infinity;
     var click_lensq_temp;
@@ -1156,6 +1154,44 @@ var canvasPainter = {
           return true;
         }
       }
+    }
+
+    if(!obj.notDone) {
+      //Create a rectangle that contains the whole polygon
+      var theSmallestX = Infinity;
+      var theSmallestY = Infinity;
+      var theHighestX = -Infinity;
+      var theHighestY = -Infinity;
+
+      var pi = Math.PI;
+
+      for(pt of obj.path) {
+        if(pt.x < theSmallestX) theSmallestX = pt.x;
+        if(pt.x > theHighestX) theHighestX = pt.x;
+        if(pt.y < theSmallestY) theSmallestY = pt.y;
+        if(pt.y > theHighestY) theHighestY = pt.y;
+      }
+      //P1(SmallX, HighY) et P2(HighX, SmallY)
+      //Set the middle of the
+      var hitboxMiddle = graphs.point((theHighestX+theSmallestX)/2, (theHighestY+theSmallestY)/2);
+      console.log("Middle is (" + hitboxMiddle.x + "," + hitboxMiddle.y + ")");
+
+      //Use x’ = x * cos(C) – y * sin(C) and y’ = x * sin(C) + y * cos(C)
+      for(pt of obj.path) {
+        let XrelateToCenter = pt.x - hitboxMiddle.x;
+        let YrelateToCenter = pt.y - hitboxMiddle.y;
+        let newRX = XrelateToCenter*Math.cos(pi/2) - YrelateToCenter*Math.sin(pi/2);
+        let newRY = XrelateToCenter*Math.sin(pi/2) + YrelateToCenter*Math.cos(pi/2);
+        let newX = newRX + XrelateToCenter;
+        let newY = newRY + YrelateToCenter;
+        pt.x = newX;
+        pt.y = newY;
+        console.log("New X is " + newX + " and new Y is " + newY);
+      }
+
+      $.each(objTypes, (index, value) => {
+      })
+
     }
 
   },
@@ -3828,7 +3864,7 @@ var canvasPainter = {
   } else {
     var et = e;
   }
-  var mouse_nogrid = graphs.point((et.pageX - e.target.offsetLeft - origin.x) / scale, (et.pageY - e.target.offsetTop - origin.y) / scale); //滑鼠實際位置
+  var mouse_nogrid = graphs.point((et.pageX - e.target.offsetLeft - origin.x) / scale, (et.pageY - e.target.offsetTop - origin.y) / scale); //Position réelle de la souris
   mouse_lastmousedown = mouse_nogrid;
   if (positioningObj != -1)
   {
@@ -4888,7 +4924,7 @@ var canvasPainter = {
     }
     if (mode == 'observer' && !observer)
     {
-      //初始化觀察者
+      //Initialiser l'observateur
       observer = graphs.circle(graphs.point((canvas.width * 0.5 - origin.x) / scale, (canvas.height * 0.5 - origin.y) / scale), 20);
     }
 
