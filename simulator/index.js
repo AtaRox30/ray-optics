@@ -108,6 +108,15 @@
     return ret;
   },
 
+  rotateArround : function(M, O, radian) {
+    var xM, yM, x, y;
+    xM = M.x - O.x;
+    yM = M.y - O.y;
+    x = xM * Math.cos (radian) + yM * Math.sin (radian) + O.x;
+    y = - xM * Math.sin (radian) + yM * Math.cos (radian) + O.y;
+    return ({x:Math.round (x), y:Math.round (y)});
+  },
+
 
   intersection_is_on_ray: function(p1, r1) {
     return (p1.x - r1.p1.x) * (r1.p2.x - r1.p1.x) + (p1.y - r1.p1.y) * (r1.p2.y - r1.p1.y) >= 0;
@@ -1070,6 +1079,7 @@ var canvasPainter = {
 
   //=======================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)==============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
+    console.log("Enter clicked");
     var p1;
     var p2;
     var p3;
@@ -1082,6 +1092,39 @@ var canvasPainter = {
     var click_lensq = Infinity;
     var click_lensq_temp;
     var targetPoint_index = -1;
+
+    if(isRotating) {
+      console.log("Enter rotated");
+      //Create a rectangle that contains the whole polygon
+      var theSmallestX = Infinity;
+      var theSmallestY = Infinity;
+      var theHighestX = -Infinity;
+      var theHighestY = -Infinity;
+
+      var pi = Math.PI;
+      var rad = 90 * (pi/180);
+
+      for(pt of obj.path) {
+        if(pt.x < theSmallestX) theSmallestX = pt.x;
+        if(pt.x > theHighestX) theHighestX = pt.x;
+        if(pt.y < theSmallestY) theSmallestY = pt.y;
+        if(pt.y > theHighestY) theHighestY = pt.y;
+      }
+
+
+      //Get the middle of the rectangle
+      var hitboxMiddle = {x: ((theHighestX+theSmallestX)/2), y: ((theHighestY+theSmallestY)/2)};
+
+      //Do a rotation arround the middle
+      for(pt of obj.path) {
+        let newCoord = graphs.rotateArround(pt, hitboxMiddle, rad);
+        pt.x = newCoord.x;
+        pt.y = newCoord.y;
+      }
+      isRotating = false;
+      return;
+    }
+
     for (var i = 0; i < obj.path.length; i++)
     {
       if (mouseOnPoint(mouse_nogrid, obj.path[i]))
@@ -1155,45 +1198,6 @@ var canvasPainter = {
         }
       }
     }
-
-    if(!obj.notDone) {
-      //Create a rectangle that contains the whole polygon
-      var theSmallestX = Infinity;
-      var theSmallestY = Infinity;
-      var theHighestX = -Infinity;
-      var theHighestY = -Infinity;
-
-      var pi = Math.PI;
-
-      for(pt of obj.path) {
-        if(pt.x < theSmallestX) theSmallestX = pt.x;
-        if(pt.x > theHighestX) theHighestX = pt.x;
-        if(pt.y < theSmallestY) theSmallestY = pt.y;
-        if(pt.y > theHighestY) theHighestY = pt.y;
-      }
-      //P1(SmallX, HighY) et P2(HighX, SmallY)
-      //Set the middle of the
-      var hitboxMiddle = graphs.point((theHighestX+theSmallestX)/2, (theHighestY+theSmallestY)/2);
-      console.log("Middle is (" + hitboxMiddle.x + "," + hitboxMiddle.y + ")");
-
-      //Use x’ = x * cos(C) – y * sin(C) and y’ = x * sin(C) + y * cos(C)
-      for(pt of obj.path) {
-        let XrelateToCenter = pt.x - hitboxMiddle.x;
-        let YrelateToCenter = pt.y - hitboxMiddle.y;
-        let newRX = XrelateToCenter*Math.cos(pi/2) - YrelateToCenter*Math.sin(pi/2);
-        let newRY = XrelateToCenter*Math.sin(pi/2) + YrelateToCenter*Math.cos(pi/2);
-        let newX = newRX + XrelateToCenter;
-        let newY = newRY + YrelateToCenter;
-        pt.x = newX;
-        pt.y = newY;
-        console.log("New X is " + newX + " and new Y is " + newY);
-      }
-
-      $.each(objTypes, (index, value) => {
-      })
-
-    }
-
   },
 
   //===============================Lorsque vous faites glisser un objet======================================
@@ -2870,6 +2874,7 @@ var canvasPainter = {
   var objs = []; //objet
   var objCount = 0; //Nombre d'objets
   var isConstructing = false; //Créer un nouvel objet
+  var isRotating = false;
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
   var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
@@ -3804,14 +3809,14 @@ var canvasPainter = {
 
   function mouseOnSegment(mouse, segment)
   {
-    var d_per = Math.pow((mouse.x - segment.p1.x) * (segment.p1.y - segment.p2.y) + (mouse.y - segment.p1.y) * (segment.p2.x - segment.p1.x), 2) / ((segment.p1.y - segment.p2.y) * (segment.p1.y - segment.p2.y) + (segment.p2.x - segment.p1.x) * (segment.p2.x - segment.p1.x)); //類似於滑鼠與直線垂直距離
+    var d_per = Math.pow((mouse.x - segment.p1.x) * (segment.p1.y - segment.p2.y) + (mouse.y - segment.p1.y) * (segment.p2.x - segment.p1.x), 2) / ((segment.p1.y - segment.p2.y) * (segment.p1.y - segment.p2.y) + (segment.p2.x - segment.p1.x) * (segment.p2.x - segment.p1.x)); //Similaire à la distance verticale entre une souris et une ligne droite
     var d_par = (segment.p2.x - segment.p1.x) * (mouse.x - segment.p1.x) + (segment.p2.y - segment.p1.y) * (mouse.y - segment.p1.y); //Similaire à la position de projection de la souris sur une ligne droite
     return d_per < clickExtent_line * clickExtent_line && d_par >= 0 && d_par <= graphs.length_segment_squared(segment);
   }
 
   function mouseOnLine(mouse, line)
   {
-    var d_per = Math.pow((mouse.x - line.p1.x) * (line.p1.y - line.p2.y) + (mouse.y - line.p1.y) * (line.p2.x - line.p1.x), 2) / ((line.p1.y - line.p2.y) * (line.p1.y - line.p2.y) + (line.p2.x - line.p1.x) * (line.p2.x - line.p1.x)); //類似於滑鼠與直線垂直距離
+    var d_per = Math.pow((mouse.x - line.p1.x) * (line.p1.y - line.p2.y) + (mouse.y - line.p1.y) * (line.p2.x - line.p1.x), 2) / ((line.p1.y - line.p2.y) * (line.p1.y - line.p2.y) + (line.p2.x - line.p1.x) * (line.p2.x - line.p1.x)); //Similaire à la distance verticale entre une souris et une ligne droite
     return d_per < clickExtent_line * clickExtent_line;
   }
 
@@ -3958,6 +3963,10 @@ var canvasPainter = {
                   targetObj_index = i; //Lorsque le point est atteint, sélectionnez celui le plus proche de la souris
                   click_lensq = click_lensq_temp;
                   draggingPart = draggingPart_;
+                  if(e.ctrlKey) {
+                    isRotating = true;
+                    objTypes[objs[i].type].clicked(objs[i], mouse_nogrid, mouse, draggingPart_);
+                  }
                 }
               }
               else if (!targetIsPoint)
