@@ -865,6 +865,7 @@ var canvasPainter = {
       obj.path[obj.path.length - 1] = {x: mouse.x, y: mouse.y}; //Déplacer le dernier point
       draw();
     }
+    if(isRotating) console.log("Mouse move while rotating !");
   },
   //=================================Relâchez la souris lors de la création de l'objet====================================
   c_mouseup: function(obj, mouse)
@@ -923,20 +924,17 @@ var canvasPainter = {
 
       for (var i = 0; i < obj.path.length - 1; i++)
       {
-        console.log("Enter obj.notDone > for 1");
         //ii=i%(obj.path.length);
         //Si le prochain point est un arc mais que l'actuel n'en est pas un
         //et n'est pas un des deux derniers points
         if (obj.path[(i + 1)].arc && !obj.path[i].arc && i < obj.path.length - 2)
         {
-          console.log("Enter obj.notDone > for 1 > if 1");
           p1 = graphs.point(obj.path[i].x, obj.path[i].y);
           p2 = graphs.point(obj.path[(i + 2)].x, obj.path[(i + 2)].y);
           p3 = graphs.point(obj.path[(i + 1)].x, obj.path[(i + 1)].y);
           center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(p1, p3)), graphs.perpendicular_bisector(graphs.line(p2, p3)));
           if (isFinite(center.x) && isFinite(center.y))
           {
-            console.log("Enter obj.notDone > for 1 > if 1 > if 1");
             r = graphs.length(center, p3);
             a1 = Math.atan2(p1.y - center.y, p1.x - center.x);
             a2 = Math.atan2(p2.y - center.y, p2.x - center.x);
@@ -947,7 +945,6 @@ var canvasPainter = {
           }
           else
           {
-            console.log("Enter obj.notDone > for 1 > else 1");
             //Les trois points de l'arc sont colinéaires et traités comme un segment de ligne
             //arcInvalid=true;
             ctx.lineTo(obj.path[(i + 2)].x, obj.path[(i + 2)].y);
@@ -957,7 +954,6 @@ var canvasPainter = {
         }
         else if (!obj.path[(i + 1)].arc && !obj.path[i].arc)
         {
-          console.log("Enter obj.notDone > for 1 > else 1 > if 1");
           ctx.lineTo(obj.path[(i + 1)].x, obj.path[(i + 1)].y);
         }
       }
@@ -969,18 +965,15 @@ var canvasPainter = {
     }
     else if (!aboveLight)
     {
-      console.log("Enter object done");
       //L'objet a été dessiné
       ctx.beginPath();
       ctx.moveTo(obj.path[0].x, obj.path[0].y);
 
       for (var i = 0; i < obj.path.length; i++)
       {
-        console.log("Enter object done > for 1");
         //ii=i%(obj.path.length);
         if (obj.path[(i + 1) % obj.path.length].arc && !obj.path[i % obj.path.length].arc)
         {
-          console.log("Enter object done > for 1 > if 1");
           p1 = graphs.point(obj.path[i % obj.path.length].x, obj.path[i % obj.path.length].y);
           p2 = graphs.point(obj.path[(i + 2) % obj.path.length].x, obj.path[(i + 2) % obj.path.length].y);
           p3 = graphs.point(obj.path[(i + 1) % obj.path.length].x, obj.path[(i + 1) % obj.path.length].y);
@@ -988,7 +981,6 @@ var canvasPainter = {
           console.log([center.x,center.y]);
           if (isFinite(center.x) && isFinite(center.y))
           {
-            console.log("Enter object done > for 1 > if 1 > if 2");
             r = graphs.length(center, p3);
             a1 = Math.atan2(p1.y - center.y, p1.x - center.x);
             a2 = Math.atan2(p2.y - center.y, p2.x - center.x);
@@ -999,7 +991,6 @@ var canvasPainter = {
           }
           else
           {
-            console.log("Enter object done > for 1 > if 1 > else 2");
             //Les trois points de l'arc sont colinéaires et traités comme un segment de ligne
             ctx.lineTo(obj.path[(i + 2) % obj.path.length].x, obj.path[(i + 2) % obj.path.length].y);
           }
@@ -1007,7 +998,6 @@ var canvasPainter = {
         }
         else if (!obj.path[(i + 1) % obj.path.length].arc && !obj.path[i % obj.path.length].arc)
         {
-          console.log("Enter object done > for 1 > else 1");
           ctx.lineTo(obj.path[(i + 1) % obj.path.length].x, obj.path[(i + 1) % obj.path.length].y);
         }
       }
@@ -1018,19 +1008,16 @@ var canvasPainter = {
 
     for (var i = 0; i < obj.path.length; i++)
     {
-      console.log("Enter for 2");
       if (typeof obj.path[i].arc != 'undefined')
       {
         if (obj.path[i].arc)
         {
-          console.log("Enter for 2 > if 1");
           ctx.fillStyle = 'rgb(255,0,255)';
           //ctx.fillStyle="indigo";
           ctx.fillRect(obj.path[i].x - 2, obj.path[i].y - 2, 3, 3);
         }
         else
         {
-          console.log("Enter for 2 > else 1");
           ctx.fillStyle = 'rgb(255,0,0)';
           ctx.fillRect(obj.path[i].x - 2, obj.path[i].y - 2, 3, 3);
         }
@@ -1102,7 +1089,7 @@ var canvasPainter = {
       var theHighestY = -Infinity;
 
       var pi = Math.PI;
-      var rad = 90 * (pi/180);
+      var rad = 35 * (pi/180);
 
       for(pt of obj.path) {
         if(pt.x < theSmallestX) theSmallestX = pt.x;
@@ -1122,7 +1109,7 @@ var canvasPainter = {
         pt.y = newCoord.y;
       }
       isRotating = false;
-      return;
+      draw();
     }
 
     for (var i = 0; i < obj.path.length; i++)
@@ -3218,8 +3205,6 @@ var canvasPainter = {
       JSONInput();
       createUndoPoint();
     };
-
-
 
     document.getElementById('save_name').onkeydown = function(e)
     {
