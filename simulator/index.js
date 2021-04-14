@@ -108,13 +108,52 @@
     return ret;
   },
 
+  /**
+   * Get the affine function going through the two points
+   * @param {number} x1 the coordonates in abscissa of the first point
+   * @param {number} x2 the coordonates in coordinate of the first point
+   * @param {number} y1 the coordonates in abscissa of the second point
+   * @param {number} y2 the coordonates in coordinate of the second point
+   * @returns the slope and the constant of the function that goes through the two points
+   */
+  affineFunctionOfTwoPoints : function(x1, x2, y1, y2) {
+      let slope = (y2 - y1)/(x2 - x1);
+      let constant = y1 - (slope * x1);
+      return {m: slope, p: constant};
+  },
+
+  /**
+   * Get the affine function of the line that go through another line in a perpendicular way
+   * @param {number} m the slope of the function of the line we want the calculated affine function go through the line
+   * @param {number} x1 the coordonates in abscissa of the point we want the calculated affine function go through
+   * @param {number} y1 the coordonates in ordinate of the point we want the calculated affine function go through
+   * @returns the slope and the constant of the line passing through the line in a perpendicular way
+   */
+  perpendicularOfLine : function(m, x1, y1) {
+      let bSlope = -(1 / m);
+      let bConstant = y1 - (bSlope * x1);
+      return {m: bSlope, p: bConstant};
+  },
+
+  /**
+   * Get the coordonates of the point that is the intersection of the two lines
+   * @param {JSON} fun1 the affine function we want the second one to go through
+   * @param {JSON} fun2 the affine function we want the first one to go through
+   * @returns the x and y coordonates of the intersection on both lines
+   */
+  intersection : function(fun1, fun2) {
+      let abs = (-fun1.p + fun2.p) / (fun1.m - fun2.m);
+      let ord = fun1.m * abs + fun1.p;
+      return {x: abs, y: ord};
+  },
+
   rotateArround : function(M, O, radian) {
     var xM, yM, x, y;
     xM = M.x - O.x;
     yM = M.y - O.y;
     x = xM * Math.cos (radian) + yM * Math.sin (radian) + O.x;
     y = - xM * Math.sin (radian) + yM * Math.cos (radian) + O.y;
-    return ({x:Math.round (x), y:Math.round (y)});
+    return ({x: Math.round (x), y: Math.round (y)});
   },
 
 
@@ -2862,6 +2901,9 @@ var canvasPainter = {
   var objCount = 0; //Nombre d'objets
   var isConstructing = false; //Créer un nouvel objet
   var isRotating = false;
+  var isChoosingSeg = false;
+  var isSettingRotationPoint = false;
+  var nearest = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
   var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
@@ -2888,6 +2930,7 @@ var canvasPainter = {
   var hasExceededTime = false;
   var forceStop = false;
   var lastDrawTime = -1;
+  var lastRectangle = {x: Infinity, y: Infinity};
   var stateOutdated = false; //L'état a changé depuis le dernier dessin
   var minShotLength = 1e-6; //La distance la plus courte entre les deux effets de lumière (les effets de lumière inférieurs à cette distance seront ignorés)
   var minShotLength_squared = minShotLength * minShotLength;
@@ -3205,6 +3248,10 @@ var canvasPainter = {
       JSONInput();
       createUndoPoint();
     };
+    document.getElementById('objSetPointRot_button').onclick = function() {
+      isChoosingSeg = true;
+    }
+    cancelMousedownEvent('objSetPointRot_button');
 
     document.getElementById('save_name').onkeydown = function(e)
     {
@@ -3960,7 +4007,42 @@ var canvasPainter = {
                 targetObj_index = i; //Dans le cas d'un non-point, sélectionnez le dernier créé
                 draggingPart = draggingPart_;
               }
-
+              if(isChoosingSeg) {
+                //Here, the user clicked on the "Set a rotation point" and on the polygon
+                if(draggingPart_.part == 0) {
+                  //Here, the dragging part is a segment
+                  let clickedObject = objs[i];
+                  //Let's get the nearest segment from the mouse
+                  var pathFunction;
+                  //Get the affine function of each side of the polygon
+                  $.each(clickedObject.path, (index, value) => {
+                    let secondPt;
+                    //Because the polygon is closed, treat the last path with a destination back to 0
+                    if(index != clickedObject.path.length - 1) {
+                      pathFunction = graphs.affineFunctionOfTwoPoints(value.x, clickedObject.path[(index+1)].x, value.y, clickedObject.path[(index+1)].y);
+                      secondPt = index + 1;
+                    } else {
+                      pathFunction = graphs.affineFunctionOfTwoPoints(value.x, clickedObject.path[0].x, value.y, clickedObject.path[0].y);
+                      secondPt = 0;
+                    }
+                    //The nearest segment is the closest distance between where the mouse should be according to the function and the real position of the mouse
+                    let supposedY = pathFunction.m * mouse.x + pathFunction.p;
+                    let diff = Math.abs(mouse.y - supposedY);
+                    if(diff < nearest.diff) {
+                      nearest.diff = diff;
+                      nearest.path.from = index;
+                      nearest.path.to = secondPt;
+                      nearest.affine.m = pathFunction.m;
+                      nearest.affine.p = pathFunction.p;
+                    }
+                  });
+                  console.log("Nearest line is from " + nearest.path.from + " to " + nearest.path.to + " with a distance of " + nearest.diff);
+                }
+                //Here we want to prevent the user to choose another segment while he will choose the right location of the point
+                isChoosingSeg = false;
+                //Here, now the user choose the segment, give him the right to set a point of rotation while moving the mouse
+                isSettingRotationPoint = true;
+              }
             }
           }
         }
@@ -4040,6 +4122,23 @@ var canvasPainter = {
   }
   mouse = mouse2;
 
+  if(isSettingRotationPoint) {
+      //Theses functions are used to get the intersection of the choosen side and the perpedicular line passing by the mouse
+      let sideFunction = nearest.affine;
+      let perpendicularToMouse = graphs.perpendicularOfLine(sideFunction.m, mouse.x, mouse.y);
+      let intersection = graphs.intersection(sideFunction, perpendicularToMouse);
+
+      //These are the coordonates of the two bounds of the segments
+      let fromPath = objs[selectedObj].path[nearest.path.from]
+      let toPath = objs[selectedObj].path[nearest.path.to]
+
+      //If the intersection is out of bounds, return
+      if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return;
+      if((sideFunction.m < 0) && ((intersection.x < fromPath.x) || (intersection.x > toPath.x))) return;
+      ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
+      ctx.fillStyle = "green";
+      lastRectangle = {x: intersection.x-2, y:intersection.y-2};
+  }
 
   if (isConstructing)
   {
@@ -4072,7 +4171,6 @@ var canvasPainter = {
       draw();
     }
 
-    var returndata;
     if (draggingObj >= 0)
       {
        //À ce stade, cela signifie que la souris fait glisser un objet
@@ -5123,6 +5221,7 @@ var canvasPainter = {
     document.getElementById('setAttrAll_title').innerHTML = getMsg('applytoall');
     document.getElementById('copy').value = getMsg('duplicate');
     document.getElementById('delete').value = getMsg('delete');
+    //document.getElementById('objSetPointRot_button').value = getMsg('placePtRotation');
 
     document.getElementById('forceStop').innerHTML = getMsg('processing');
 

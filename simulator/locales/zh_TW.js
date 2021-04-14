@@ -225,6 +225,9 @@ locales["zh-TW"] = {
   "footer_message": {
     "message": "由 <a href='https://github.com/ricktu288' style='color:rgba(255,255,255,0.25)'>ricktu288</a>, <a href='https://github.com/j3soon' style='color:rgba(255,255,255,0.25)'>j3soon</a> 開發"
   },
+  "rotate": {
+    "message": "Rotate"
+  },
   "homepage": {
     "message": "首頁"
   },
