@@ -160,7 +160,7 @@
     yM = M.y - O.y;
     x = xM * Math.cos (radian) + yM * Math.sin (radian) + O.x;
     y = - xM * Math.sin (radian) + yM * Math.cos (radian) + O.y;
-    return {x: Math.round (x), y: Math.round (y)};
+    return {x: x.toFixed(5), y: y.toFixed(5)};
   },
 
 
@@ -958,13 +958,6 @@ var canvasPainter = {
 
     if (obj.notDone)
     {
-      //L'utilisateur n'a pas fini de dessiner l'objet
-      //console.log("Enter obj.notDone");
-      //console.log("First line");
-      //console.log(JSON.stringify(obj.path[0]));
-      //if(obj.path[1] != undefined) console.log(JSON.stringify(obj.path[1]));
-      //if(obj.path[2] != undefined) console.log(JSON.stringify(obj.path[2]));
-      //console.log("Last line");
       ctx.beginPath();
       ctx.moveTo(obj.path[0].x, obj.path[0].y);
 
@@ -3437,6 +3430,7 @@ var canvasPainter = {
       $.each(clickedObject.path, (index, value) => {
         let secondPt;
         //Because the polygon is closed, treat the last path with a destination back to 0
+        //Get the affine function for all the line of the polygon
         if (index != clickedObject.path.length - 1) {
           pathFunction = graphs.affineFunctionOfTwoPoints(value.x, clickedObject.path[(index + 1)].x, value.y, clickedObject.path[(index + 1)].y);
           secondPt = index + 1;
@@ -3491,17 +3485,32 @@ var canvasPainter = {
       var distanceBefAft = Math.sqrt(Math.pow(mouseAfterRotation.x - mouseBeforeRotation.x, 2) + Math.pow(mouseAfterRotation.y - mouseBeforeRotation.y, 2));
       var distanceAftRot = Math.sqrt(Math.pow(mouseAfterRotation.x - rotationPoint.x, 2) + Math.pow(mouseAfterRotation.y - rotationPoint.y, 2));
       var distanceBefRot = Math.sqrt(Math.pow(rotationPoint.x - mouseBeforeRotation.x, 2) + Math.pow(rotationPoint.y - mouseBeforeRotation.y, 2));
-      var angleRad = Math.acos((Math.pow(distanceAftRot, 2) - Math.pow(distanceBefRot, 2) - Math.pow(distanceBefAft, 2))/(-2 * distanceAftRot * distanceBefRot))
+      var upEquation = Math.pow(distanceBefAft, 2) - (Math.pow(distanceBefRot, 2) + Math.pow(distanceAftRot, 2));
+      var downEquation = (-2) * distanceAftRot * distanceBefRot;
+      var angleRad = Math.acos(upEquation / downEquation);
+      if(!isClockwise(mouseBeforeRotation, rotationPoint, mouseAfterRotation)) angleRad = -angleRad;
       mouseBeforeRotation = mouseAfterRotation;
       for(pt of objs[selectedObj].path) {
-          //Do a rotation arround the middle
-          angleRad = -5 * (Math.PI/180);
+          //Do a rotation arround the rotation point
           let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);
-          pt.x = newCoord.x;
-          pt.y = newCoord.y;
+          if(newCoord != NaN) {
+            pt.x = newCoord.x;
+            pt.y = newCoord.y;
+          }
       }
       draw();
     }
+  }
+
+  /**
+   * Determine if a point is on left of another point, so if the mouse goes clockwise
+   * @param {{x,y}} pt1 the point we want to know its relative location based on pt3
+   * @param {{x,y}} pt2 the center point
+   * @param {{x,y}} pt3 reference for pt1
+   * @returns 
+   */
+  function isClockwise(pt1, pt2, pt3) {
+    return ((pt2.x - pt1.x) * (pt3.y - pt1.y) - (pt2.y - pt1.y) * (pt3.x - pt1.x)) > 0;
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3987,13 +3996,23 @@ var canvasPainter = {
     mouse = mouse_nogrid;
   }
 
+  //Here, the user have clicked while rotating the polygon, that mean he want to stop rotating
+  //Because right after the click, the program create a ray, we return to prevent that
+  if(isRotating) {
+    isRotating = false; 
+    rotationPoint = {}; 
+    nearest = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}};
+    mouseBeforeRotation = {x: Infinity, y: Infinity};
+    mouseAfterRotation = {x: Infinity, y: Infinity};
+    return
+  }
+
   //Here, the user have clicked while setting rotation point (after choosing a segment)
   //Because right after the click, the program create a ray, we return to prevent that
   if(isSettingRotationPoint && !isChoosingSeg) {
     isSettingRotationPoint = false;
     isRotating = true;
     rotationPoint = rotationPoint_;
-    console.log("Intersection point set on (" + rotationPoint.x + "," + rotationPoint.y + ")");
     return
   }
 
@@ -4059,10 +4078,6 @@ var canvasPainter = {
                   targetObj_index = i; //Lorsque le point est atteint, sélectionnez celui le plus proche de la souris
                   click_lensq = click_lensq_temp;
                   draggingPart = draggingPart_;
-                  if(e.ctrlKey) {
-                    isRotating = true;
-                    objTypes[objs[i].type].clicked(objs[i], mouse_nogrid, mouse, draggingPart_);
-                  }
                 }
               }
               else if (!targetIsPoint)
