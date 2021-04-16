@@ -147,13 +147,20 @@
       return {x: abs, y: ord};
   },
 
+  /**
+   * Translate coord after rotation
+   * @param {x,y} M coord of the point we want to rotate
+   * @param {{x,y}} O coord of the point around which we want to rotate
+   * @param {number} radian the actual rotation in radian
+   * @returns 
+   */
   rotateArround : function(M, O, radian) {
     var xM, yM, x, y;
     xM = M.x - O.x;
     yM = M.y - O.y;
     x = xM * Math.cos (radian) + yM * Math.sin (radian) + O.x;
     y = - xM * Math.sin (radian) + yM * Math.cos (radian) + O.y;
-    return ({x: Math.round (x), y: Math.round (y)});
+    return {x: Math.round (x), y: Math.round (y)};
   },
 
 
@@ -1118,38 +1125,6 @@ var canvasPainter = {
     var click_lensq = Infinity;
     var click_lensq_temp;
     var targetPoint_index = -1;
-
-    if(isRotating) {
-      console.log("Enter rotated");
-      //Create a rectangle that contains the whole polygon
-      var theSmallestX = Infinity;
-      var theSmallestY = Infinity;
-      var theHighestX = -Infinity;
-      var theHighestY = -Infinity;
-
-      var pi = Math.PI;
-      var rad = 35 * (pi/180);
-
-      for(pt of obj.path) {
-        if(pt.x < theSmallestX) theSmallestX = pt.x;
-        if(pt.x > theHighestX) theHighestX = pt.x;
-        if(pt.y < theSmallestY) theSmallestY = pt.y;
-        if(pt.y > theHighestY) theHighestY = pt.y;
-      }
-
-
-      //Get the middle of the rectangle
-      var hitboxMiddle = {x: ((theHighestX+theSmallestX)/2), y: ((theHighestY+theSmallestY)/2)};
-
-      //Do a rotation arround the middle
-      for(pt of obj.path) {
-        let newCoord = graphs.rotateArround(pt, hitboxMiddle, rad);
-        pt.x = newCoord.x;
-        pt.y = newCoord.y;
-      }
-      isRotating = false;
-      draw();
-    }
 
     for (var i = 0; i < obj.path.length; i++)
     {
@@ -2903,6 +2878,10 @@ var canvasPainter = {
   var isRotating = false;
   var isChoosingSeg = false;
   var isSettingRotationPoint = false;
+  var rotationPoint = {x: Infinity, y: Infinity};
+  var rotationPoint_ = {x: Infinity, y: Infinity};
+  var mouseBeforeRotation = {x: Infinity, y: Infinity};
+  var mouseAfterRotation = {x: Infinity, y: Infinity};
   var nearest = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
@@ -2930,7 +2909,6 @@ var canvasPainter = {
   var hasExceededTime = false;
   var forceStop = false;
   var lastDrawTime = -1;
-  var lastRectangle = {x: Infinity, y: Infinity};
   var stateOutdated = false; //L'état a changé depuis le dernier dessin
   var minShotLength = 1e-6; //La distance la plus courte entre les deux effets de lumière (les effets de lumière inférieurs à cette distance seront ignorés)
   var minShotLength_squared = minShotLength * minShotLength;
@@ -3446,7 +3424,85 @@ var canvasPainter = {
     //ctx.setTransform(1,0,0,1,0,0);
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  //===============================Zone de traitement de la rotation ===================================
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  function choosingSeg(draggingPart_, i) {
+    if (draggingPart_.part == 0) {
+      //Here, the dragging part is a segment
+      let clickedObject = objs[i];
+      //Let's get the nearest segment from the mouse
+      var pathFunction;
+      //Get the affine function of each side of the polygon
+      $.each(clickedObject.path, (index, value) => {
+        let secondPt;
+        //Because the polygon is closed, treat the last path with a destination back to 0
+        if (index != clickedObject.path.length - 1) {
+          pathFunction = graphs.affineFunctionOfTwoPoints(value.x, clickedObject.path[(index + 1)].x, value.y, clickedObject.path[(index + 1)].y);
+          secondPt = index + 1;
+        } else {
+          pathFunction = graphs.affineFunctionOfTwoPoints(value.x, clickedObject.path[0].x, value.y, clickedObject.path[0].y);
+          secondPt = 0;
+        }
+        //The nearest segment is the closest distance between where the mouse should be according to the function and the real position of the mouse
+        let supposedY = pathFunction.m * mouse.x + pathFunction.p;
+        let diff = Math.abs(mouse.y - supposedY);
+        if (diff < nearest.diff) {
+          nearest.diff = diff;
+          nearest.path.from = index;
+          nearest.path.to = secondPt;
+          nearest.affine.m = pathFunction.m;
+          nearest.affine.p = pathFunction.p;
+        }
+      });
+    }
+    //Here we want to prevent the user to choose another segment while he will choose the right location of the point
+    isChoosingSeg = false;
 
+    //Here, now the user choose the segment, give him the right to set a point of rotation while moving the mouse
+    isSettingRotationPoint = true;
+  }
+
+  function choosingRotationPoint() {
+    //Theses functions are used to get the intersection of the choosen side and the perpedicular line passing by the mouse
+    let sideFunction = nearest.affine;
+    let perpendicularToMouse = graphs.perpendicularOfLine(sideFunction.m, mouse.x, mouse.y);
+    let intersection = graphs.intersection(sideFunction, perpendicularToMouse);
+    rotationPoint_ = intersection;
+    //These are the coordonates of the two bounds of the segments
+    let fromPath = objs[selectedObj].path[nearest.path.from]
+    let toPath = objs[selectedObj].path[nearest.path.to]
+
+    //If the intersection is out of bounds, return
+    if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return;
+    if((sideFunction.m < 0) && ((intersection.x < fromPath.x) || (intersection.x > toPath.x))) return;
+    draw();
+    setTimeout(function() {
+      ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
+      ctx.fillStyle = "red";
+    }
+    , 10);
+  }
+  
+  function doARotation() {
+    if(mouseBeforeRotation.x == Infinity) {mouseBeforeRotation = {x: mouse.x, y: mouse.y}; return;}
+    else {
+      mouseAfterRotation = {x: mouse.x, y: mouse.y};
+      var distanceBefAft = Math.sqrt(Math.pow(mouseAfterRotation.x - mouseBeforeRotation.x, 2) + Math.pow(mouseAfterRotation.y - mouseBeforeRotation.y, 2));
+      var distanceAftRot = Math.sqrt(Math.pow(mouseAfterRotation.x - rotationPoint.x, 2) + Math.pow(mouseAfterRotation.y - rotationPoint.y, 2));
+      var distanceBefRot = Math.sqrt(Math.pow(rotationPoint.x - mouseBeforeRotation.x, 2) + Math.pow(rotationPoint.y - mouseBeforeRotation.y, 2));
+      var angleRad = Math.acos((Math.pow(distanceAftRot, 2) - Math.pow(distanceBefRot, 2) - Math.pow(distanceBefAft, 2))/(-2 * distanceAftRot * distanceBefRot))
+      mouseBeforeRotation = mouseAfterRotation;
+      for(pt of objs[selectedObj].path) {
+          //Do a rotation arround the middle
+          angleRad = -5 * (Math.PI/180);
+          let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);
+          pt.x = newCoord.x;
+          pt.y = newCoord.y;
+      }
+      draw();
+    }
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   //========================================Zone de traitement de la lumière==================================================
@@ -3931,7 +3987,15 @@ var canvasPainter = {
     mouse = mouse_nogrid;
   }
 
-
+  //Here, the user have clicked while setting rotation point (after choosing a segment)
+  //Because right after the click, the program create a ray, we return to prevent that
+  if(isSettingRotationPoint && !isChoosingSeg) {
+    isSettingRotationPoint = false;
+    isRotating = true;
+    rotationPoint = rotationPoint_;
+    console.log("Intersection point set on (" + rotationPoint.x + "," + rotationPoint.y + ")");
+    return
+  }
 
   if (isConstructing)
   {
@@ -4009,39 +4073,7 @@ var canvasPainter = {
               }
               if(isChoosingSeg) {
                 //Here, the user clicked on the "Set a rotation point" and on the polygon
-                if(draggingPart_.part == 0) {
-                  //Here, the dragging part is a segment
-                  let clickedObject = objs[i];
-                  //Let's get the nearest segment from the mouse
-                  var pathFunction;
-                  //Get the affine function of each side of the polygon
-                  $.each(clickedObject.path, (index, value) => {
-                    let secondPt;
-                    //Because the polygon is closed, treat the last path with a destination back to 0
-                    if(index != clickedObject.path.length - 1) {
-                      pathFunction = graphs.affineFunctionOfTwoPoints(value.x, clickedObject.path[(index+1)].x, value.y, clickedObject.path[(index+1)].y);
-                      secondPt = index + 1;
-                    } else {
-                      pathFunction = graphs.affineFunctionOfTwoPoints(value.x, clickedObject.path[0].x, value.y, clickedObject.path[0].y);
-                      secondPt = 0;
-                    }
-                    //The nearest segment is the closest distance between where the mouse should be according to the function and the real position of the mouse
-                    let supposedY = pathFunction.m * mouse.x + pathFunction.p;
-                    let diff = Math.abs(mouse.y - supposedY);
-                    if(diff < nearest.diff) {
-                      nearest.diff = diff;
-                      nearest.path.from = index;
-                      nearest.path.to = secondPt;
-                      nearest.affine.m = pathFunction.m;
-                      nearest.affine.p = pathFunction.p;
-                    }
-                  });
-                  console.log("Nearest line is from " + nearest.path.from + " to " + nearest.path.to + " with a distance of " + nearest.diff);
-                }
-                //Here we want to prevent the user to choose another segment while he will choose the right location of the point
-                isChoosingSeg = false;
-                //Here, now the user choose the segment, give him the right to set a point of rotation while moving the mouse
-                isSettingRotationPoint = true;
+                choosingSeg(draggingPart_, i);
               }
             }
           }
@@ -4092,6 +4124,8 @@ var canvasPainter = {
       }
   }
   }
+
+
   //================================================================================================================================
   //========================================================MouseMove===============================================================
   function canvas_onmousemove(e) {
@@ -4122,23 +4156,8 @@ var canvasPainter = {
   }
   mouse = mouse2;
 
-  if(isSettingRotationPoint) {
-      //Theses functions are used to get the intersection of the choosen side and the perpedicular line passing by the mouse
-      let sideFunction = nearest.affine;
-      let perpendicularToMouse = graphs.perpendicularOfLine(sideFunction.m, mouse.x, mouse.y);
-      let intersection = graphs.intersection(sideFunction, perpendicularToMouse);
-
-      //These are the coordonates of the two bounds of the segments
-      let fromPath = objs[selectedObj].path[nearest.path.from]
-      let toPath = objs[selectedObj].path[nearest.path.to]
-
-      //If the intersection is out of bounds, return
-      if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return;
-      if((sideFunction.m < 0) && ((intersection.x < fromPath.x) || (intersection.x > toPath.x))) return;
-      ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
-      ctx.fillStyle = "green";
-      lastRectangle = {x: intersection.x-2, y:intersection.y-2};
-  }
+  if(isSettingRotationPoint) choosingRotationPoint();
+  if(isRotating) doARotation();
 
   if (isConstructing)
   {
