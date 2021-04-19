@@ -2875,7 +2875,7 @@ var canvasPainter = {
   var rotationPoint_ = {x: Infinity, y: Infinity};
   var mouseBeforeRotation = {x: Infinity, y: Infinity};
   var mouseAfterRotation = {x: Infinity, y: Infinity};
-  var nearest = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
+  var nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
   var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
@@ -3441,12 +3441,12 @@ var canvasPainter = {
         //The nearest segment is the closest distance between where the mouse should be according to the function and the real position of the mouse
         let supposedY = pathFunction.m * mouse.x + pathFunction.p;
         let diff = Math.abs(mouse.y - supposedY);
-        if (diff < nearest.diff) {
-          nearest.diff = diff;
-          nearest.path.from = index;
-          nearest.path.to = secondPt;
-          nearest.affine.m = pathFunction.m;
-          nearest.affine.p = pathFunction.p;
+        if (diff < nearestSeg.diff) {
+          nearestSeg.diff = diff;
+          nearestSeg.path.from = index;
+          nearestSeg.path.to = secondPt;
+          nearestSeg.affine.m = pathFunction.m;
+          nearestSeg.affine.p = pathFunction.p;
         }
       });
     }
@@ -3459,13 +3459,13 @@ var canvasPainter = {
 
   function choosingRotationPoint() {
     //Theses functions are used to get the intersection of the choosen side and the perpedicular line passing by the mouse
-    let sideFunction = nearest.affine;
+    let sideFunction = nearestSeg.affine;
     let perpendicularToMouse = graphs.perpendicularOfLine(sideFunction.m, mouse.x, mouse.y);
     let intersection = graphs.intersection(sideFunction, perpendicularToMouse);
     rotationPoint_ = intersection;
     //These are the coordonates of the two bounds of the segments
-    let fromPath = objs[selectedObj].path[nearest.path.from]
-    let toPath = objs[selectedObj].path[nearest.path.to]
+    let fromPath = objs[selectedObj].path[nearestSeg.path.from]
+    let toPath = objs[selectedObj].path[nearestSeg.path.to]
 
     //If the intersection is out of bounds, return
     if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return;
@@ -4001,7 +4001,7 @@ var canvasPainter = {
   if(isRotating) {
     isRotating = false; 
     rotationPoint = {}; 
-    nearest = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}};
+    nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}};
     mouseBeforeRotation = {x: Infinity, y: Infinity};
     mouseAfterRotation = {x: Infinity, y: Infinity};
     return
