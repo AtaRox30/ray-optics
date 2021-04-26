@@ -813,6 +813,7 @@ var canvasPainter = {
   {
     if (obj.path.length > 1)
     {
+      console.log(obj.path);
       if (obj.path.length > 3 && mouseOnPoint(mouse, obj.path[0]))
       {
         //La souris a cliqué sur le premier point
@@ -895,8 +896,7 @@ var canvasPainter = {
       for (var i = 0; i < obj.path.length - 1; i++)
       {
         //ii=i%(obj.path.length);
-        //Si le prochain point est un arc mais que l'actuel n'en est pas un
-        //et n'est pas un des deux derniers points
+        //Traitement des pts, il y a 3 pts, un point de debut, de fin et de direction
         if (obj.path[(i + 1)].arc && !obj.path[i].arc && i < obj.path.length - 2)
         {
           p1 = graphs.point(obj.path[i].x, obj.path[i].y);
@@ -948,6 +948,8 @@ var canvasPainter = {
           p2 = graphs.point(obj.path[(i + 2) % obj.path.length].x, obj.path[(i + 2) % obj.path.length].y);
           p3 = graphs.point(obj.path[(i + 1) % obj.path.length].x, obj.path[(i + 1) % obj.path.length].y);
           center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(p1, p3)), graphs.perpendicular_bisector(graphs.line(p2, p3)));
+          console.log(graphs.line(p1, p3));
+          console.log(graphs.line(p2, p3));
           console.log([center.x,center.y]);
           if (isFinite(center.x) && isFinite(center.y))
           {
@@ -980,17 +982,9 @@ var canvasPainter = {
     {
       if (typeof obj.path[i].arc != 'undefined')
       {
-        if (obj.path[i].arc)
-        {
-          ctx.fillStyle = 'rgb(255,0,255)';
-          //ctx.fillStyle="indigo";
-          ctx.fillRect(obj.path[i].x - 2, obj.path[i].y - 2, 3, 3);
-        }
-        else
-        {
-          ctx.fillStyle = 'rgb(255,0,0)';
-          ctx.fillRect(obj.path[i].x - 2, obj.path[i].y - 2, 3, 3);
-        }
+        if (obj.path[i].arc) ctx.fillStyle = 'rgb(255,0,255)';
+        else ctx.fillStyle = 'rgb(255,0,0)';
+        ctx.fillRect(obj.path[i].x - 2, obj.path[i].y - 2, 3, 3);
       }
     }
   },
