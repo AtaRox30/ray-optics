@@ -8,8 +8,8 @@
   var isRotating = false;
   var isChoosingSeg = false;
   var isSettingRotationPoint = false;
-  var rotationPoint = {x: Infinity, y: Infinity};
-  var rotationPoint_ = {x: Infinity, y: Infinity};
+  var rotationPoint = {x: Infinity, y: Infinity}; //The last rotation point that have been choosen
+  var rotationPoint_ = {x: Infinity, y: Infinity}; //The rotation point that is display while choosing rotation point over the segment
   var mouseBeforeRotation = {x: Infinity, y: Infinity};
   var mouseAfterRotation = {x: Infinity, y: Infinity};
   var nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
@@ -590,7 +590,7 @@
     //Here we want to prevent the user to choose another segment while he will choose the right location of the point
     isChoosingSeg = false;
 
-    //Here, now the user choose the segment, give him the right to set a point of rotation while moving the mouse
+    //Here, now the user have choosed the segment, give him the right to set a point of rotation while moving the mouse
     isSettingRotationPoint = true;
   }
 
@@ -619,21 +619,26 @@
     if(mouseBeforeRotation.x == Infinity) {mouseBeforeRotation = {x: mouse.x, y: mouse.y}; return;}
     else {
       mouseAfterRotation = {x: mouse.x, y: mouse.y};
+      //Point A = Cursor before rotation - Point B = Rotation point - Point C = Cursor after rotation
       var distanceBefAft = Math.sqrt(Math.pow(mouseAfterRotation.x - mouseBeforeRotation.x, 2) + Math.pow(mouseAfterRotation.y - mouseBeforeRotation.y, 2));
       var distanceAftRot = Math.sqrt(Math.pow(mouseAfterRotation.x - rotationPoint.x, 2) + Math.pow(mouseAfterRotation.y - rotationPoint.y, 2));
       var distanceBefRot = Math.sqrt(Math.pow(rotationPoint.x - mouseBeforeRotation.x, 2) + Math.pow(rotationPoint.y - mouseBeforeRotation.y, 2));
+      
+      //Doing Al-Kashi theorem with the three distance above to find the angle ABC
       var upEquation = Math.pow(distanceBefAft, 2) - (Math.pow(distanceBefRot, 2) + Math.pow(distanceAftRot, 2));
       var downEquation = (-2) * distanceAftRot * distanceBefRot;
       var angleRad = Math.acos(upEquation / downEquation);
+
+      //Because angle are always positive, we want to go back if the mouse goes counterclockwise
       if(!isClockwise(mouseBeforeRotation, rotationPoint, mouseAfterRotation)) angleRad = -angleRad;
+      
       mouseBeforeRotation = mouseAfterRotation;
+      
       for(pt of objs[selectedObj].path) {
           //Do a rotation arround the rotation point
           let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);
-          if(newCoord != NaN) {
-            pt.x = newCoord.x;
-            pt.y = newCoord.y;
-          }
+          pt.x = newCoord.x;
+          pt.y = newCoord.y;
       }
       draw();
     }

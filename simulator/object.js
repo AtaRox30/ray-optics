@@ -123,6 +123,16 @@ var graphs = {
   },
 
   /**
+   * Get the intersection of a line and a circle
+   * @param {number} slopeLine the slope of the line that go through the circle
+   * @param {JSON} circle the circle object under {o: {x: 0, y: 0}, r: 0}
+   * @returns the x and y coordonates of the intersection of the line and the cercle
+   */
+  intersectionLineCircle : function(slopeLine, circle) {
+    return {x: Math.sqrt(Math.pow(circle.r, 2) / (1 + Math.pow(slopeLine, 2))) + circle.o.x, y: slopeLine * Math.sqrt(Math.pow(circle.r, 2) / (1 + Math.pow(slopeLine, 2))) + circle.o.y};
+  },
+
+  /**
    * Get the affine function of the line that go through another line in a perpendicular way
    * @param {number} m the slope of the function of the line we want the calculated affine function go through the line
    * @param {number} x1 the coordonates in abscissa of the point we want the calculated affine function go through
