@@ -53,3 +53,134 @@ input[type="text"] {
 }
 /* Prevent popover flickering when space is not enough */
 .popover { pointer-events: none; }
+
+input[type="button"] {
+  margin: 1px;
+}
+
+input[type="range"] {
+  height:15px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.toolbtn {
+  -webkit-appearance: none;
+  border-radius: 0;
+  border-style:none;
+  background-color:rgb(230,230,230);
+  outline: none;
+  line-height: 110%;
+}
+
+.toolbtn:hover {
+  border-style:none;
+  background-color:rgb(200,200,200);
+  outline: none;
+  line-height: 110%;
+}
+
+.toolbtnwithlisthover {
+  border-style:none;
+  background-color:rgb(215,215,215);
+  outline: none;
+  line-height: 110%;
+}
+
+.toolbtnselected {
+  -webkit-appearance: none;
+  border-radius: 0;
+  border-style:none;
+  background-color:rgb(192,192,192);
+  outline: none;
+  line-height: 110%;
+}
+
+.toollistbox {
+  background-color:rgb(215,215,215);
+  font-size:12pt;
+  position:absolute;
+  padding-right: 1px;
+  line-height:1;
+}
+
+.toollistbtn {
+  -webkit-appearance: none;
+  border-radius: 0;
+  border-style:none;
+  background-color:rgb(215,215,215);
+  outline: none;
+  line-height: 110%;
+  width:100%;
+  text-align:left;
+}
+
+.toollistbtn:hover {
+  border-style:none;
+  background-color:rgb(168,168,168);
+  outline: none;
+  line-height: 110%;
+  width:100%;
+  text-align:left;
+}
+
+.toollistbtnselected {
+  -webkit-appearance: none;
+  border-radius: 0;
+  border-style:none;
+  background-color:rgb(168,168,168);
+  outline: none;
+  line-height: 110%;
+  width:100%;
+  text-align:left;
+}
+
+.mainbox {
+  background-color:white;
+  font-size:12pt;
+  padding-top: 1px;
+  padding-left: 1px;
+  padding-bottom: 4px;
+  padding-right: 1px;
+  margin: 0px;
+}
+
+.saveBox {
+  background-color:white;
+  font-size:12pt;
+  padding-top: 1px;
+  padding-left: 1px;
+  padding-bottom: 1px;
+  padding-right: 1px;
+  margin: 0px;
+}
+
+
+.settingsbox {
+  background-color:rgb(90,90,90);
+  color:white;
+  opacity:0.8;
+  font-size:12pt;
+  padding: 1px;
+  margin: 0px;
+}
+
+.forcestopbox {
+  background-color:red;
+  color:white;
+  opacity:0.8;
+  font-size:12pt;
+}
+
+.optionsbar {
+  margin-left:5px;
+  margin-top:2px;
+}
+
+input {
+  outline: none;
+}
+
+textarea {
+  outline: none;
+}

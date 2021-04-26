@@ -344,14 +344,8 @@ var canvasPainter = {
   //==============================Creation d'objet (mouvement)=======================================
   c_mousemove: function(obj, mouse, ctrl, shift)
   {
-    //var basePoint=ctrl?graphs.midpoint(obj):obj.p1;
-
-    //if(!obj.p2
-
     if (shift)
     {
-      //var sq3=Math.sqrt(3);
-      //obj.p2=snapToDirection(mouse,constructionPoint,[{x:1,y:0},{x:0,y:1},{x:1,y:1},{x:1,y:-1},{x:1,y:sq3},{x:1,y:-sq3},{x:sq3,y:1},{x:sq3,y:-1}]);
       obj.p2 = snapToDirection(mouse, constructionPoint, [{x: 1, y: 0},{x: 0, y: 1},{x: 1, y: 1},{x: 1, y: -1}]);
     }
     else
@@ -417,49 +411,16 @@ var canvasPainter = {
     var basePoint;
     if (draggingPart.part == 1)
     {
-      //Faire glisser le premier point de terminaison
-      basePoint = ctrl ? graphs.midpoint(draggingPart.originalObj) : draggingPart.originalObj.p2;
-
-      obj.p1 = shift ? snapToDirection(mouse, basePoint, [{x: 1, y: 0},{x: 0, y: 1},{x: 1, y: 1},{x: 1, y: -1},{x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y)}]) : mouse;
-      obj.p2 = ctrl ? graphs.point(2 * basePoint.x - obj.p1.x, 2 * basePoint.y - obj.p1.y) : basePoint;
-
-      //obj.p1=mouse;
+      basePoint = slidingTerminaisonPoint(basePoint, ctrl, draggingPart, obj, shift, mouse, 1);
     }
     if (draggingPart.part == 2)
     {
-      //Faire glisser le deuxième point de terminaison
-
-      basePoint = ctrl ? graphs.midpoint(draggingPart.originalObj) : draggingPart.originalObj.p1;
-
-      obj.p2 = shift ? snapToDirection(mouse, basePoint, [{x: 1, y: 0},{x: 0, y: 1},{x: 1, y: 1},{x: 1, y: -1},{x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y)}]) : mouse;
-      obj.p1 = ctrl ? graphs.point(2 * basePoint.x - obj.p2.x, 2 * basePoint.y - obj.p2.y) : basePoint;
-
-      //obj.p2=mouse;
+      basePoint = slidingTerminaisonPoint(basePoint, ctrl, draggingPart, obj, shift, mouse, 2);
     }
     if (draggingPart.part == 0)
     {
       //Faire glisser toute la ligne
-
-      if (shift)
-      {
-        var mouse_snapped = snapToDirection(mouse, draggingPart.mouse0, [{x: 1, y: 0},{x: 0, y: 1},{x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y)},{x: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y), y: -(draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x)}], draggingPart.snapData);
-      }
-      else
-      {
-        var mouse_snapped = mouse;
-        draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez la touche Maj
-      }
-
-      var mouseDiffX = draggingPart.mouse1.x - mouse_snapped.x; //La différence sur l'axe X entre la position actuelle de la souris et la dernière position de la souris
-      var mouseDiffY = draggingPart.mouse1.y - mouse_snapped.y; //La différence de l'axe Y entre la position actuelle de la souris et la dernière position de la souris
-      //Déplacer le premier point du segment de ligne
-      obj.p1.x = obj.p1.x - mouseDiffX;
-      obj.p1.y = obj.p1.y - mouseDiffY;
-      //Déplacer le deuxième point du segment de ligne
-      obj.p2.x = obj.p2.x - mouseDiffX;
-      obj.p2.y = obj.p2.y - mouseDiffY;
-      //Mettre à jour la position de la souris
-      draggingPart.mouse1 = mouse_snapped;
+      slidingWholeLine(shift, mouse, draggingPart, obj);
     }
   },
 
@@ -528,49 +489,18 @@ var canvasPainter = {
     var basePoint;
     if (draggingPart.part == 1)
     {
-      //Faire glisser le premier point de terminaison
-      basePoint = ctrl ? graphs.midpoint(draggingPart.originalObj) : draggingPart.originalObj.p2;
-
-      obj.p1 = shift ? snapToDirection(mouse, basePoint, [{x: 1, y: 0},{x: 0, y: 1},{x: 1, y: 1},{x: 1, y: -1},{x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y)}]) : mouse;
-      obj.p2 = ctrl ? graphs.point(2 * basePoint.x - obj.p2.x, 2 * basePoint.y - obj.p2.y) : basePoint;
-
+      basePoint = slidingTerminaisonPoint(basePoint, ctrl, draggingPart, obj, shift, mouse, 1);
       //obj.p1=mouse;
     }
     if (draggingPart.part == 2)
     {
       //Faire glisser le deuxième point de terminaison
-
-      basePoint = ctrl ? graphs.midpoint(draggingPart.originalObj) : draggingPart.originalObj.p1;
-
-      obj.p2 = shift ? snapToDirection(mouse, basePoint, [{x: 1, y: 0},{x: 0, y: 1},{x: 1, y: 1},{x: 1, y: -1},{x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y)}]) : mouse;
-      obj.p1 = ctrl ? graphs.point(2 * basePoint.x - obj.p2.x, 2 * basePoint.y - obj.p2.y) : basePoint;
-
-      //obj.p2=mouse;
+      basePoint = slidingTerminaisonPoint(basePoint, ctrl, draggingPart, obj, shift, mouse, 2);
     }
     if (draggingPart.part == 0)
     {
       //Faire glisser toute la ligne
-
-      if (shift)
-      {
-        var mouse_snapped = snapToDirection(mouse, draggingPart.mouse0, [{x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y)},{x: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y), y: -(draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x)}], draggingPart.snapData);
-      }
-      else
-      {
-        var mouse_snapped = mouse;
-        draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez la touche Maj
-      }
-
-      var mouseDiffX = draggingPart.mouse1.x - mouse_snapped.x; //La différence sur l'axe X entre la position actuelle de la souris et la dernière position de la souris
-      var mouseDiffY = draggingPart.mouse1.y - mouse_snapped.y; //La différence de l'axe Y entre la position actuelle de la souris et la dernière position de la souris
-      //Déplacer le premier point du segment de ligne
-      obj.p1.x = obj.p1.x - mouseDiffX;
-      obj.p1.y = obj.p1.y - mouseDiffY;
-      //Déplacer le deuxième point du segment de ligne
-      obj.p2.x = obj.p2.x - mouseDiffX;
-      obj.p2.y = obj.p2.y - mouseDiffY;
-      //Mettre à jour la position de la souris
-      draggingPart.mouse1 = mouse_snapped;
+      slidingWholeLineHalfplane(shift, mouse, draggingPart, obj);
     }
   },
 
@@ -772,12 +702,9 @@ var canvasPainter = {
     objTypes['refractor'].fillGlass(obj.p);
   }
   ctx.lineWidth = 1;
-  //ctx.fillStyle="indigo";
   ctx.fillStyle = 'red';
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3);
-  //ctx.fillStyle="rgb(255,0,255)";
   ctx.fillStyle = 'indigo';
-  //ctx.fillStyle="Purple";
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
 
 
@@ -791,7 +718,6 @@ var canvasPainter = {
     {
       //Tourné de l'intérieur vers l'extérieur
       var n1 = obj.p; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
-      //var normal={x:rp.x-obj.p1.x,y:rp.y-obj.p1.y};
       var normal = {x: obj.p1.x - rp.x, y: obj.p1.y - rp.y};
     }
     else if (d < 0)
@@ -799,7 +725,6 @@ var canvasPainter = {
       //Tourné de l'extérieur vers l'intérieur
       var n1 = 1 / obj.p;
       var normal = {x: rp.x - obj.p1.x, y: rp.y - obj.p1.y};
-      //var normal={x:obj.p1.x-rp.x,y:obj.p1.y-rp.y};
     }
     else
     {
@@ -808,12 +733,9 @@ var canvasPainter = {
       ray.exist = false;
       return;
     }
-    //console.log(n1);
-
     var shotType;
 
     //Fusion d'interface
-    //if(surfaceMerging_obj)
     for (var i = 0; i < surfaceMerging_objs.length; i++)
     {
       shotType = objTypes[surfaceMerging_objs[i].type].getShotType(surfaceMerging_objs[i], ray);
@@ -830,7 +752,6 @@ var canvasPainter = {
       else if (shotType == 0)
       {
         //Cela équivaut à ne pas être tourné (par exemple, les deux interfaces se chevauchent)
-        //n1=n1;
       }
       else
       {
@@ -2858,3 +2779,58 @@ var canvasPainter = {
   }
 
   };
+
+function slidingWholeLineHalfplane(shift, mouse, draggingPart, obj) {
+  if (shift) {
+    var mouse_snapped = snapToDirection(mouse, draggingPart.mouse0, [{ x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y) }, { x: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y), y: -(draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x) }], draggingPart.snapData);
+  }
+
+  else {
+    var mouse_snapped = mouse;
+    draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez la touche Maj
+  }
+
+  updateMousePositionOnDragging(draggingPart, mouse_snapped, obj);
+}
+
+function updateMousePositionOnDragging(draggingPart, mouse_snapped, obj) {
+  var mouseDiffX = draggingPart.mouse1.x - mouse_snapped.x; //La différence sur l'axe X entre la position actuelle de la souris et la dernière position de la souris
+  var mouseDiffY = draggingPart.mouse1.y - mouse_snapped.y; //La différence de l'axe Y entre la position actuelle de la souris et la dernière position de la souris
+
+  //Déplacer le premier point du segment de ligne
+  obj.p1.x = obj.p1.x - mouseDiffX;
+  obj.p1.y = obj.p1.y - mouseDiffY;
+  //Déplacer le deuxième point du segment de ligne
+  obj.p2.x = obj.p2.x - mouseDiffX;
+  obj.p2.y = obj.p2.y - mouseDiffY;
+  //Mettre à jour la position de la souris
+  draggingPart.mouse1 = mouse_snapped;
+}
+
+function slidingTerminaisonPoint(basePoint, ctrl, draggingPart, obj, shift, mouse, termPt) {
+  if(termPt == 1) {
+    basePoint = ctrl ? graphs.midpoint(draggingPart.originalObj) : draggingPart.originalObj.p2;
+    obj.p1 = shift ? snapToDirection(mouse, basePoint, [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 1, y: -1 }, { x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y) }]) : mouse;
+    obj.p2 = ctrl ? graphs.point(2 * basePoint.x - obj.p1.x, 2 * basePoint.y - obj.p1.y) : basePoint;
+  }
+  if(termPt == 2) {
+    basePoint = ctrl ? graphs.midpoint(draggingPart.originalObj) : draggingPart.originalObj.p1;
+    obj.p2 = shift ? snapToDirection(mouse, basePoint, [{x: 1, y: 0},{x: 0, y: 1},{x: 1, y: 1},{x: 1, y: -1},{x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y)}]) : mouse;
+    obj.p1 = ctrl ? graphs.point(2 * basePoint.x - obj.p2.x, 2 * basePoint.y - obj.p2.y) : basePoint;
+  }
+  return basePoint;
+}
+
+function slidingWholeLine(shift, mouse, draggingPart, obj) {
+  if (shift) {
+    var mouse_snapped = snapToDirection(mouse, draggingPart.mouse0, [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y) }, { x: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y), y: -(draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x) }], draggingPart.snapData);
+  }
+
+  else {
+    var mouse_snapped = mouse;
+    draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez la touche Maj
+  }
+  updateMousePositionOnDragging(draggingPart, mouse_snapped, obj);
+}
+
+

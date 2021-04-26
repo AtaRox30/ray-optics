@@ -2015,7 +2015,6 @@
 
   }
 
-
   function toolbtn_mouseentered(tool, e)
   {
     hideAllLists();
@@ -2169,7 +2168,6 @@
     AddingObjType = tool;
   }
 
-
   function modebtn_clicked(mode1)
   {
     document.getElementById('mode_' + mode).className = 'toolbtn';
@@ -2194,8 +2192,6 @@
 
     draw();
   }
-
-
 
   function cancelMousedownEvent(id)
   {
