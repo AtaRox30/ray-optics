@@ -640,7 +640,6 @@
           pt.x = newCoord.x;
           pt.y = newCoord.y;
       }
-      console.log(objs[selectedObj].path);
       draw();
     }
   }
