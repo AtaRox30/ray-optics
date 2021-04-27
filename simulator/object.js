@@ -903,6 +903,9 @@ var canvasPainter = {
           p2 = graphs.point(obj.path[(i + 2)].x, obj.path[(i + 2)].y);
           p3 = graphs.point(obj.path[(i + 1)].x, obj.path[(i + 1)].y);
           center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(p1, p3)), graphs.perpendicular_bisector(graphs.line(p2, p3)));
+          console.log(graphs.perpendicular_bisector(graphs.line(p1, p3)));
+          console.log(graphs.perpendicular_bisector(graphs.line(p2, p3)));
+          console.log(center);
           if (isFinite(center.x) && isFinite(center.y))
           {
             r = graphs.length(center, p3);
