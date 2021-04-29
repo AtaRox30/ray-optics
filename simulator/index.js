@@ -361,6 +361,17 @@
     }
     cancelMousedownEvent('objSetPointRot_button');
 
+    document.getElementById('toggleGroupPanel_button').onclick = function() {
+      if($("#sideMultipleGroup").hasClass("panelHidden")) {
+        $("#sideMultipleGroup").removeClass("panelHidden");
+        $("#sideMultipleGroup").addClass("panelShown");
+        } else {
+        $("#sideMultipleGroup").removeClass("panelShown");
+        $("#sideMultipleGroup").addClass("panelHidden");
+    }
+    }
+    cancelMousedownEvent('toggleGroupPanel_button');
+
     document.getElementById('save_name').onkeydown = function(e)
     {
       //console.log(e.keyCode)
