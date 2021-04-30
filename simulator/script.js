@@ -27,8 +27,10 @@ function createModalProperties(element) {
   let type = document.createElement('td');
   $(type).text("Type");
   let indice = document.createElement('td');
-  $(indice).text("Indice de refraction");
-  $(trH).append(type); $(trH).append(indice);
+  $(indice).text("Refractive index");
+  let bright = document.createElement('td');
+  $(bright).text("Brightness");
+  $(trH).append(type); $(trH).append(indice); $(trH).append(bright)
 
   $(thead).append(trH);
   $(table).append(thead);
@@ -36,10 +38,11 @@ function createModalProperties(element) {
   let tbody = document.createElement('tbody');
   for(let i = 0; i < element[0].length; i++) {
       let tr = document.createElement('tr');
-      for(let j = 0; j < 2; j++) {
+      for(let j = 0; j < 3; j++) {
           let td = document.createElement('td');
           if(j == 0) $(td).text(element[0][i].type);
           if(j == 1) $(td).text(element[0][i].refraction);
+          if(j == 2) $(td).text(element[0][i].brightness);
           $(tr).append(td);
       }
       $(tbody).append(tr);
@@ -61,32 +64,32 @@ function createGroupPanel(element) {
           <tbody>
               <tr>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Jonquille</button></td>
-                  <td><button type="button" class="btn btn-primary btn-sm">Supprimer</button></td>
+                  <td><button type="button" class="btn btn-primary btn-sm" id="deleteGr">Supprimer</button></td>
                   <td><input type="radio" name="multipleGr"></td>
               </tr>
               <tr>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Rose</button></td>
-                  <td><button type="button" class="btn btn-primary btn-sm">Supprimer</button></td>
+                  <td><button type="button" class="btn btn-primary btn-sm" id="deleteGr">Supprimer</button></td>
                   <td><input type="radio" name="multipleGr"></td>
               </tr>
               <tr>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Tulipe</button></td>
-                  <td><button type="button" class="btn btn-primary btn-sm">Supprimer</button></td>
+                  <td><button type="button" class="btn btn-primary btn-sm" id="deleteGr">Supprimer</button></td>
                   <td><input type="radio" name="multipleGr"></td>
               </tr>
               <tr>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Hibiscus</button></td>
-                  <td><button type="button" class="btn btn-primary btn-sm">Supprimer</button></td>
+                  <td><button type="button" class="btn btn-primary btn-sm" id="deleteGr">Supprimer</button></td>
                   <td><input type="radio" name="multipleGr"></td>
               </tr>
               <tr>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Sakura</button></td>
-                  <td><button type="button" class="btn btn-primary btn-sm">Supprimer</button></td>
+                  <td><button type="button" class="btn btn-primary btn-sm" id="deleteGr">Supprimer</button></td>
                   <td><input type="radio" name="multipleGr"></td>
               </tr>
               <tr>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Bouton d'or</button></td>
-                  <td><button type="button" class="btn btn-primary btn-sm">Supprimer</button></td>
+                  <td><button type="button" class="btn btn-primary btn-sm" id="deleteGr">Supprimer</button></td>
                   <td><input type="radio" name="multipleGr"></td>
               </tr>
           </tbody>
@@ -125,6 +128,7 @@ function createGroupPanel(element) {
           if(indexTD1 == 1) {
               el = document.createElement("button");
               $(el).attr("type", "button");
+              $(el).attr("id", "deleteGr");
               $(el).addClass("btn btn-primary btn-sm");
               $(el).text("Supprimer");
           }
@@ -142,20 +146,21 @@ function createGroupPanel(element) {
   $(div).append(table);
   $("body").append(div);
 
-  $("#sideMultipleGroup tbody button:contains('Supprimer')").on("click", function() {
+  $("#sideMultipleGroup tbody button#deleteGr").on("click", function() {
       let groupTD = $(this).parent().prev();
       let group = $(groupTD).text();
       $(groupTD).parent().remove();
+      for(let spliceEl = 0; spliceEl < element.length; spliceEl++) {
+          if(group == element[spliceEl].nom) element.splice(spliceEl, 1)
+      }
   });
   $("#sideMultipleGroup tbody tr td:last-child").on("click", function() {$(this).children().prop("checked", true)});
   $("#sideMultipleGroup tbody tr td:first-child button").on("click", function() {
       let group = $(this).text();
-
       let currentElementArray = [];
       for(c of element) {
           if(group == c.nom) currentElementArray.push(c.elements);
       }
-
       createModalProperties(currentElementArray);
       $("#elementInGr").dialog({
           title: group,

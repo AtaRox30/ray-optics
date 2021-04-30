@@ -4,6 +4,8 @@
   var mouse_lastmousedown; //Position de la souris lors du dernier clic de la souris
   var objs = []; //objet
   var objCount = 0; //Nombre d'objets
+  var selectGr = [] // {name:, elements:[{}, {}]}, {name:, elements:[{}, {}]}
+  var currentSelectedGr = []; //{name:, elements:[{}, {}]}
   var isConstructing = false; //Créer un nouvel objet
   var isRotating = false;
   var isChoosingSeg = false;
@@ -645,7 +647,6 @@
           pt.x = newCoord.x;
           pt.y = newCoord.y;
       }
-      draw();
     }
   }
 
@@ -1162,7 +1163,6 @@
     rotationPoint = rotationPoint_;
     return
   }
-
   if (isConstructing)
   {
     if ((e.which && e.which == 1) || (e.changedTouches))
@@ -1175,7 +1175,7 @@
   else
   {
 
-
+    console.log("Enter !isConstructing");
     //var returndata;
     if ((!(document.getElementById('lockobjs').checked) != (e.altKey && AddingObjType != '')) && !(e.which == 3))
     {
@@ -1213,6 +1213,7 @@
             draggingPart_ = {};
             if (objTypes[objs[i].type].clicked(objs[i], mouse_nogrid, mouse, draggingPart_))
             {
+              console.log("Enter clickedD");
               //clicked() Renvoie true pour indiquer que la souris a cliqué sur l'objet
 
               if (draggingPart_.targetPoint)
@@ -1248,6 +1249,11 @@
           draggingPart.hasDuplicated = false;
           draggingObj = targetObj_index;
           return;
+        }
+        console.log(e);
+        if(e.which == 3 && e.altKey) {
+          //Enter here to add on selected gr
+          console.log(selectedObj);
         }
       }
 
@@ -1319,7 +1325,7 @@
   mouse = mouse2;
 
   if(isSettingRotationPoint) choosingRotationPoint();
-  if(isRotating) doARotation();
+  if(isRotating) {doARotation(); draw();}
 
   if (isConstructing)
   {
