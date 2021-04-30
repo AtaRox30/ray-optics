@@ -813,7 +813,6 @@ var canvasPainter = {
   {
     if (obj.path.length > 1)
     {
-      console.log(obj.path);
       if (obj.path.length > 3 && mouseOnPoint(mouse, obj.path[0]))
       {
         //La souris a cliqué sur le premier point
@@ -899,7 +898,6 @@ var canvasPainter = {
         //Traitement des pts, il y a 3 pts, un point de debut, de fin et de direction
         if (obj.path[(i + 1)].arc && !obj.path[i].arc && i < obj.path.length - 2)
         {
-          
           p1 = graphs.point(obj.path[i].x, obj.path[i].y);
           p2 = graphs.point(obj.path[(i + 2)].x, obj.path[(i + 2)].y);
           p3 = graphs.point(obj.path[(i + 1)].x, obj.path[(i + 1)].y);
