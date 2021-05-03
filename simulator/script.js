@@ -41,7 +41,7 @@ function createModalProperties(element) {
       for(let j = 0; j < 3; j++) {
           let td = document.createElement('td');
           if(j == 0) $(td).text(element[0][i].type);
-          if(j == 1) $(td).text(element[0][i].refraction);
+          if(j == 1) $(td).text(element[0][i].p);
           if(j == 2) $(td).text(element[0][i].brightness);
           $(tr).append(td);
       }
@@ -52,7 +52,7 @@ function createModalProperties(element) {
   $("body").append(div);
 }
 
-function createGroupPanel(element) {
+function createGroupPanel() {
   /*
   <div id="sideMultipleGroup">
       <table>
@@ -114,7 +114,8 @@ function createGroupPanel(element) {
   $(table).append(thead);
 
   let tbody = document.createElement("tbody");
-  for(let indexTR2 = 0; indexTR2 < element.length; indexTR2++) {
+  console.log(selectGr);
+  for(let indexTR2 = 0; indexTR2 < selectGr.length; indexTR2++) {
       let tr = document.createElement("tr");
       for(let indexTD1 = 0; indexTD1 < 3; indexTD1++) {
           let td = document.createElement("td");
@@ -123,7 +124,7 @@ function createGroupPanel(element) {
               el = document.createElement("button");
               $(el).attr("type", "button");
               $(el).addClass("btn btn-outline-primary btn-sm");
-              $(el).text(element[indexTR2].nom);
+              $(el).text(selectGr[indexTR2].name);
           }
           if(indexTD1 == 1) {
               el = document.createElement("button");
@@ -146,21 +147,27 @@ function createGroupPanel(element) {
   $(div).append(table);
   $("body").append(div);
 
+  //Delete button
   $("#sideMultipleGroup tbody button#deleteGr").on("click", function() {
       let groupTD = $(this).parent().prev();
       let group = $(groupTD).text();
       $(groupTD).parent().remove();
-      for(let spliceEl = 0; spliceEl < element.length; spliceEl++) {
-          if(group == element[spliceEl].nom) element.splice(spliceEl, 1)
+      for(let spliceEl = 0; spliceEl < selectGr.elements.length; spliceEl++) {
+          if(group == selectGr.elements[spliceEl].name) element.splice(spliceEl, 1)
       }
   });
+
+  //Select radio button
   $("#sideMultipleGroup tbody tr td:last-child").on("click", function() {$(this).children().prop("checked", true)});
+  
+  //Name button
   $("#sideMultipleGroup tbody tr td:first-child button").on("click", function() {
       let group = $(this).text();
       let currentElementArray = [];
-      for(c of element) {
-          if(group == c.nom) currentElementArray.push(c.elements);
+      for(c of selectGr) {
+          if(group == c.name) currentElementArray.push(c.elements);
       }
+      console.log(selectGr);
       createModalProperties(currentElementArray);
       $("#elementInGr").dialog({
           title: group,
@@ -172,7 +179,60 @@ function createGroupPanel(element) {
   });
 }
 
-$(document).ready(function() {
+function createGroupNamer() {
+    /*
+    <div id="groupName">
+        <label for="inputName">Entrer le nom du groupe :</label>
+        <input type="text" id="inputName" />
+    </div>
+    */
+
+    let group = document.createElement('div');
+    $(group).attr("id", "groupName");
+    let label = document.createElement('label');
+    $(label).attr("for", "inputName");
+    $(label).text("Entrer le nom du groupe :");
+    let input = document.createElement('input');
+    $(input).attr("type", "text");
+    $(input).attr("id", "inputName");
+    $(group).append(label);
+    $(group).append(input);
+    $("body").append(group);
+}
+
+function addCurrentGrToAllSelection(group) {
+    let object = {"name":group, "elements":currentSelectedGr};
+    selectGr.push(object);
+}
+
+$(document).ready(function(e) {
+  $(document).on("keyup", function(e) {
+      if(!isSelectingMultipleObject) return
+      if(e.which != 17) return
+      if(currentSelectedGr.length < 2) return
+      //Here, CTRL is realeased and there is at least 2 objects in the group
+      isSelectingMultipleObject = false;
+      createGroupNamer();
+      $("#groupName").dialog({
+        width: 400,
+        maxHeight: 300,
+        title: "Nom du groupe",
+        modal: true,
+        close: function(e, ui) {
+            $("#groupName").remove();
+            currentSelectedGr = [];
+        },
+        buttons: {"Ok":function(t) {
+            let groupName = $("#inputName").val();
+            addCurrentGrToAllSelection(groupName);
+            $("#groupName").remove();
+        }, "Annuler": function(t) {
+            $("#groupName").remove();
+            currentSelectedGr = [];
+        }
+        }
+      });
+  });
   /* Open dropdown menu on mouse hover. */
   $(".dropdown-toggle").mouseenter(function () {
     $(this).find(".dropdown-menu").show();
@@ -201,7 +261,7 @@ $(document).ready(function() {
   ];
 
   $("#toggleGroupPanel_button").on("click", function() {
-      createGroupPanel(element);
+      createGroupPanel();
       $("#sideMultipleGroup").dialog({
           width: 400,
           maxHeight: 300,

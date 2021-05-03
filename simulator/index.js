@@ -5,11 +5,13 @@
   var objs = []; //objet
   var objCount = 0; //Nombre d'objets
   var selectGr = [] // {name:, elements:[{}, {}]}, {name:, elements:[{}, {}]}
-  var currentSelectedGr = []; //{name:, elements:[{}, {}]}
+  var currentSelectedGr = []; //[{}, {}]
   var isConstructing = false; //Créer un nouvel objet
   var isRotating = false;
   var isChoosingSeg = false;
   var isSettingRotationPoint = false;
+  var isSelectingMultipleObject = false;
+  var isMovingMultipleObject = false;
   var rotationPoint = {x: Infinity, y: Infinity}; //The last rotation point that have been choosen
   var rotationPoint_ = {x: Infinity, y: Infinity}; //The rotation point that is display while choosing rotation point over the segment
   var mouseBeforeRotation = {x: Infinity, y: Infinity};
@@ -1238,8 +1240,19 @@
                 //Here, the user clicked on the "Set a rotation point" and on the polygon
                 choosingSeg(draggingPart_, i);
               }
+              if(e.which == 1 && e.ctrlKey) {
+                //Enter here to add on selected gr
+                isSelectingMultipleObject = true;
+                let isAlreadyIn = false;
+                for(c of currentSelectedGr) {
+                  if(objs[i] == c) isAlreadyIn = true;
+                }
+                if(!isAlreadyIn) currentSelectedGr.push(objs[i]);
+                console.log(objs[i]);
+              }
             }
           }
+          
         }
         if (targetObj_index != -1)
         {
@@ -1249,11 +1262,6 @@
           draggingPart.hasDuplicated = false;
           draggingObj = targetObj_index;
           return;
-        }
-        console.log(e);
-        if(e.which == 3 && e.altKey) {
-          //Enter here to add on selected gr
-          console.log(selectedObj);
         }
       }
 
