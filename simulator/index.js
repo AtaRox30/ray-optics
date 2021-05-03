@@ -1242,13 +1242,13 @@
               }
               if(e.which == 1 && e.ctrlKey) {
                 //Enter here to add on selected gr
+                if(!isSelectingMultipleObject) currentSelectedGr = [];
                 isSelectingMultipleObject = true;
                 let isAlreadyIn = false;
                 for(c of currentSelectedGr) {
                   if(objs[i] == c) isAlreadyIn = true;
                 }
                 if(!isAlreadyIn) currentSelectedGr.push(objs[i]);
-                console.log(objs[i]);
               }
             }
           }

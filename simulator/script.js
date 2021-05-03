@@ -27,25 +27,24 @@ function createModalProperties(element) {
   let type = document.createElement('td');
   $(type).text("Type");
   let indice = document.createElement('td');
-  $(indice).text("Refractive index");
-  let bright = document.createElement('td');
-  $(bright).text("Brightness");
-  $(trH).append(type); $(trH).append(indice); $(trH).append(bright)
+  $(indice).text("Proprietés");
+  $(trH).append(type); $(trH).append(indice);
 
   $(thead).append(trH);
   $(table).append(thead);
 
   let tbody = document.createElement('tbody');
-  for(let i = 0; i < element[0].length; i++) {
-      let tr = document.createElement('tr');
-      for(let j = 0; j < 3; j++) {
-          let td = document.createElement('td');
-          if(j == 0) $(td).text(element[0][i].type);
-          if(j == 1) $(td).text(element[0][i].p);
-          if(j == 2) $(td).text(element[0][i].brightness);
-          $(tr).append(td);
-      }
-      $(tbody).append(tr);
+  if(element[0] != undefined) {
+    for(let i = 0; i < element[0].length; i++) {
+        let tr = document.createElement('tr');
+        for(let j = 0; j < 2; j++) {
+            let td = document.createElement('td');
+            if(j == 0) $(td).text(element[0][i].type);
+            if(j == 1) $(td).text(element[0][i].p);
+            $(tr).append(td);
+        }
+        $(tbody).append(tr);
+    }
   }
   $(table).append(tbody);
   $(div).append(table);
@@ -114,7 +113,18 @@ function createGroupPanel() {
   $(table).append(thead);
 
   let tbody = document.createElement("tbody");
-  console.log(selectGr);
+
+  let ungroupTR = document.createElement("tr");
+  let ungroupTD = document.createElement("td");
+  let ungroupButton = document.createElement("button");
+  $(ungroupButton).attr("type", "button");
+  $(ungroupButton).addClass("btn btn-outline-primary btn-sm");
+  $(ungroupButton).text("Deselectionner");
+  $(ungroupTD).append(ungroupButton);
+  $(ungroupTD).attr("colspan", "3");
+  $(ungroupTD).attr("id", "ungroup");
+  $(ungroupTR).append(ungroupTD); $(tbody).append(ungroupTR);
+
   for(let indexTR2 = 0; indexTR2 < selectGr.length; indexTR2++) {
       let tr = document.createElement("tr");
       for(let indexTD1 = 0; indexTD1 < 3; indexTD1++) {
@@ -147,36 +157,69 @@ function createGroupPanel() {
   $(div).append(table);
   $("body").append(div);
 
+  //Name button
+  addDisplayElementsListenerForGroup();
+
   //Delete button
-  $("#sideMultipleGroup tbody button#deleteGr").on("click", function() {
-      let groupTD = $(this).parent().prev();
-      let group = $(groupTD).text();
-      $(groupTD).parent().remove();
-      for(let spliceEl = 0; spliceEl < selectGr.elements.length; spliceEl++) {
-          if(group == selectGr.elements[spliceEl].name) element.splice(spliceEl, 1)
-      }
-  });
+  addDeleteListenerForGroup();
 
   //Select radio button
-  $("#sideMultipleGroup tbody tr td:last-child").on("click", function() {$(this).children().prop("checked", true)});
-  
-  //Name button
-  $("#sideMultipleGroup tbody tr td:first-child button").on("click", function() {
-      let group = $(this).text();
-      let currentElementArray = [];
-      for(c of selectGr) {
-          if(group == c.name) currentElementArray.push(c.elements);
-      }
-      console.log(selectGr);
-      createModalProperties(currentElementArray);
-      $("#elementInGr").dialog({
-          title: group,
-          modal: true,
-          close: function(e, ui) {
-              $("#elementInGr").remove();
-          }
-      });
-  });
+  addSelectListenerForGroup();
+}
+
+function addDisplayElementsListenerForGroup() {
+    $("#sideMultipleGroup tbody tr td:first-child button").on("click", function () {
+        if ($(this).parent().attr("id") == "ungroup")
+            return;
+        let group = $(this).text();
+        let currentElementArray = [];
+        for (c of selectGr) {
+            if (group == c.name)
+                currentElementArray.push(c.elements);
+        }
+
+        createModalProperties(currentElementArray);
+        $("#elementInGr").dialog({
+            title: group,
+            modal: true,
+            close: function (e, ui) {
+                $("#elementInGr").remove();
+            }
+        });
+
+    });
+}
+
+function addSelectListenerForGroup() {
+    $("#sideMultipleGroup tbody tr td:last-child").on("click", function () {
+        if (this.id == "ungroup") {
+            currentSelectedGr = [];
+            for (r of $(this).parent().parent().find("tr")) {
+                $(r).children().eq(2).children().prop("checked", false);
+            }
+            return;
+        }
+        $(this).children().prop("checked", true);
+        let group = $(this).prev().prev().text();
+        currentSelectedGr = [];
+        for (c of selectGr) {
+            if (group == c.name) {
+                currentSelectedGr.push(c);
+            }
+        }
+    });
+}
+
+function addDeleteListenerForGroup() {
+    $("#sideMultipleGroup tbody button#deleteGr").on("click", function () {
+        let groupTD = $(this).parent().prev();
+        let group = $(groupTD).text();
+        $(groupTD).parent().remove();
+        for (let spliceEl = 0; spliceEl < selectGr.length; spliceEl++) {
+            if (group == selectGr[spliceEl].name)
+                selectGr.splice(spliceEl, 1);
+        }
+    });
 }
 
 function createGroupNamer() {
@@ -248,17 +291,6 @@ $(document).ready(function(e) {
 
   /* Initialize Bootstrap Popover */
   $("[data-toggle=popover]").popover();
-
-  //Modal panel to group ungroup
-  var element = [{"nom":"Jonquille", "elements":[{"type":"Halfplane", "refraction":"1.5"}, {"type":"Ray"}]}, 
-    {"nom":"Rose", "elements":[{"type":"Circle", "refraction":"1.5"}, {"type":"Ray"}, {"type":"Halfplane", "refraction":"1.5"}]}, 
-    {"nom":"Hibiscus", "elements":[{"type":"Freeshape", "refraction":"1.5"}, {"type":"Ray"}]},
-    {"nom":"Tulipe", "elements":[{"type":"Beam", "brightness":"0.07"}, {"type":"Ray"}, {"type":"Circle", "refraction":"1.5"}]}, 
-    {"nom":"Sakura", "elements":[{"type":"Halfplane", "refraction":"1.5"}, {"type":"Ray"}]}, 
-    {"nom":"Petunia", "elements":[{"type":"Halfplane", "refraction":"1.5"}, {"type":"Ray"}, {"type":"Halfplane", "refraction":"1.5"}]},
-    {"nom":"Cactus", "elements":[{"type":"Freeshape", "refraction":"1.5"}, {"type":"Beam", "brightness":"0.07"}]},
-    {"nom":"Orchidée", "elements":[{"type":"Halfplane", "refraction":"1.5"}, {"type":"Ray"}]}, 
-  ];
 
   $("#toggleGroupPanel_button").on("click", function() {
       createGroupPanel();
