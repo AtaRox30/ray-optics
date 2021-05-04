@@ -147,6 +147,8 @@ function createGroupPanel() {
               el = document.createElement("input");
               $(el).attr("type", "radio");
               $(el).attr("name", "multipleGr");
+              if(currentSelectedGr[0].name == selectGr[indexTR2].name)
+              $(el).attr("checked", "true")
           }
           $(td).append(el);
           $(tr).append(td);
@@ -193,6 +195,7 @@ function addDisplayElementsListenerForGroup() {
 function addSelectListenerForGroup() {
     $("#sideMultipleGroup tbody tr td:last-child").on("click", function () {
         if (this.id == "ungroup") {
+            isMovingMultipleObject = false;
             currentSelectedGr = [];
             for (r of $(this).parent().parent().find("tr")) {
                 $(r).children().eq(2).children().prop("checked", false);
@@ -201,6 +204,7 @@ function addSelectListenerForGroup() {
         }
         $(this).children().prop("checked", true);
         let group = $(this).prev().prev().text();
+        isMovingMultipleObject = true;
         currentSelectedGr = [];
         for (c of selectGr) {
             if (group == c.name) {
@@ -244,8 +248,7 @@ function createGroupNamer() {
 }
 
 function addCurrentGrToAllSelection(group) {
-    let object = {"name":group, "elements":currentSelectedGr};
-    selectGr.push(object);
+    
 }
 
 $(document).ready(function(e) {
@@ -265,13 +268,13 @@ $(document).ready(function(e) {
             $("#groupName").remove();
             currentSelectedGr = [];
         },
-        buttons: {"Ok":function(t) {
-            let groupName = $("#inputName").val();
-            addCurrentGrToAllSelection(groupName);
+        buttons: {"Ok": function(t) {
+            let group = $("#inputName").val();
+            selectGr.push({"name":group, "elements":currentSelectedGr});
             $("#groupName").remove();
         }, "Annuler": function(t) {
-            $("#groupName").remove();
             currentSelectedGr = [];
+            $("#groupName").remove();
         }
         }
       });

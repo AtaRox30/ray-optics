@@ -1027,6 +1027,14 @@ var canvasPainter = {
       obj.path[i].x += diffX;
       obj.path[i].y += diffY;
     }
+    if(isMovingMultipleObject) {
+      for(object of currentSelectedGr[0].elements) {
+        if(object == obj) continue
+        for(p of object.path)
+          p.x += diffX;
+          p.y += diffY;
+      }
+    }
   },
 
 

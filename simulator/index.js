@@ -183,10 +183,7 @@
 
     tools_withList.forEach(function(element, index)
     {
-      document.getElementById('tool_' + element).onmouseenter = function(e) {toolbtnwithlist_mouseentered(element, e);};
-      /*document.getElementById('tool_' + element).onclick = function(e) {toolbtnwithlist_mouseentered(element, e);};*/
       document.getElementById('tool_' + element).onclick = function(e) {toolbtn_clicked(element, e);};
-      document.getElementById('tool_' + element).onmouseleave = function(e) {toolbtnwithlist_mouseleft(element, e);};
       document.getElementById('tool_' + element + 'list').onmouseleave = function(e) {toollist_mouseleft(element, e);};
       cancelMousedownEvent('tool_' + element);
     });
@@ -1342,7 +1339,6 @@
   }
   else
   {
-    var instantObserver = mode == 'observed_light' || mode == 'observed_images';
     if (draggingObj == -4)
     {
       if (e.shiftKey)
@@ -1426,20 +1422,6 @@
   //==================================================================================================================================
   //==============================MouseUp===============================
   function canvas_onmouseup(e) {
-  //滑鼠放開時
-  /*
-  if(document.getElementById("grid").checked != e.ctrlKey)
-  {
-    //使用格線
-    var mouse=graphs.point(Math.round((e.pageX-e.target.offsetLeft)/gridSize)*gridSize,Math.round((e.pageY-e.target.offsetTop)/gridSize)*gridSize)
-  }
-  else
-  {
-    //不使用格線
-    var mouse=graphs.point(e.pageX-e.target.offsetLeft,e.pageY-e.target.offsetTop)
-  }
-  */
-  //document.getElementById('status').innerHTML=mouse.x;
   if (isConstructing)
   {
     if ((e.which && e.which == 1) || (e.changedTouches))
@@ -1555,9 +1537,6 @@
           document.getElementById('xybox').style.display = '';
           document.getElementById('xybox').select();
           document.getElementById('xybox').setSelectionRange(1, document.getElementById('xybox').value.length - 1);
-          console.log("show xybox");
-          //e.cancelBubble = true;
-          //if (e.stopPropagation) e.stopPropagation();
           xyBox_cancelContextMenu = true;
         }
     }
@@ -2084,41 +2063,6 @@
       else if (t == "Ideal Lens")
         AddingObjType = "lens";
     }
-  }
-
-  function toolbtnwithlist_mouseentered(tool, e)
-  {
-    //console.log("tool_"+tool)
-    /*hideAllLists();
-    var rect = document.getElementById('tool_' + tool).getBoundingClientRect();
-    //console.log(document.getElementById("tool_"+tool+"list"))
-    document.getElementById('tool_' + tool + 'list').style.left = rect.left + 'px';
-    document.getElementById('tool_' + tool + 'list').style.top = rect.bottom + 'px';
-    document.getElementById('tool_' + tool + 'list').style.display = '';
-    if (document.getElementById('tool_' + tool).className == 'toolbtn')
-    {
-      document.getElementById('tool_' + tool).className = 'toolbtnwithlisthover';
-    }*/
-  }
-
-  function toolbtnwithlist_mouseleft(tool, e)
-  {
-    //console.log("btnout")
-
-    /*var rect = document.getElementById('tool_' + tool + 'list').getBoundingClientRect();
-    mouse = graphs.point(e.pageX, e.pageY);
-    //console.log(rect)
-    //console.log(mouse)
-    if (mouse.x < rect.left || mouse.x > rect.right || mouse.y < rect.top - 5 || mouse.y > rect.bottom)
-    {
-      //滑鼠不在下拉選單上
-      document.getElementById('tool_' + tool + 'list').style.display = 'none';
-      if (document.getElementById('tool_' + tool).className == 'toolbtnwithlisthover')
-      {
-        document.getElementById('tool_' + tool).className = 'toolbtn';
-      }
-    }*/
-
   }
 
   function toollist_mouseleft(tool, e)
