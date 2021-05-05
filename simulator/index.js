@@ -4,19 +4,24 @@
   var mouse_lastmousedown; //Position de la souris lors du dernier clic de la souris
   var objs = []; //objet
   var objCount = 0; //Nombre d'objets
+
+  //Multiple select
   var selectGr = [] // {name:, elements:[{}, {}]}, {name:, elements:[{}, {}]}
   var currentSelectedGr = []; //[{}, {}]
   var isConstructing = false; //Créer un nouvel objet
+  var isSelectingMultipleObject = false;
+  var isMovingMultipleObject = false;
+
+  //Rotation
   var isRotating = false;
   var isChoosingSeg = false;
   var isSettingRotationPoint = false;
-  var isSelectingMultipleObject = false;
-  var isMovingMultipleObject = false;
   var rotationPoint = {x: Infinity, y: Infinity}; //The last rotation point that have been choosen
   var rotationPoint_ = {x: Infinity, y: Infinity}; //The rotation point that is display while choosing rotation point over the segment
   var mouseBeforeRotation = {x: Infinity, y: Infinity};
   var mouseAfterRotation = {x: Infinity, y: Infinity};
   var nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
+  
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
   var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
@@ -1382,7 +1387,6 @@
           draggingPart.hasDuplicated = false;
         }
       }
-
       draw();
       }
 
@@ -1776,9 +1780,6 @@
 
   window.onkeydown = function(e)
   {
-    //console.log(e.keyCode);
-    //console.log(e.ctrlKey);
-
     //Ctrl+Z
     if (e.ctrlKey && e.keyCode == 90)
     {
@@ -1815,22 +1816,6 @@
       document.getElementById('open').onclick();
     }
 
-    /*
-    if(e.altKey && e.keyCode==78)
-    {
-    //Alt+N
-    cleanAll();
-    return false;
-    }
-    */
-    /*
-    if(e.altKey && e.keyCode==65)
-    {
-    //Alt+A
-    document.getElementById("objAttr").focus()
-    return false;
-    }
-    */
     //Delete
     if (e.keyCode == 46 || e.keyCode == 8)
     {

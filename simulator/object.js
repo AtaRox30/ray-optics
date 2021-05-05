@@ -382,12 +382,15 @@ var canvasPainter = {
 
   //=================================Traduit l'objet====================================
   move: function(obj, diffX, diffY) {
+    /*
     //Deplacement du premier point du segment de ligne
     obj.p1.x = obj.p1.x + diffX;
     obj.p1.y = obj.p1.y + diffY;
     //Deplacement du second point du segment de ligne
     obj.p2.x = obj.p2.x + diffX;
     obj.p2.y = obj.p2.y + diffY;
+    console.log("Enter move");
+    */
   },
 
 
@@ -430,6 +433,7 @@ var canvasPainter = {
     if (draggingPart.part == 0)
     {
       //Faire glisser toute la ligne
+      console.log("Enter dragging");
       slidingWholeLine(shift, mouse, draggingPart, obj);
     }
   },
@@ -448,7 +452,7 @@ var canvasPainter = {
 
   };
 
-  //"halfplane"
+  //"halfplane" -> Coord are p1, p2
   objTypes['halfplane'] = {
 
   p_name: 'Refractive index',
@@ -460,7 +464,7 @@ var canvasPainter = {
 
   //===================================Créer un objet============================================
   create: function(mouse) {
-    return {type: 'halfplane', p1: mouse, p2: mouse, p: 1.5};
+    return {type: 'halfplane', p1: mouse, p2: mouse, p: 1.5, group: null};
   },
 
   //Utiliser le prototype lineobj
@@ -633,7 +637,7 @@ var canvasPainter = {
 
   };
 
-  //objet "circlelens"
+  //objet "circlelens" -> Coord are p1, p2
   objTypes['circlelens'] = {
 
   p_name: 'Refractive index', //Nom d'attribut
@@ -645,7 +649,7 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'circlelens', p1: mouse, p2: mouse, p: 1.5};
+    return {type: 'circlelens', p1: mouse, p2: mouse, p: 1.5, group: null};
   },
 
   //Utiliser le prototype lineobj
@@ -805,7 +809,7 @@ var canvasPainter = {
   supportSurfaceMerging: true, //Intégration de l'interface de support
   //=================================Créer un objet==============================================
   create: function(mouse) {
-    return {type: 'refractor', path: [{x: mouse.x, y: mouse.y, arc: false}], notDone: true, p: 1.5};
+    return {type: 'refractor', path: [{x: mouse.x, y: mouse.y, arc: false}], notDone: true, p: 1.5, group: null};
   },
 
   //=================================Clic de souris lors de la création de l'objet====================================
@@ -842,7 +846,6 @@ var canvasPainter = {
       obj.path[obj.path.length - 1] = {x: mouse.x, y: mouse.y}; //Déplacer le dernier point
       draw();
     }
-    if(isRotating) console.log("Mouse move while rotating !");
   },
   //=================================Relâchez la souris lors de la création de l'objet====================================
   c_mouseup: function(obj, mouse)
@@ -1022,19 +1025,11 @@ var canvasPainter = {
 
   //===============================Traduire l'objet==============================
   move: function(obj, diffX, diffY) {
-    for (var i = 0; i < obj.path.length; i++)
-    {
-      obj.path[i].x += diffX;
-      obj.path[i].y += diffY;
+    for (var i = 0; i < obj.path.length; i++) {
+          obj.path[i].x += diffX;
+          obj.path[i].y += diffY;
     }
-    if(isMovingMultipleObject) {
-      for(object of currentSelectedGr[0].elements) {
-        if(object == obj) continue
-        for(p of object.path)
-          p.x += diffX;
-          p.y += diffY;
-      }
-    }
+    if(isMovingMultipleObject) movingObjectInGroup(obj, diffX, diffY);
   },
 
 
@@ -1609,12 +1604,12 @@ var canvasPainter = {
 
   };
 
-  //"laser"物件
+  //"laser"物件 -> Coord are p1, p2
   objTypes['laser'] = {
 
   //=======================================Créer un objet========================================
   create: function(mouse) {
-    return {type: 'laser', p1: mouse, p2: mouse};
+    return {type: 'laser', p1: mouse, p2: mouse, group: null};
   },
 
   //使用lineobj原型
@@ -1648,12 +1643,12 @@ var canvasPainter = {
 
   };
 
-  //objet "miroir" (miroir)
+  //objet "miroir" (miroir) -> Coord are p1, p2
   objTypes['mirror'] = {
 
   //=====================================Créer un objet==========================================
   create: function(mouse) {
-    return {type: 'mirror', p1: mouse, p2: mouse};
+    return {type: 'mirror', p1: mouse, p2: mouse, group: null};
   },
 
   //Utiliser le prototype lineobj
@@ -1696,7 +1691,7 @@ var canvasPainter = {
 
   };
 
-  //objet "lentille" (lentille)
+  //objet "lentille" (lentille) -> Coord are p1, p2
   objTypes['lens'] = {
 
   p_name: 'Focal length', //Nom d'attribut
@@ -1706,7 +1701,7 @@ var canvasPainter = {
 
   //========================================Créer un objet=======================================
   create: function(mouse) {
-    return {type: 'lens', p1: mouse, p2: mouse, p: 100};
+    return {type: 'lens', p1: mouse, p2: mouse, p: 100, group: null};
   },
 
   //Utiliser le prototype lineobj
@@ -1840,7 +1835,7 @@ var canvasPainter = {
 
   };
 
-  //objets "idealmirror"
+  //objets "idealmirror" -> Coord are p1, p2
   objTypes['idealmirror'] = {
 
   p_name: 'Focal length', //Nom d'attribut
@@ -1850,7 +1845,7 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'idealmirror', p1: mouse, p2: graphs.point(mouse.x + gridSize, mouse.y), p: 100};
+    return {type: 'idealmirror', p1: mouse, p2: graphs.point(mouse.x + gridSize, mouse.y), p: 100, group: null};
   },
 
   //使用lineobj原型
@@ -1998,12 +1993,12 @@ var canvasPainter = {
 
   };
 
-  //objet "blackline"
+  //objet "blackline" -> Coord are p1, p2
   objTypes['blackline'] = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'blackline', p1: mouse, p2: mouse};
+    return {type: 'blackline', p1: mouse, p2: mouse, group: null};
   },
 
   //使用lineobj原型
@@ -2035,7 +2030,7 @@ var canvasPainter = {
 
   };
 
-  //objet "rayonnant"
+  //objet "rayonnant" -> Coord are x, y
   objTypes['radiant'] = {
 
   p_name: 'Brightness', //Nom d'attribut
@@ -2045,7 +2040,7 @@ var canvasPainter = {
 
   //==================================Créer un objet=============================================
   create: function(mouse) {
-  return {type: 'radiant', x: mouse.x, y: mouse.y, p: 0.5};
+  return {type: 'radiant', x: mouse.x, y: mouse.y, p: 0.5, group: null};
   },
 
   //==============================Clic de souris lors de la création de l'objet=======================================
@@ -2137,7 +2132,7 @@ var canvasPainter = {
 
   };
 
-  //"parallel"(平行光)物件
+  //"parallel"(平行光)物件 -> Coord are p1, p2
   objTypes['parallel'] = {
 
   p_name: 'Brightness', //Nom d'attribut
@@ -2147,7 +2142,7 @@ var canvasPainter = {
 
   //====================================Créer un objet===========================================
   create: function(mouse) {
-    return {type: 'parallel', p1: mouse, p2: mouse, p: 0.5};
+    return {type: 'parallel', p1: mouse, p2: mouse, p: 0.5, group: null};
   },
 
   //使用lineobj原型
@@ -2212,12 +2207,12 @@ var canvasPainter = {
 
   };
 
-  //"arcmirror"(弧形鏡子)物件
+  //"arcmirror"(弧形鏡子)物件 -> Coord are p1
   objTypes['arcmirror'] = {
 
   //=========================================Créer un objet======================================
   create: function(mouse) {
-    return {type: 'arcmirror', p1: mouse};
+    return {type: 'arcmirror', p1: mouse, group: null};
   },
 
   //=================================Clic de souris lors de la création de l'objet====================================
@@ -2529,12 +2524,12 @@ var canvasPainter = {
 
   };
 
-  //objet "règle"
+  //objet "règle" -> Coord are p1, p2
   objTypes['ruler'] = {
 
   //====================================Créer un objet===========================================
   create: function(mouse) {
-    return {type: 'ruler', p1: mouse, p2: mouse};
+    return {type: 'ruler', p1: mouse, p2: mouse, group: null};
   },
 
   //Utiliser le prototype lineobj
@@ -2655,12 +2650,12 @@ var canvasPainter = {
 
   };
 
-  //"protractor"物件
+  //"protractor"物件 -> Coord are p1, p2
   objTypes['protractor'] = {
 
   //==========================================Créer un objet=====================================
   create: function(mouse) {
-    return {type: 'protractor', p1: mouse, p2: mouse};
+    return {type: 'protractor', p1: mouse, p2: mouse, group: null};
   },
 
   //Utiliser le prototype lineobj
@@ -2847,4 +2842,28 @@ function slidingWholeLine(shift, mouse, draggingPart, obj) {
   updateMousePositionOnDragging(draggingPart, mouse_snapped, obj);
 }
 
+function movingObjectInGroup(obj, diffX, diffY) {
+  for(object of currentSelectedGr[0].elements) {
+    if(object == obj) continue
+    if(object.type == "refractor") {
+      for(p of object.path) {
+        p.x += diffX;
+        p.y += diffY;
+      }
+    } else
+    if(object.type == "radiant") {
+        object.x += diffX;
+        object.y += diffY;
+    } else
+    if(object.type == "arcmirror") {
+        object.p1.x += diffX;
+        object.p1.y += diffY;
+    } else {
+        object.p1.x += diffX;
+        object.p1.y += diffY;
+        object.p2.x += diffX;
+        object.p2.y += diffY;
+    }
+  }
+}
 

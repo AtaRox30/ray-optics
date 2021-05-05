@@ -62,6 +62,9 @@ function createGroupPanel() {
           </thead>
           <tbody>
               <tr>
+                  <td colspan=3><button type="button" class="btn btn-outline-primary btn-sm">Jonquille</button></td>
+              </tr>
+              <tr>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Jonquille</button></td>
                   <td><button type="button" class="btn btn-primary btn-sm" id="deleteGr">Supprimer</button></td>
                   <td><input type="radio" name="multipleGr"></td>
@@ -147,6 +150,7 @@ function createGroupPanel() {
               el = document.createElement("input");
               $(el).attr("type", "radio");
               $(el).attr("name", "multipleGr");
+              if(currentSelectedGr[0] != undefined)
               if(currentSelectedGr[0].name == selectGr[indexTR2].name)
               $(el).attr("checked", "true")
           }
@@ -216,6 +220,13 @@ function addSelectListenerForGroup() {
 
 function addDeleteListenerForGroup() {
     $("#sideMultipleGroup tbody button#deleteGr").on("click", function () {
+        //Unselect
+        isMovingMultipleObject = false;
+        currentSelectedGr = [];
+        for (r of $(this).parent().parent().find("tr")) {
+            $(r).children().eq(2).children().prop("checked", false);
+        }
+        //Delete
         let groupTD = $(this).parent().prev();
         let group = $(groupTD).text();
         $(groupTD).parent().remove();
@@ -245,10 +256,6 @@ function createGroupNamer() {
     $(group).append(label);
     $(group).append(input);
     $("body").append(group);
-}
-
-function addCurrentGrToAllSelection(group) {
-    
 }
 
 $(document).ready(function(e) {
