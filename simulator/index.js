@@ -81,6 +81,7 @@
       document.getElementById('textarea1').value = localStorage.rayOpticsData;
     }
 
+
     if (document.getElementById('textarea1').value != '')
     {
       JSONInput();
@@ -93,6 +94,9 @@
     undoArr[0] = document.getElementById('textarea1').value;
     document.getElementById('undo').disabled = true;
     document.getElementById('redo').disabled = true;
+
+    //Delete all the bind of the group for all objects
+    for(o of objs) o.group = [];
 
     window.onmousedown = function(e)
     {

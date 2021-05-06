@@ -230,11 +230,25 @@ function addDeleteListenerForGroup() {
         let groupTD = $(this).parent().prev();
         let group = $(groupTD).text();
         $(groupTD).parent().remove();
+        for(c of selectGr) {
+            if(c.name == group) {
+                for(e of c.elements) {
+                    for(let ig = 0; ig < e.group.length; ig++) {
+                        if(e.group[ig] == group) e.group.splice(ig, 1);
+                    }
+                }
+            }
+        }
         for (let spliceEl = 0; spliceEl < selectGr.length; spliceEl++) {
-            if (group == selectGr[spliceEl].name)
+            if(group == selectGr[spliceEl].name)
                 selectGr.splice(spliceEl, 1);
         }
     });
+}
+
+function addSelectedToAll(group) {
+    for(c of currentSelectedGr) c.group.push(group);
+    selectGr.push({"name":group, "elements":currentSelectedGr});
 }
 
 function createGroupNamer() {
@@ -277,7 +291,7 @@ $(document).ready(function(e) {
         },
         buttons: {"Ok": function(t) {
             let group = $("#inputName").val();
-            selectGr.push({"name":group, "elements":currentSelectedGr});
+            addSelectedToAll(group);
             $("#groupName").remove();
         }, "Annuler": function(t) {
             currentSelectedGr = [];

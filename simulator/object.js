@@ -420,10 +420,6 @@ var canvasPainter = {
   //==================================Lorsque vous faites glisser un objet===================================
   dragging: function(obj, mouse, draggingPart, ctrl, shift) {
     var basePoint;
-    console.log(obj);
-    console.log(mouse);
-    let diff = {x: obj.p1.x - mouse.x, y: obj.p1.y - mouse.y};
-    console.log(diff);
     if (draggingPart.part == 1)
     {
       basePoint = slidingTerminaisonPoint(basePoint, ctrl, draggingPart, obj, shift, mouse, 1);
@@ -465,7 +461,7 @@ var canvasPainter = {
 
   //===================================Créer un objet============================================
   create: function(mouse) {
-    return {type: 'halfplane', p1: mouse, p2: mouse, p: 1.5, group: null};
+    return {type: 'halfplane', p1: mouse, p2: mouse, p: 1.5, group: []};
   },
 
   //Utiliser le prototype lineobj
@@ -650,7 +646,7 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'circlelens', p1: mouse, p2: mouse, p: 1.5, group: null};
+    return {type: 'circlelens', p1: mouse, p2: mouse, p: 1.5, group: []};
   },
 
   //Utiliser le prototype lineobj
@@ -810,7 +806,7 @@ var canvasPainter = {
   supportSurfaceMerging: true, //Intégration de l'interface de support
   //=================================Créer un objet==============================================
   create: function(mouse) {
-    return {type: 'refractor', path: [{x: mouse.x, y: mouse.y, arc: false}], notDone: true, p: 1.5, group: null};
+    return {type: 'refractor', path: [{x: mouse.x, y: mouse.y, arc: false}], notDone: true, p: 1.5, group: []};
   },
 
   //=================================Clic de souris lors de la création de l'objet====================================
@@ -1030,7 +1026,6 @@ var canvasPainter = {
           obj.path[i].x += diffX;
           obj.path[i].y += diffY;
     }
-    if(isMovingMultipleObject) movingObjectInGroup(obj, diffX, diffY);
   },
 
 
@@ -1145,6 +1140,11 @@ var canvasPainter = {
         draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez Maj
       }
       this.move(obj, mouse_snapped.x - draggingPart.mouse1.x, mouse_snapped.y - draggingPart.mouse1.y);
+      if(isMovingMultipleObject) {
+        for(g of obj.group) {
+          if(g == currentSelectedGr[0].name) movingObjectInGroup(obj, mouse_snapped.x - draggingPart.mouse1.x, mouse_snapped.y - draggingPart.mouse1.y);
+        }
+      }
       draggingPart.mouse1 = mouse_snapped;
     }
   },
@@ -1610,7 +1610,7 @@ var canvasPainter = {
 
   //=======================================Créer un objet========================================
   create: function(mouse) {
-    return {type: 'laser', p1: mouse, p2: mouse, group: null};
+    return {type: 'laser', p1: mouse, p2: mouse, group: []};
   },
 
   //使用lineobj原型
@@ -1649,7 +1649,7 @@ var canvasPainter = {
 
   //=====================================Créer un objet==========================================
   create: function(mouse) {
-    return {type: 'mirror', p1: mouse, p2: mouse, group: null};
+    return {type: 'mirror', p1: mouse, p2: mouse, group: []};
   },
 
   //Utiliser le prototype lineobj
@@ -1702,7 +1702,7 @@ var canvasPainter = {
 
   //========================================Créer un objet=======================================
   create: function(mouse) {
-    return {type: 'lens', p1: mouse, p2: mouse, p: 100, group: null};
+    return {type: 'lens', p1: mouse, p2: mouse, p: 100, group: []};
   },
 
   //Utiliser le prototype lineobj
@@ -1846,7 +1846,7 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'idealmirror', p1: mouse, p2: graphs.point(mouse.x + gridSize, mouse.y), p: 100, group: null};
+    return {type: 'idealmirror', p1: mouse, p2: graphs.point(mouse.x + gridSize, mouse.y), p: 100, group: []};
   },
 
   //使用lineobj原型
@@ -1999,7 +1999,7 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'blackline', p1: mouse, p2: mouse, group: null};
+    return {type: 'blackline', p1: mouse, p2: mouse, group: []};
   },
 
   //使用lineobj原型
@@ -2041,7 +2041,7 @@ var canvasPainter = {
 
   //==================================Créer un objet=============================================
   create: function(mouse) {
-  return {type: 'radiant', x: mouse.x, y: mouse.y, p: 0.5, group: null};
+  return {type: 'radiant', x: mouse.x, y: mouse.y, p: 0.5, group: []};
   },
 
   //==============================Clic de souris lors de la création de l'objet=======================================
@@ -2108,7 +2108,12 @@ var canvasPainter = {
     let diffY = mouse_snapped.y - obj.y;
     obj.x = mouse_snapped.x;
     obj.y = mouse_snapped.y;
-    if(isMovingMultipleObject) movingObjectInGroup(obj, diffX, diffY);
+    if(isMovingMultipleObject) {
+      for(g of obj.group) {
+        if(g == currentSelectedGr[0].name) movingObjectInGroup(obj, diffX, diffY);
+      }
+    }
+    
     return {obj: obj};
   },
 
@@ -2145,7 +2150,7 @@ var canvasPainter = {
 
   //====================================Créer un objet===========================================
   create: function(mouse) {
-    return {type: 'parallel', p1: mouse, p2: mouse, p: 0.5, group: null};
+    return {type: 'parallel', p1: mouse, p2: mouse, p: 0.5, group: []};
   },
 
   //使用lineobj原型
@@ -2215,7 +2220,7 @@ var canvasPainter = {
 
   //=========================================Créer un objet======================================
   create: function(mouse) {
-    return {type: 'arcmirror', p1: mouse, group: null};
+    return {type: 'arcmirror', p1: mouse, group: []};
   },
 
   //=================================Clic de souris lors de la création de l'objet====================================
@@ -2455,9 +2460,9 @@ var canvasPainter = {
 
       obj.p3.x = obj.p3.x - mouseDiffX;
       obj.p3.y = obj.p3.y - mouseDiffY;
-
       //Mettre à jour la position de la souris
       draggingPart.mouse1 = mouse_snapped;
+      
     }
   },
 
@@ -2532,7 +2537,7 @@ var canvasPainter = {
 
   //====================================Créer un objet===========================================
   create: function(mouse) {
-    return {type: 'ruler', p1: mouse, p2: mouse, group: null};
+    return {type: 'ruler', p1: mouse, p2: mouse, group: []};
   },
 
   //Utiliser le prototype lineobj
@@ -2658,7 +2663,7 @@ var canvasPainter = {
 
   //==========================================Créer un objet=====================================
   create: function(mouse) {
-    return {type: 'protractor', p1: mouse, p2: mouse, group: null};
+    return {type: 'protractor', p1: mouse, p2: mouse, group: []};
   },
 
   //Utiliser le prototype lineobj
@@ -2808,7 +2813,7 @@ function slidingWholeLineHalfplane(shift, mouse, draggingPart, obj) {
 function updateMousePositionOnDragging(draggingPart, mouse_snapped, obj) {
   var mouseDiffX = draggingPart.mouse1.x - mouse_snapped.x; //La différence sur l'axe X entre la position actuelle de la souris et la dernière position de la souris
   var mouseDiffY = draggingPart.mouse1.y - mouse_snapped.y; //La différence de l'axe Y entre la position actuelle de la souris et la dernière position de la souris
-
+  
   //Déplacer le premier point du segment de ligne
   obj.p1.x = obj.p1.x - mouseDiffX;
   obj.p1.y = obj.p1.y - mouseDiffY;
@@ -2817,6 +2822,12 @@ function updateMousePositionOnDragging(draggingPart, mouse_snapped, obj) {
   obj.p2.y = obj.p2.y - mouseDiffY;
   //Mettre à jour la position de la souris
   draggingPart.mouse1 = mouse_snapped;
+  if(isMovingMultipleObject) {
+    for(g of obj.group) {
+      if(g == currentSelectedGr[0].name) movingObjectInGroup(obj, -mouseDiffX, -mouseDiffY);
+    }
+  } 
+  
 }
 
 function slidingTerminaisonPoint(basePoint, ctrl, draggingPart, obj, shift, mouse, termPt) {
