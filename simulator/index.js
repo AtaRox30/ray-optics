@@ -95,7 +95,7 @@
     document.getElementById('undo').disabled = true;
     document.getElementById('redo').disabled = true;
 
-    //Delete all the bind of the group for all objects
+    //Delete all the group for all objects
     for(o of objs) o.group = [];
 
     window.onmousedown = function(e)
@@ -1375,7 +1375,20 @@
       {
        //À ce stade, cela signifie que la souris fait glisser un objet
 
-      objTypes[objs[draggingObj].type].dragging(objs[draggingObj], mouse, draggingPart, e.ctrlKey, e.shiftKey);
+      //Insert the isMovingMultipleObject here
+      /*
+        if(isMovingMultipleObject) {
+          for(o of currentSelectedGr[0].elements) {
+            console.log(mouse);
+            console.log(o);
+            let virtualMouse = {type: mouse.type, x: 0,y: 0, exist: mouse.exist}
+            objTypes[o.type].dragging(o, mouse, draggingPart, e.ctrlKey, e.shiftKey);
+          }
+        } else {
+          objTypes[objs[draggingObj].type].dragging(objs[draggingObj], mouse, draggingPart, e.ctrlKey, e.shiftKey);
+        }
+        */
+        objTypes[objs[draggingObj].type].dragging(objs[draggingObj], mouse, draggingPart, e.ctrlKey, e.shiftKey);
       //Si l'objet entier est déplacé, l'objet d'origine sera copié lorsque la touche Ctrl est enfoncée
       if (draggingPart.part == 0)
       {

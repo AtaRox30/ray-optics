@@ -388,7 +388,6 @@ var canvasPainter = {
     //Deplacement du second point du segment de ligne
     obj.p2.x = obj.p2.x + diffX;
     obj.p2.y = obj.p2.y + diffY;
-    console.log("Enter move");
   },
 
 
@@ -794,7 +793,7 @@ var canvasPainter = {
 
   };
 
-  //"refractor"物件
+  //"refractor"物件 HERE
   objTypes['refractor'] = {
 
 
@@ -2031,7 +2030,7 @@ var canvasPainter = {
 
   };
 
-  //objet "rayonnant" -> Coord are x, y
+  //objet "rayonnant" -> Coord are x, y HERE
   objTypes['radiant'] = {
 
   p_name: 'Brightness', //Nom d'attribut
@@ -2826,7 +2825,7 @@ function updateMousePositionOnDragging(draggingPart, mouse_snapped, obj) {
     for(g of obj.group) {
       if(g == currentSelectedGr[0].name) movingObjectInGroup(obj, -mouseDiffX, -mouseDiffY);
     }
-  } 
+  }
   
 }
 
