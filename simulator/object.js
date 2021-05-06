@@ -382,7 +382,6 @@ var canvasPainter = {
 
   //=================================Traduit l'objet====================================
   move: function(obj, diffX, diffY) {
-    /*
     //Deplacement du premier point du segment de ligne
     obj.p1.x = obj.p1.x + diffX;
     obj.p1.y = obj.p1.y + diffY;
@@ -390,7 +389,6 @@ var canvasPainter = {
     obj.p2.x = obj.p2.x + diffX;
     obj.p2.y = obj.p2.y + diffY;
     console.log("Enter move");
-    */
   },
 
 
@@ -422,6 +420,10 @@ var canvasPainter = {
   //==================================Lorsque vous faites glisser un objet===================================
   dragging: function(obj, mouse, draggingPart, ctrl, shift) {
     var basePoint;
+    console.log(obj);
+    console.log(mouse);
+    let diff = {x: obj.p1.x - mouse.x, y: obj.p1.y - mouse.y};
+    console.log(diff);
     if (draggingPart.part == 1)
     {
       basePoint = slidingTerminaisonPoint(basePoint, ctrl, draggingPart, obj, shift, mouse, 1);
@@ -433,7 +435,6 @@ var canvasPainter = {
     if (draggingPart.part == 0)
     {
       //Faire glisser toute la ligne
-      console.log("Enter dragging");
       slidingWholeLine(shift, mouse, draggingPart, obj);
     }
   },
@@ -2103,9 +2104,11 @@ var canvasPainter = {
       var mouse_snapped = mouse;
       draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez Maj
     }
-
+    let diffX = mouse_snapped.x - obj.x;
+    let diffY = mouse_snapped.y - obj.y;
     obj.x = mouse_snapped.x;
     obj.y = mouse_snapped.y;
+    if(isMovingMultipleObject) movingObjectInGroup(obj, diffX, diffY);
     return {obj: obj};
   },
 
@@ -2866,4 +2869,3 @@ function movingObjectInGroup(obj, diffX, diffY) {
     }
   }
 }
-
