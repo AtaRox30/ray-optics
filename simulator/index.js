@@ -640,9 +640,7 @@
       var distanceBefRot = Math.sqrt(Math.pow(rotationPoint.x - mouseBeforeRotation.x, 2) + Math.pow(rotationPoint.y - mouseBeforeRotation.y, 2));
       
       //Doing Al-Kashi theorem with the three distance above to find the angle ABC
-      var upEquation = Math.pow(distanceBefAft, 2) - (Math.pow(distanceBefRot, 2) + Math.pow(distanceAftRot, 2));
-      var downEquation = (-2) * distanceAftRot * distanceBefRot;
-      var angleRad = Math.acos(upEquation / downEquation);
+      var angleRad = Math.acos((Math.pow(distanceBefAft, 2) - (Math.pow(distanceBefRot, 2) + Math.pow(distanceAftRot, 2))) / ((-2) * distanceAftRot * distanceBefRot));
 
       //Because angle are always positive, we want to go back if the mouse goes counterclockwise
       if(!isClockwise(mouseBeforeRotation, rotationPoint, mouseAfterRotation)) angleRad = -angleRad;
@@ -1160,6 +1158,12 @@
     nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}};
     mouseBeforeRotation = {x: Infinity, y: Infinity};
     mouseAfterRotation = {x: Infinity, y: Infinity};
+    if(objs[selectedObj].type == "refractor") {
+      for(s of objs[selectedObj].path) {
+        s.x = Math.trunc(s.x);
+        s.y = Math.trunc(s.y);
+      }
+    }
     return
   }
 
@@ -1221,7 +1225,6 @@
             draggingPart_ = {};
             if (objTypes[objs[i].type].clicked(objs[i], mouse_nogrid, mouse, draggingPart_))
             {
-              console.log("Enter clickedD");
               //clicked() Renvoie true pour indiquer que la souris a cliqué sur l'objet
 
               if (draggingPart_.targetPoint)
