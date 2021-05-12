@@ -631,6 +631,8 @@
   }
   
   function doARotationOnASingleElement(angleRad) {
+      ctx.fillRect(rotationPoint.x-2, rotationPoint.y-2, 3, 3);
+      ctx.fillStyle = "indigo";
       for(pt of objs[selectedObj].path) {
           //Do a rotation arround the rotation point
           let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);
@@ -640,6 +642,8 @@
   }
 
   function doARotationOnCurrentSetOfGroup(angleRad) {
+      ctx.fillRect(rotationPoint.x-2, rotationPoint.y-2, 3, 3);
+      ctx.fillStyle = "indigo";
       for(c of currentSelectedGr[0].elements) {
         for(o of objs) if(c == o) {
           switch(o.type) {
@@ -664,6 +668,11 @@
               newCoord = graphs.rotateArround(o.p2, rotationPoint, angleRad);
               o.p2.x += newCoord.x;
               o.p2.y += newCoord.y;
+              if(o.p3) {
+                newCoord = graphs.rotateArround(o.p3, rotationPoint, angleRad);
+                o.p3.x += newCoord.x;
+                o.p3.y += newCoord.y;
+              }
               break;
             };
           }
@@ -686,8 +695,6 @@
     if(!isClockwise(mouseBeforeRotation, rotationPoint, mouseAfterRotation)) angleRad = -angleRad;
     
     mouseBeforeRotation = mouseAfterRotation;
-    ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
-    ctx.fillStyle = "red";
     if(!isMovingMultipleObject) doARotationOnASingleElement(angleRad);
     if(isMovingMultipleObject) doARotationOnCurrentSetOfGroup(angleRad);
   }
@@ -1222,10 +1229,7 @@
             o.p1.y = Number.parseInt(o.p1.y.toString().substring(0, 3));
             o.p2.x = Number.parseInt(o.p2.x.toString().substring(0, 3));
             o.p2.y = Number.parseInt(o.p2.y.toString().substring(0, 3));
-            if(o.p3) {
-              o.p3.x = Number.parseInt(o.p3.x.toString().substring(0, 3));
-              o.p3.y = Number.parseInt(o.p3.y.toString().substring(0, 3));              
-            }
+            console.log(o);
             break;
           };
         }

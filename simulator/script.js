@@ -250,6 +250,14 @@ function addDeleteListenerForGroup() {
 function addSelectedToAll(group) {
     for(c of currentSelectedGr) c.group.push(group);
     selectGr.push({"name":group, "elements":currentSelectedGr});
+    console.log(currentSelectedGr);
+    isMovingMultipleObject = true;
+    currentSelectedGr = [];
+    for (c of selectGr) {
+        if (group == c.name) {
+            currentSelectedGr.push(c);
+        }
+    }
 }
 
 function createGroupNamer() {

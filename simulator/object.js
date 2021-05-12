@@ -2855,7 +2855,8 @@ function movingObjectInGroup(obj, diffX, diffY) {
     if(object.type == "radiant") {
         object.x += diffX;
         object.y += diffY;
-    } else {
+    } else
+    {
         object.p1.x += diffX;
         object.p1.y += diffY;
         object.p2.x += diffX;
