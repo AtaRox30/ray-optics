@@ -159,7 +159,7 @@ var graphs = {
 
   /**
    * Translate coord after rotation
-   * @param {x,y} M coord of the point we want to rotate
+   * @param {{x,y}} M coord of the point we want to rotate
    * @param {{x,y}} O coord of the point around which we want to rotate
    * @param {number} radian the actual rotation in radian
    * @returns 
@@ -680,7 +680,7 @@ var canvasPainter = {
   },
 
   //================================Lorsque vous faites glisser un objet=====================================
-  dragging: function(obj, mouse, draggingPart, ctrl, shift) {console.log("Test dragging for circlelens"); objTypes['lineobj'].dragging(obj, mouse, draggingPart, false, shift)},
+  dragging: function(obj, mouse, draggingPart, ctrl, shift) {objTypes['lineobj'].dragging(obj, mouse, draggingPart, false, shift)},
 
   //===================Déterminez si une lumière atteindra cet objet (si c'est le cas, renvoyez le point d'intersection)=====================
   rayIntersection: function(obj, ray) {
@@ -901,9 +901,6 @@ var canvasPainter = {
           p2 = graphs.point(obj.path[(i + 2)].x, obj.path[(i + 2)].y);
           p3 = graphs.point(obj.path[(i + 1)].x, obj.path[(i + 1)].y);
           center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(p1, p3)), graphs.perpendicular_bisector(graphs.line(p2, p3)));
-          console.log(graphs.perpendicular_bisector(graphs.line(p1, p3)));
-          console.log(graphs.perpendicular_bisector(graphs.line(p2, p3)));
-          console.log(center);
           if (isFinite(center.x) && isFinite(center.y))
           {
             r = graphs.length(center, p3);
@@ -949,9 +946,6 @@ var canvasPainter = {
           p2 = graphs.point(obj.path[(i + 2) % obj.path.length].x, obj.path[(i + 2) % obj.path.length].y);
           p3 = graphs.point(obj.path[(i + 1) % obj.path.length].x, obj.path[(i + 1) % obj.path.length].y);
           center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(p1, p3)), graphs.perpendicular_bisector(graphs.line(p2, p3)));
-          console.log(graphs.line(p1, p3));
-          console.log(graphs.line(p2, p3));
-          console.log([center.x,center.y]);
           if (isFinite(center.x) && isFinite(center.y))
           {
             r = graphs.length(center, p3);
@@ -1551,7 +1545,6 @@ var canvasPainter = {
     //參考http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form
 
     var cos1 = -normal_x * ray_x - normal_y * ray_y;
-    //console.log(cos1)
     var sq1 = 1 - n1 * n1 * (1 - cos1 * cos1);
 
 
@@ -2558,7 +2551,6 @@ var canvasPainter = {
   var per_x = par_y;
   var per_y = -par_x;
   var ang = Math.atan2(obj.p2.y - obj.p1.y, obj.p2.x - obj.p1.x);
-  //console.log(ang);
 
   var scale_step = 10;
   var scale_step_mid = 50;
@@ -2576,7 +2568,6 @@ var canvasPainter = {
   if (ang > Math.PI * (-0.25) && ang <= Math.PI * 0.25)
   {
     //↘~↗
-    //console.log("↘~↗");
     var scale_direction = -1;
     var scale_len_long = 20;
     var text_ang = ang;
@@ -2586,7 +2577,6 @@ var canvasPainter = {
   else if (ang > Math.PI * (-0.75) && ang <= Math.PI * (-0.25))
   {
     //↗~↖
-    //console.log("↗~↖");
     var scale_direction = 1;
     var scale_len_long = 15;
     var text_ang = ang - Math.PI * (-0.5);
@@ -2596,7 +2586,6 @@ var canvasPainter = {
   else if (ang > Math.PI * 0.75 || ang <= Math.PI * (-0.75))
   {
     //↖~↙
-    //console.log("↖~↙");
     var scale_direction = 1;
     var scale_len_long = 20;
     var text_ang = ang - Math.PI;
@@ -2606,7 +2595,6 @@ var canvasPainter = {
   else
   {
     //↙~↘
-    //console.log("↙~↘");
     var scale_direction = -1;
     var scale_len_long = 15;
     var text_ang = ang - Math.PI * 0.5;
@@ -2867,15 +2855,15 @@ function movingObjectInGroup(obj, diffX, diffY) {
     if(object.type == "radiant") {
         object.x += diffX;
         object.y += diffY;
-    } else
-    if(object.type == "arcmirror") {
-        object.p1.x += diffX;
-        object.p1.y += diffY;
     } else {
         object.p1.x += diffX;
         object.p1.y += diffY;
         object.p2.x += diffX;
         object.p2.y += diffY;
+        if(object.p3) {
+          object.p3.x += diffX;
+          object.p3.y += diffY;
+        }
     }
   }
 }

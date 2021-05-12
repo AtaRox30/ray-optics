@@ -367,7 +367,8 @@
       createUndoPoint();
     };
     document.getElementById('objSetPointRot_button').onclick = function() {
-      isChoosingSeg = true;
+      if(!isMovingMultipleObject) isChoosingSeg = true;
+      if(isMovingMultipleObject) isSettingRotationPoint = true;
     }
     cancelMousedownEvent('objSetPointRot_button');
     
@@ -378,7 +379,6 @@
 
     document.getElementById('save_name').onkeydown = function(e)
     {
-      //console.log(e.keyCode)
       if (e.keyCode == 13)
       {
         //enter
@@ -404,7 +404,7 @@
 
     document.getElementById('xybox').onkeydown = function(e)
     {
-      //console.log(e.keyCode)
+      //(e.keyCode)
       if (e.keyCode == 13)
       {
         //enter
@@ -620,8 +620,8 @@
     let toPath = objs[selectedObj].path[nearestSeg.path.to]
 
     //If the intersection is out of bounds, return
-    if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return;
-    if((sideFunction.m < 0) && ((intersection.x < fromPath.x) || (intersection.x > toPath.x))) return;
+    if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return
+    if((sideFunction.m < 0) && ((intersection.x < fromPath.x) || (intersection.x > toPath.x))) return
     draw();
     setTimeout(function() {
       ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
@@ -630,30 +630,66 @@
     , 10);
   }
   
-  function doARotation() {
-    if(mouseBeforeRotation.x == Infinity) {mouseBeforeRotation = {x: mouse.x, y: mouse.y}; return;}
-    else {
-      mouseAfterRotation = {x: mouse.x, y: mouse.y};
-      //Point A = Cursor before rotation - Point B = Rotation point - Point C = Cursor after rotation
-      var distanceBefAft = Math.sqrt(Math.pow(mouseAfterRotation.x - mouseBeforeRotation.x, 2) + Math.pow(mouseAfterRotation.y - mouseBeforeRotation.y, 2));
-      var distanceAftRot = Math.sqrt(Math.pow(mouseAfterRotation.x - rotationPoint.x, 2) + Math.pow(mouseAfterRotation.y - rotationPoint.y, 2));
-      var distanceBefRot = Math.sqrt(Math.pow(rotationPoint.x - mouseBeforeRotation.x, 2) + Math.pow(rotationPoint.y - mouseBeforeRotation.y, 2));
-      
-      //Doing Al-Kashi theorem with the three distance above to find the angle ABC
-      var angleRad = Math.acos((Math.pow(distanceBefAft, 2) - (Math.pow(distanceBefRot, 2) + Math.pow(distanceAftRot, 2))) / ((-2) * distanceAftRot * distanceBefRot));
-
-      //Because angle are always positive, we want to go back if the mouse goes counterclockwise
-      if(!isClockwise(mouseBeforeRotation, rotationPoint, mouseAfterRotation)) angleRad = -angleRad;
-      
-      mouseBeforeRotation = mouseAfterRotation;
-      
+  function doARotationOnASingleElement(angleRad) {
       for(pt of objs[selectedObj].path) {
           //Do a rotation arround the rotation point
           let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);
           pt.x = newCoord.x;
           pt.y = newCoord.y;
       }
-    }
+  }
+
+  function doARotationOnCurrentSetOfGroup(angleRad) {
+      for(c of currentSelectedGr[0].elements) {
+        for(o of objs) if(c == o) {
+          switch(o.type) {
+            case "refractor": {
+              for(pt of o.path) {
+                let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);
+                pt.x = newCoord.x;
+                pt.y = newCoord.y;
+              }
+              break
+            };
+            case "radiant": {
+              let newCoord = graphs.rotateArround(o, rotationPoint, angleRad);
+              o.x = newCoord.x;
+              o.y = newCoord.y;
+              break
+            };
+            default: {
+              let newCoord = graphs.rotateArround(o.p1, rotationPoint, angleRad);
+              o.p1.x += newCoord.x;
+              o.p1.y += newCoord.y;
+              newCoord = graphs.rotateArround(o.p2, rotationPoint, angleRad);
+              o.p2.x += newCoord.x;
+              o.p2.y += newCoord.y;
+              break;
+            };
+          }
+        }
+      }
+  }
+
+  function doARotation() {
+    if(mouseBeforeRotation.x == Infinity) {mouseBeforeRotation = {x: mouse.x, y: mouse.y}; return;}
+    mouseAfterRotation = {x: mouse.x, y: mouse.y};
+    //Point A = Cursor before rotation - Point B = Rotation point - Point C = Cursor after rotation
+    var distanceBefAft = Math.sqrt(Math.pow(mouseAfterRotation.x - mouseBeforeRotation.x, 2) + Math.pow(mouseAfterRotation.y - mouseBeforeRotation.y, 2));
+    var distanceAftRot = Math.sqrt(Math.pow(mouseAfterRotation.x - rotationPoint.x, 2) + Math.pow(mouseAfterRotation.y - rotationPoint.y, 2));
+    var distanceBefRot = Math.sqrt(Math.pow(rotationPoint.x - mouseBeforeRotation.x, 2) + Math.pow(rotationPoint.y - mouseBeforeRotation.y, 2));
+    
+    //Doing Al-Kashi theorem with the three distance above to find the angle ABC
+    var angleRad = Math.acos((Math.pow(distanceBefAft, 2) - (Math.pow(distanceBefRot, 2) + Math.pow(distanceAftRot, 2))) / ((-2) * distanceAftRot * distanceBefRot));
+
+    //Because angle are always positive, we want to go back if the mouse goes counterclockwise
+    if(!isClockwise(mouseBeforeRotation, rotationPoint, mouseAfterRotation)) angleRad = -angleRad;
+    
+    mouseBeforeRotation = mouseAfterRotation;
+    ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
+    ctx.fillStyle = "red";
+    if(!isMovingMultipleObject) doARotationOnASingleElement(angleRad);
+    if(isMovingMultipleObject) doARotationOnCurrentSetOfGroup(angleRad);
   }
 
   /**
@@ -728,7 +764,7 @@
         hasExceededTime = true;
         timerID = setTimeout(shootWaitingRays, 10); //10ms Revenez ici plus tard function
         document.getElementById('forceStop').style.display = '';
-        //console.log(timerID)
+        //(timerID)
         return; //Hors de la function
       }
 
@@ -1114,7 +1150,6 @@
   //=========================================================MouseDown==============================================================
   function canvas_onmousedown(e) {
   //Lorsque la souris est enfoncée
-  //console.log(e.which);
   if (e.changedTouches) {
     var et = e.changedTouches[0];
   } else {
@@ -1158,10 +1193,42 @@
     nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}};
     mouseBeforeRotation = {x: Infinity, y: Infinity};
     mouseAfterRotation = {x: Infinity, y: Infinity};
-    if(objs[selectedObj].type == "refractor") {
-      for(s of objs[selectedObj].path) {
-        s.x = Math.trunc(s.x);
-        s.y = Math.trunc(s.y);
+    if(!isMovingMultipleObject) {
+      if(objs[selectedObj].type == "refractor") {
+        for(s of objs[selectedObj].path) {
+          s.x = Math.trunc(s.x);
+          s.y = Math.trunc(s.y);
+        }
+      }
+    }
+    if(isMovingMultipleObject) {
+      for(o of currentSelectedGr[0].elements) {
+        console.log(o);
+        switch(o.type) {
+          case "refractor": {
+            for(pt of o.path) {
+              pt.x = Math.trunc(pt.x);
+              pt.y = Math.trunc(pt.y);
+            }
+            break
+          };
+          case "radiant": {
+            o.x = Math.trunc(o.x);
+            o.y = Math.trunc(o.y);
+            break
+          };
+          default: {
+            o.p1.x = Number.parseInt(o.p1.x.toString().substring(0, 3));
+            o.p1.y = Number.parseInt(o.p1.y.toString().substring(0, 3));
+            o.p2.x = Number.parseInt(o.p2.x.toString().substring(0, 3));
+            o.p2.y = Number.parseInt(o.p2.y.toString().substring(0, 3));
+            if(o.p3) {
+              o.p3.x = Number.parseInt(o.p3.x.toString().substring(0, 3));
+              o.p3.y = Number.parseInt(o.p3.y.toString().substring(0, 3));              
+            }
+            break;
+          };
+        }
       }
     }
     return
@@ -1169,12 +1236,20 @@
 
   //Here, the user have clicked while setting rotation point (after choosing a segment)
   //Because right after the click, the program create a ray, we return to prevent that
-  if(isSettingRotationPoint && !isChoosingSeg) {
+  if(isSettingRotationPoint && !isChoosingSeg && !isMovingMultipleObject) {
     isSettingRotationPoint = false;
     isRotating = true;
     rotationPoint = rotationPoint_;
     return
   }
+
+  if(isMovingMultipleObject && isSettingRotationPoint) {
+    isSettingRotationPoint = false;
+    isRotating = true;
+    rotationPoint = {x: mouse.x, y: mouse.y};
+    return
+  }
+
   if (isConstructing)
   {
     if ((e.which && e.which == 1) || (e.changedTouches))
@@ -1186,9 +1261,6 @@
   }
   else
   {
-
-    console.log("Enter !isConstructing");
-    //var returndata;
     if ((!(document.getElementById('lockobjs').checked) != (e.altKey && AddingObjType != '')) && !(e.which == 3))
     {
       //Rechercher chaque objet, trouver l'objet cliqué par la souris
@@ -1315,7 +1387,6 @@
   //========================================================MouseMove===============================================================
   function canvas_onmousemove(e) {
   //Quand la souris bouge
-  console.log("Test canvas_onmousemove");
   if (e.changedTouches) {
     var et = e.changedTouches[0];
   } else {
@@ -1341,7 +1412,7 @@
   }
   mouse = mouse2;
 
-  if(isSettingRotationPoint) choosingRotationPoint();
+  if(isSettingRotationPoint && !isMovingMultipleObject) choosingRotationPoint();
   if(isRotating) {doARotation(); draw();}
 
   if (isConstructing)
@@ -1382,8 +1453,8 @@
       /*
         if(isMovingMultipleObject) {
           for(o of currentSelectedGr[0].elements) {
-            console.log(mouse);
-            console.log(o);
+            (mouse);
+            (o);
             let virtualMouse = {type: mouse.type, x: 0,y: 0, exist: mouse.exist}
             objTypes[o.type].dragging(o, mouse, draggingPart, e.ctrlKey, e.shiftKey);
           }
@@ -1478,7 +1549,6 @@
   }
 
   function canvas_ondblclick(e) {
-    console.log("dblclick");
     var mouse = graphs.point((e.pageX - e.target.offsetLeft - origin.x) / scale, (e.pageY - e.target.offsetTop - origin.y) / scale); //滑鼠實際位置(一律不使用格線)
     if (isConstructing)
     {
@@ -1504,7 +1574,6 @@
           document.getElementById('xybox').style.display = '';
           document.getElementById('xybox').select();
           document.getElementById('xybox').setSelectionRange(1, document.getElementById('xybox').value.length - 1);
-          console.log("show xybox");
           //e.cancelBubble = true;
           //if (e.stopPropagation) e.stopPropagation();
           xyBox_cancelContextMenu = true;
@@ -1953,7 +2022,6 @@
   {
     var jsonData = JSON.parse(document.getElementById('textarea1').value);
     if (typeof jsonData != 'object')return;
-    //console.log(jsonData);
     if (!jsonData.version)
     {
       //"Line Optics Simulation 1.0" ou format antérieur
@@ -2072,12 +2140,10 @@
 
   function toollist_mouseleft(tool, e)
   {
-    //console.log("listout")
     var rect = document.getElementById('tool_' + tool).getBoundingClientRect();
     mouse = graphs.point(e.pageX, e.pageY);
     if (mouse.x < rect.left || mouse.x > rect.right || mouse.y < rect.top || mouse.y > rect.bottom + 5)
     {
-      //滑鼠不在帶下拉選單的按鈕上
       document.getElementById('tool_' + tool + 'list').style.display = 'none';
       if (document.getElementById('tool_' + tool).className == 'toolbtnwithlisthover')
       {
@@ -2115,12 +2181,10 @@
         selected_toolbtn = element;
       }
     });
-    //console.log([selected_toolbtn,selecting_toolbtnwithlist]);
     if (!selecting_toolbtnwithlist)
     {
       selecting_toolbtnwithlist = selected_toolbtn; //Ce toollistbtn appartient au toolbtn précédemment pressé
     }
-    //console.log(selecting_toolbtnwithlist);
     tools_normal.forEach(function(element, index)
     {
       document.getElementById('tool_' + element).className = 'toolbtn';

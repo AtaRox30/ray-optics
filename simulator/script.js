@@ -200,6 +200,7 @@ function addSelectListenerForGroup() {
     $("#sideMultipleGroup tbody tr td:last-child").on("click", function () {
         if (this.id == "ungroup") {
             isMovingMultipleObject = false;
+            isSettingRotationPoint = false;
             currentSelectedGr = [];
             for (r of $(this).parent().parent().find("tr")) {
                 $(r).children().eq(2).children().prop("checked", false);
