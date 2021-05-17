@@ -32,7 +32,7 @@ function ToolBarViewModel() {
         new ToolBarItem("Circular Arc", "tool_arcmirror", "mirror_arc",
           ToolTypeEnum.RADIO),
         new ToolBarItem("Ideal Curved", "tool_idealmirror", "ideal_curved_mirror",
-          ToolTypeEnum.RADIO)
+          ToolTypeEnum.RADIO),
       ]),
       self.glasses = new ToolBarItem("Glasses", "tool_refractor_", 3, ToolTypeEnum.RADIOLIST, [
         new ToolBarItem("Half-plane", "tool_halfplane", "glass_halfplane",
