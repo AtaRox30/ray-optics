@@ -168,9 +168,9 @@ var graphs = {
     var xM, yM, x, y;
     xM = M.x - O.x;
     yM = M.y - O.y;
-    x = xM * Math.cos (radian) + yM * Math.sin (radian) + O.x;
-    y = - xM * Math.sin (radian) + yM * Math.cos (radian) + O.y;
-    return {x: x.toFixed(5), y: y.toFixed(5)};
+    x = xM * Math.cos(radian) + yM * Math.sin(radian) + O.x;
+    y = -xM * Math.sin(radian) + yM * Math.cos(radian) + O.y;
+    return {"x": x, "y": y};
   },
 
 

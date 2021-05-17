@@ -622,17 +622,11 @@
     //If the intersection is out of bounds, return
     if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return
     if((sideFunction.m < 0) && ((intersection.x < fromPath.x) || (intersection.x > toPath.x))) return
-    draw();
-    setTimeout(function() {
-      ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
-      ctx.fillStyle = "red";
-    }
-    , 10);
+    drawOnGoingRotationPoint(intersection)
   }
   
   function doARotationOnASingleElement(angleRad) {
-      ctx.fillRect(rotationPoint.x-2, rotationPoint.y-2, 3, 3);
-      ctx.fillStyle = "indigo";
+      drawRotationPoint()
       for(pt of objs[selectedObj].path) {
           //Do a rotation arround the rotation point
           let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);
@@ -642,8 +636,7 @@
   }
 
   function doARotationOnCurrentSetOfGroup(angleRad) {
-      ctx.fillRect(rotationPoint.x-2, rotationPoint.y-2, 3, 3);
-      ctx.fillStyle = "indigo";
+      drawRotationPoint()
       for(c of currentSelectedGr[0].elements) {
         for(o of objs) if(c == o) {
           switch(o.type) {
@@ -663,15 +656,15 @@
             };
             default: {
               let newCoord = graphs.rotateArround(o.p1, rotationPoint, angleRad);
-              o.p1.x += newCoord.x;
-              o.p1.y += newCoord.y;
+              o.p1.x = newCoord.x;
+              o.p1.y = newCoord.y;
               newCoord = graphs.rotateArround(o.p2, rotationPoint, angleRad);
-              o.p2.x += newCoord.x;
-              o.p2.y += newCoord.y;
+              o.p2.x = newCoord.x;
+              o.p2.y = newCoord.y;
               if(o.p3) {
                 newCoord = graphs.rotateArround(o.p3, rotationPoint, angleRad);
-                o.p3.x += newCoord.x;
-                o.p3.y += newCoord.y;
+                o.p3.x = newCoord.x;
+                o.p3.y = newCoord.y;
               }
               break;
             };
@@ -708,6 +701,22 @@
    */
   function isClockwise(pt1, pt2, pt3) {
     return ((pt2.x - pt1.x) * (pt3.y - pt1.y) - (pt2.y - pt1.y) * (pt3.x - pt1.x)) > 0;
+  }
+
+  function drawRotationPoint() {
+    var rotationPTInterval = setInterval(function() {
+      ctx.fillRect(rotationPoint.x-2, rotationPoint.y-2, 3, 3);
+      ctx.fillStyle = "red";
+      if(!isRotating) clearInterval(rotationPTInterval);
+    }, 10)
+  }
+
+  function drawOnGoingRotationPoint(intersection) {
+    var rotationPTOGInterval = setInterval(function() {
+      ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
+      ctx.fillStyle = "red";
+      if(!isSettingRotationPoint) clearInterval(rotationPTOGInterval);
+    }, 10)
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1210,7 +1219,6 @@
     }
     if(isMovingMultipleObject) {
       for(o of currentSelectedGr[0].elements) {
-        console.log(o);
         switch(o.type) {
           case "refractor": {
             for(pt of o.path) {
@@ -1225,11 +1233,14 @@
             break
           };
           default: {
-            o.p1.x = Number.parseInt(o.p1.x.toString().substring(0, 3));
-            o.p1.y = Number.parseInt(o.p1.y.toString().substring(0, 3));
-            o.p2.x = Number.parseInt(o.p2.x.toString().substring(0, 3));
-            o.p2.y = Number.parseInt(o.p2.y.toString().substring(0, 3));
-            console.log(o);
+            o.p1.x = Math.trunc(o.p1.x);
+            o.p1.y = Math.trunc(o.p1.y);
+            o.p2.x = Math.trunc(o.p2.x);
+            o.p2.y = Math.trunc(o.p2.y);
+            if(o.p3) {
+              o.p3.x = Math.trunc(o.p3.x);
+              o.p3.y = Math.trunc(o.p3.y);
+            }
             break;
           };
         }
