@@ -573,6 +573,7 @@
   //===============================Zone de traitement de la rotation ===================================
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   function choosingSeg(draggingPart_, i) {
+    if(isMovingMultipleObject) return
     if (draggingPart_.part == 0) {
       //Here, the dragging part is a segment
       let clickedObject = objs[i];
@@ -622,7 +623,9 @@
     //If the intersection is out of bounds, return
     if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return
     if((sideFunction.m < 0) && ((intersection.x < fromPath.x) || (intersection.x > toPath.x))) return
-    drawOnGoingRotationPoint(intersection)
+    draw();
+    ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
+    ctx.fillStyle = "red";
   }
   
   function doARotationOnASingleElement(angleRad) {
@@ -710,15 +713,6 @@
       if(!isRotating) clearInterval(rotationPTInterval);
     }, 10)
   }
-
-  function drawOnGoingRotationPoint(intersection) {
-    var rotationPTOGInterval = setInterval(function() {
-      ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
-      ctx.fillStyle = "red";
-      if(!isSettingRotationPoint) clearInterval(rotationPTOGInterval);
-    }, 10)
-  }
-
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   //========================================Zone de traitement de la lumière==================================================
   //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1481,6 +1475,7 @@
       //Si l'objet entier est déplacé, l'objet d'origine sera copié lorsque la touche Ctrl est enfoncée
       if (draggingPart.part == 0)
       {
+        if(isSettingRotationPoint) isSettingRotationPoint = false;
         if (e.ctrlKey && !draggingPart.hasDuplicated)
         {
 

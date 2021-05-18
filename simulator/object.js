@@ -170,6 +170,7 @@ var graphs = {
     yM = M.y - O.y;
     x = xM * Math.cos(radian) + yM * Math.sin(radian) + O.x;
     y = -xM * Math.sin(radian) + yM * Math.cos(radian) + O.y;
+    if(!Boolean(x) || !Boolean(y)) return {"x": M.x, "y": M.y};
     return {"x": x, "y": y};
   },
 
@@ -548,7 +549,7 @@ var canvasPainter = {
     objTypes['refractor'].fillGlass(obj.p);
   }
 
-  ctx.fillStyle = 'indigo';
+  ctx.fillStyle = 'red';
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3);
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
 
