@@ -279,11 +279,6 @@ var canvasPainter = {
     if (graph.type == 1) {
       ctx.fillStyle = color ? color : 'red';
       ctx.fillRect(graph.x - 2, graph.y - 2, 5, 5); //Dessinez un rectangle rempli
-      /*
-        ctx.beginPath();
-        ctx.arc(graph.x,graph.y,2,0,Math.PI*2,false);
-        ctx.fill();
-      */
     }
     // line
     else if (graph.type == 2) {
@@ -332,7 +327,6 @@ var canvasPainter = {
     }
   },
   cls: function() {
-    //var ctx = canvas.getContext('2d');
     ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.setTransform(scale,0,0,scale,origin.x, origin.y);
@@ -461,7 +455,7 @@ var canvasPainter = {
 
   //===================================Créer un objet============================================
   create: function(mouse) {
-    return {type: 'halfplane', p1: mouse, p2: mouse, p: 1.5, group: []};
+    return {type: 'halfplane', p1: mouse, p2: mouse, p: 1.5, group: [], selected: false};
   },
 
   //Utiliser le prototype lineobj
@@ -553,7 +547,9 @@ var canvasPainter = {
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3);
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
 
-
+  if(obj.selected) ctx.strokeStyle = "#ffffff";
+  else ctx.strokeStyle = "transparent";
+  ctx.stroke();
   },
 
   //============================Lorsque l'objet est frappé par la lumière=================================
@@ -646,7 +642,7 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'circlelens', p1: mouse, p2: mouse, p: 1.5, group: []};
+    return {type: 'circlelens', p1: mouse, p2: mouse, p: 1.5, group: [], selected: false};
   },
 
   //Utiliser le prototype lineobj
@@ -718,7 +714,9 @@ var canvasPainter = {
   ctx.fillStyle = 'indigo';
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
 
-
+  if(obj.selected) ctx.strokeStyle = "#ffffff";
+  else ctx.strokeStyle = "transparent";
+  ctx.stroke();
   },
 
   //===========================Lorsque l'objet est frappé par la lumière==================================
@@ -806,7 +804,7 @@ var canvasPainter = {
   supportSurfaceMerging: true, //Intégration de l'interface de support
   //=================================Créer un objet==============================================
   create: function(mouse) {
-    return {type: 'refractor', path: [{x: mouse.x, y: mouse.y, arc: false}], notDone: true, p: 1.5, group: []};
+    return {type: 'refractor', path: [{x: mouse.x, y: mouse.y, arc: false}], notDone: true, p: 1.5, group: [], selected: false};
   },
 
   //=================================Clic de souris lors de la création de l'objet====================================
@@ -983,6 +981,10 @@ var canvasPainter = {
         ctx.fillRect(obj.path[i].x - 2, obj.path[i].y - 2, 3, 3);
       }
     }
+
+    if(obj.selected) ctx.strokeStyle = "#ffffff";
+    else ctx.strokeStyle = "transparent";
+    ctx.stroke();
   },
 
   fillGlass: function(n)
@@ -1603,7 +1605,7 @@ var canvasPainter = {
 
   //=======================================Créer un objet========================================
   create: function(mouse) {
-    return {type: 'laser', p1: mouse, p2: mouse, group: []};
+    return {type: 'laser', p1: mouse, p2: mouse, group: [], selected: false};
   },
 
   //使用lineobj原型
@@ -1642,7 +1644,7 @@ var canvasPainter = {
 
   //=====================================Créer un objet==========================================
   create: function(mouse) {
-    return {type: 'mirror', p1: mouse, p2: mouse, group: []};
+    return {type: 'mirror', p1: mouse, p2: mouse, group: [], selected: false};
   },
 
   //Utiliser le prototype lineobj
@@ -1695,7 +1697,7 @@ var canvasPainter = {
 
   //========================================Créer un objet=======================================
   create: function(mouse) {
-    return {type: 'lens', p1: mouse, p2: mouse, p: 100, group: []};
+    return {type: 'lens', p1: mouse, p2: mouse, p: 100, group: [], selected: false};
   },
 
   //Utiliser le prototype lineobj
@@ -1839,7 +1841,7 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'idealmirror', p1: mouse, p2: graphs.point(mouse.x + gridSize, mouse.y), p: 100, group: []};
+    return {type: 'idealmirror', p1: mouse, p2: graphs.point(mouse.x + gridSize, mouse.y), p: 100, group: [], selected: false};
   },
 
   //使用lineobj原型
@@ -1891,42 +1893,6 @@ var canvasPainter = {
 
   //ctx.globalAlpha=1;
   ctx.fillStyle = 'rgb(255,0,0)';
-
-  //單面版畫箭頭(兩方向焦距相反)
-  /*
-  if(obj.p>0)
-  {
-    //畫箭頭(p1)
-    ctx.beginPath();
-    ctx.moveTo(obj.p1.x+per_x*arrow_size_per2,obj.p1.y+per_y*arrow_size_per2);
-    ctx.lineTo(obj.p1.x-per_x*arrow_size_per,obj.p1.y-per_y*arrow_size_per);
-    ctx.lineTo(obj.p1.x+per_x*arrow_size_per2+par_x*arrow_size_par,obj.p1.y+per_y*arrow_size_per2+par_y*arrow_size_par);
-    ctx.fill();
-
-    //畫箭頭(p2)
-    ctx.beginPath();
-    ctx.moveTo(obj.p2.x+per_x*arrow_size_per2,obj.p2.y+per_y*arrow_size_per2);
-    ctx.lineTo(obj.p2.x-per_x*arrow_size_per,obj.p2.y-per_y*arrow_size_per);
-    ctx.lineTo(obj.p2.x+per_x*arrow_size_per2-par_x*arrow_size_par,obj.p2.y+per_y*arrow_size_per2-par_y*arrow_size_par);
-    ctx.fill();
-  }
-  if(obj.p<0)
-  {
-    //畫箭頭(p1)
-    ctx.beginPath();
-    ctx.moveTo(obj.p1.x-per_x*arrow_size_per2,obj.p1.y-per_y*arrow_size_per2);
-    ctx.lineTo(obj.p1.x+per_x*arrow_size_per,obj.p1.y+per_y*arrow_size_per);
-    ctx.lineTo(obj.p1.x-per_x*arrow_size_per2+par_x*arrow_size_par,obj.p1.y-per_y*arrow_size_per2+par_y*arrow_size_par);
-    ctx.fill();
-
-    //畫箭頭(p2)
-    ctx.beginPath();
-    ctx.moveTo(obj.p2.x-per_x*arrow_size_per2,obj.p2.y-per_y*arrow_size_per2);
-    ctx.lineTo(obj.p2.x+per_x*arrow_size_per,obj.p2.y+per_y*arrow_size_per);
-    ctx.lineTo(obj.p2.x-per_x*arrow_size_per2-par_x*arrow_size_par,obj.p2.y-per_y*arrow_size_per2-par_y*arrow_size_par);
-    ctx.fill();
-  }
-  */
 
   //Flèche de gravure recto-verso
   if (obj.p < 0)
@@ -1992,7 +1958,7 @@ var canvasPainter = {
 
   //======================================Créer un objet=========================================
   create: function(mouse) {
-    return {type: 'blackline', p1: mouse, p2: mouse, group: []};
+    return {type: 'blackline', p1: mouse, p2: mouse, group: [], selected: false};
   },
 
   //使用lineobj原型
@@ -2034,7 +2000,7 @@ var canvasPainter = {
 
   //==================================Créer un objet=============================================
   create: function(mouse) {
-  return {type: 'radiant', x: mouse.x, y: mouse.y, p: 0.5, group: []};
+  return {type: 'radiant', x: mouse.x, y: mouse.y, p: 0.5, group: [], selected: false};
   },
 
   //==============================Clic de souris lors de la création de l'objet=======================================
@@ -2143,7 +2109,7 @@ var canvasPainter = {
 
   //====================================Créer un objet===========================================
   create: function(mouse) {
-    return {type: 'parallel', p1: mouse, p2: mouse, p: 0.5, group: []};
+    return {type: 'parallel', p1: mouse, p2: mouse, p: 0.5, group: [], selected: false};
   },
 
   //使用lineobj原型
@@ -2213,7 +2179,7 @@ var canvasPainter = {
 
   //=========================================Créer un objet======================================
   create: function(mouse) {
-    return {type: 'arcmirror', p1: mouse, group: []};
+    return {type: 'arcmirror', p1: mouse, group: [], selected: false};
   },
 
   //=================================Clic de souris lors de la création de l'objet====================================
@@ -2530,7 +2496,7 @@ var canvasPainter = {
 
   //====================================Créer un objet===========================================
   create: function(mouse) {
-    return {type: 'ruler', p1: mouse, p2: mouse, group: []};
+    return {type: 'ruler', p1: mouse, p2: mouse, group: [], selected: false};
   },
 
   //Utiliser le prototype lineobj
@@ -2651,7 +2617,7 @@ var canvasPainter = {
 
   //==========================================Créer un objet=====================================
   create: function(mouse) {
-    return {type: 'protractor', p1: mouse, p2: mouse, group: []};
+    return {type: 'protractor', p1: mouse, p2: mouse, group: [], selected: false};
   },
 
   //Utiliser le prototype lineobj
@@ -2784,6 +2750,313 @@ var canvasPainter = {
   }
 
   };
+
+  //objet "règle" -> Coord are p1, p2
+  objTypes['ruler'] = {
+
+  //====================================Créer un objet===========================================
+  create: function(mouse) {
+    return {type: 'ruler', p1: mouse, p2: mouse, group: [], selected: false};
+  },
+
+  //Utiliser le prototype lineobj
+  c_mousedown: objTypes['lineobj'].c_mousedown,
+  c_mousemove: objTypes['lineobj'].c_mousemove,
+  c_mouseup: objTypes['lineobj'].c_mouseup,
+  move: objTypes['lineobj'].move,
+  clicked: objTypes['lineobj'].clicked,
+  dragging: objTypes['lineobj'].dragging,
+
+  //============================Dessiner des objets sur le canevas=========================================
+  draw: function(obj, canvas, aboveLight) {
+  //var ctx = canvas.getContext('2d');
+  if (aboveLight)return;
+  ctx.globalCompositeOperation = 'lighter';
+  var len = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
+  var par_x = (obj.p2.x - obj.p1.x) / len;
+  var par_y = (obj.p2.y - obj.p1.y) / len;
+  var per_x = par_y;
+  var per_y = -par_x;
+  var ang = Math.atan2(obj.p2.y - obj.p1.y, obj.p2.x - obj.p1.x);
+
+  var scale_step = 10;
+  var scale_step_mid = 50;
+  var scale_step_long = 100;
+  var scale_len = 10;
+  var scale_len_mid = 15;
+  //var scale_len_long=20;
+
+
+  ctx.strokeStyle = 'rgb(128,128,128)';
+  //ctx.font="bold 14px Arial";
+  ctx.font = '14px Arial';
+  ctx.fillStyle = 'rgb(128,128,128)';
+
+  if (ang > Math.PI * (-0.25) && ang <= Math.PI * 0.25)
+  {
+    //↘~↗
+    var scale_direction = -1;
+    var scale_len_long = 20;
+    var text_ang = ang;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+  }
+  else if (ang > Math.PI * (-0.75) && ang <= Math.PI * (-0.25))
+  {
+    //↗~↖
+    var scale_direction = 1;
+    var scale_len_long = 15;
+    var text_ang = ang - Math.PI * (-0.5);
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+  }
+  else if (ang > Math.PI * 0.75 || ang <= Math.PI * (-0.75))
+  {
+    //↖~↙
+    var scale_direction = 1;
+    var scale_len_long = 20;
+    var text_ang = ang - Math.PI;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+  }
+  else
+  {
+    //↙~↘
+    var scale_direction = -1;
+    var scale_len_long = 15;
+    var text_ang = ang - Math.PI * 0.5;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+  }
+
+  //ctx.textBaseline="hanging";
+  //ctx.lineWidth=3;
+  //ctx.lineCap = "butt";
+  ctx.beginPath();
+  ctx.moveTo(obj.p1.x, obj.p1.y);
+  ctx.lineTo(obj.p2.x, obj.p2.y);
+  //ctx.stroke();
+  //ctx.lineWidth=1;
+  var x, y;
+  for (var i = 0; i <= len; i += scale_step)
+  {
+    ctx.moveTo(obj.p1.x + i * par_x, obj.p1.y + i * par_y);
+    if (i % scale_step_long == 0)
+    {
+      x = obj.p1.x + i * par_x + scale_direction * scale_len_long * per_x;
+      y = obj.p1.y + i * par_y + scale_direction * scale_len_long * per_y;
+      ctx.lineTo(x, y);
+      //ctx.stroke();
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(text_ang);
+      ctx.fillText(i, 0, 0);
+      ctx.restore();
+    }
+    else if (i % scale_step_mid == 0)
+    {
+      ctx.lineTo(obj.p1.x + i * par_x + scale_direction * scale_len_mid * per_x, obj.p1.y + i * par_y + scale_direction * scale_len_mid * per_y);
+      //ctx.stroke();
+    }
+    else
+    {
+      ctx.lineTo(obj.p1.x + i * par_x + scale_direction * scale_len * per_x, obj.p1.y + i * par_y + scale_direction * scale_len * per_y);
+      //ctx.stroke();
+    }
+  }
+  ctx.stroke();
+  //ctx.stroke();
+
+  ctx.globalCompositeOperation = 'source-over';
+  }
+
+  };
+
+  //"protractor"物件 -> Coord are p1, p2
+  objTypes['protractor'] = {
+
+  //==========================================Créer un objet=====================================
+  create: function(mouse) {
+    return {type: 'protractor', p1: mouse, p2: mouse, group: [], selected: false};
+  },
+
+  //Utiliser le prototype lineobj
+  c_mousedown: objTypes['lineobj'].c_mousedown,
+  c_mousemove: function(obj, mouse, ctrl, shift) {objTypes['lineobj'].c_mousemove(obj, mouse, false, shift)},
+  c_mouseup: objTypes['lineobj'].c_mouseup,
+  move: objTypes['lineobj'].move,
+
+  //=========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)============================
+  clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
+    if (mouseOnPoint(mouse_nogrid, obj.p1) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p2))
+    {
+      draggingPart.part = 1;
+      draggingPart.targetPoint = graphs.point(obj.p1.x, obj.p1.y);
+      return true;
+    }
+    if (mouseOnPoint(mouse_nogrid, obj.p2))
+    {
+      draggingPart.part = 2;
+      draggingPart.targetPoint = graphs.point(obj.p2.x, obj.p2.y);
+      return true;
+    }
+    if (Math.abs(graphs.length(obj.p1, mouse_nogrid) - graphs.length_segment(obj)) < clickExtent_line)
+    {
+      draggingPart.part = 0;
+      draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
+      draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
+      draggingPart.snapData = {};
+      return true;
+    }
+    return false;
+  },
+
+  //==================================Lorsque vous faites glisser un objet===================================
+  dragging: function(obj, mouse, draggingPart, ctrl, shift) {objTypes['lineobj'].dragging(obj, mouse, draggingPart, false, shift)},
+
+  //================================Dessiner des objets sur le canevas=====================================
+  draw: function(obj, canvas, aboveLight) {
+  //var ctx = canvas.getContext('2d');
+  if (!aboveLight)
+  {
+    ctx.globalCompositeOperation = 'lighter';
+    var r = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
+    var scale_width_limit = 5;
+
+    var scale_step = 1;
+    var scale_step_mid = 5;
+    var scale_step_long = 10;
+    var scale_len = 10;
+    var scale_len_mid = 15;
+    var scale_len_long = 20;
+
+    ctx.strokeStyle = 'rgb(128,128,128)';
+    ctx.font = 'bold 14px Arial';
+    ctx.fillStyle = 'rgb(128,128,128)';
+
+    if (r * scale_step * Math.PI / 180 < scale_width_limit)
+    {
+      //L'échelle est trop petite
+      scale_step = 2;
+      scale_step_mid = 10;
+      scale_step_long = 30;
+    }
+    if (r * scale_step * Math.PI / 180 < scale_width_limit)
+    {
+      //L'échelle est trop petite
+      scale_step = 5;
+      scale_step_mid = 10;
+      scale_step_long = 30;
+      scale_len = 5;
+      scale_len_mid = 8;
+      scale_len_long = 10;
+      ctx.font = 'bold 10px Arial';
+    }
+    if (r * scale_step * Math.PI / 180 < scale_width_limit)
+    {
+      //L'échelle est trop petite
+      scale_step = 10;
+      scale_step_mid = 30;
+      scale_step_long = 90;
+    }
+
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    ctx.beginPath();
+    ctx.arc(obj.p1.x, obj.p1.y, r, 0, Math.PI * 2, false);
+    //ctx.stroke();
+
+    var ang, x, y;
+    for (var i = 0; i < 360; i += scale_step)
+    {
+      ang = i * Math.PI / 180 + Math.atan2(obj.p2.y - obj.p1.y, obj.p2.x - obj.p1.x);
+      ctx.moveTo(obj.p1.x + r * Math.cos(ang), obj.p1.y + r * Math.sin(ang));
+      if (i % scale_step_long == 0)
+      {
+        x = obj.p1.x + (r - scale_len_long) * Math.cos(ang);
+        y = obj.p1.y + (r - scale_len_long) * Math.sin(ang);
+        ctx.lineTo(x, y);
+        //ctx.stroke();
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(ang + Math.PI * 0.5);
+        ctx.fillText((i > 180) ? (360 - i) : i, 0, 0);
+        ctx.restore();
+      }
+      else if (i % scale_step_mid == 0)
+      {
+        ctx.lineTo(obj.p1.x + (r - scale_len_mid) * Math.cos(ang), obj.p1.y + (r - scale_len_mid) * Math.sin(ang));
+        //ctx.stroke();
+      }
+      else
+      {
+        ctx.lineTo(obj.p1.x + (r - scale_len) * Math.cos(ang), obj.p1.y + (r - scale_len) * Math.sin(ang));
+        //ctx.stroke();
+      }
+    }
+    ctx.stroke();
+    //ctx.stroke();
+
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  ctx.fillStyle = 'red';
+  ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3);
+  ctx.fillStyle = 'rgb(255,0,255)';
+  //ctx.fillStyle="indigo";
+  ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
+
+  }
+
+};
+
+objTypes['regular'] = {
+
+  //=======================================Créer un objet========================================
+  create: function(mouse) {
+    return {type: 'regular', p1: mouse, p2: mouse, group: [], selected: false};
+  },
+
+  //使用lineobj原型
+  c_mousedown: objTypes['lineobj'].c_mousedown,
+  c_mousemove: objTypes['lineobj'].c_mousemove,
+  c_mouseup: objTypes['lineobj'].c_mouseup,
+  move: objTypes['lineobj'].move,
+  clicked: objTypes['lineobj'].clicked,
+  dragging: objTypes['lineobj'].dragging,
+
+  //=================================Dessiner des objets sur le canevas====================================
+  draw: function(obj, canvas) {
+  //var ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgb(255,0,0)';
+  ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 5, 5);
+  ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
+  },
+
+
+  //========================================Tirez sur la lumière======================================
+  shoot: function(obj) {
+  var ray1 = graphs.ray(obj.p1, obj.p2);
+  ray1.brightness = 1;
+  ray1.gap = true;
+  ray1.isNew = true;
+  addRay(ray1);
+  }
+};
+
+function slidingWholeLineHalfplane(shift, mouse, draggingPart, obj) {
+  if (shift) {
+    var mouse_snapped = snapToDirection(mouse, draggingPart.mouse0, [{ x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y) }, { x: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y), y: -(draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x) }], draggingPart.snapData);
+  }
+
+  else {
+    var mouse_snapped = mouse;
+    draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez la touche Maj
+  }
+
+  updateMousePositionOnDragging(draggingPart, mouse_snapped, obj);
+}
 
 function slidingWholeLineHalfplane(shift, mouse, draggingPart, obj) {
   if (shift) {

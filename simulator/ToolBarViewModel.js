@@ -50,6 +50,8 @@ function ToolBarViewModel() {
         ToolTypeEnum.RADIO),
       new ToolBarItem("Protractor", "tool_protractor", "protractor",
         ToolTypeEnum.RADIO),
+      new ToolBarItem("Regular", "tool_regular", "regular",
+        ToolTypeEnum.RADIO),
       new ToolBarItem("Move View", "tool_", undefined,
         ToolTypeEnum.RADIO)
     ]),

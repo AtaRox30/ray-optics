@@ -1325,6 +1325,8 @@
                 //Le clic de souris n'est pas un point, et le point n'a pas été cliqué jusqu'à présent
                 targetObj_index = i; //Dans le cas d'un non-point, sélectionnez le dernier créé
                 draggingPart = draggingPart_;
+                if(selectedObj != -1) unhighlightObject(selectedObj);
+                highlightObject(targetObj_index);
               }
               if(isChoosingSeg) {
                 //Here, the user clicked on the "Set a rotation point" and on the polygon
@@ -1752,6 +1754,16 @@
     }
 
     endPositioning();
+  }
+
+  function highlightObject(index) {
+    objs[index].selected = true;
+    console.log(objs[index]);
+  }
+
+  function unhighlightObject(index) {
+    objs[index].selected = false;
+    console.log(objs[index]);
   }
 
   function endPositioning()
@@ -2404,6 +2416,12 @@
     //Protractor
     document.getElementById('tool_protractor').value = getMsg('toolname_protractor');
     document.getElementById('tool_protractor').dataset['n'] = getMsg('toolname_protractor');
+
+    //Regular
+    //document.getElementById('tool_regular').value = getMsg('toolname_regular');
+    document.getElementById('tool_regular').value = "Regular";
+    //document.getElementById('tool_regular').dataset['n'] = getMsg('toolname_regular');
+    document.getElementById('tool_regular').dataset['n'] = "";
 
     //Move view
     document.getElementById('tool_').value = getMsg('toolname_');

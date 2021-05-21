@@ -317,5 +317,11 @@ locales["en"] = {
   },
   "help_popover": {
     "message": "Toggle help popup. <br><br>Some other tips: <br>Click to select object, <br>Ctrl+D to duplicate, <br>Delete key to delete, <br>Arrow keys to move slowly, <br>Double-click or right-click the dot can edit its coordinates directly. <br>When creating line objects, <br>Hold Shift to lock angle, <br>Hold Ctrl to make the first point be the center point."
-  }
+  },
+  "tool_regular": {
+    "message": "Line"
+  },
+  "tool_regular_popover": {
+    "message": "A simple line that is not affected by physics"
+  },
 }
