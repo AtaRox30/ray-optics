@@ -63,6 +63,9 @@ locales["en"] = {
   "toolname_protractor": {
     "message": "Protractor"
   },
+  "toolname_regular": {
+    "message": "Regular"
+  },
   "toolname_": {
     "message": "Move view"
   },

@@ -805,7 +805,7 @@
             if (objTypes[objs[i].type].rayIntersection) {
               //↓Détermine si objs [i] croise cette lumière
               s_point_temp = objTypes[objs[i].type].rayIntersection(objs[i], waitingRays[j]);
-              if (s_point_temp)
+              if (s_point_temp && !waitingRays[j].regular)
               {
                 //À ce stade, cela signifie que objs [i] est "l'objet qui croise cette lumière", et que le point d'intersection est s_point_temp
                 s_lensq_temp = graphs.length_squared(waitingRays[j].p1, s_point_temp); //La distance entre l'intersection et [la tête du rayon]
@@ -853,7 +853,11 @@
           {
             if (mode == 'light' || mode == 'extended_light')
             {
-              canvasPainter.draw(waitingRays[j], 'rgb(255,255,128)'); //Dessine cette lumière
+              if(!waitingRays[j].regular) {
+                canvasPainter.draw(waitingRays[j], 'rgb(255,255,128)'); //Dessine cette lumière
+              } else {
+                canvasPainter.draw(waitingRays[j], 'rgb(128,236,255)'); //Dessine cette normale
+              }
               //if(waitingRays[j].gap)canvasPainter.draw(waitingRays[j],canvas,"rgb(0,0,255)");
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)
@@ -2418,10 +2422,8 @@
     document.getElementById('tool_protractor').dataset['n'] = getMsg('toolname_protractor');
 
     //Regular
-    //document.getElementById('tool_regular').value = getMsg('toolname_regular');
-    document.getElementById('tool_regular').value = "Regular";
-    //document.getElementById('tool_regular').dataset['n'] = getMsg('toolname_regular');
-    document.getElementById('tool_regular').dataset['n'] = "";
+    document.getElementById('tool_regular').value = getMsg('toolname_regular');
+    document.getElementById('tool_regular').dataset['n'] = getMsg('toolname_regular');
 
     //Move view
     document.getElementById('tool_').value = getMsg('toolname_');

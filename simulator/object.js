@@ -546,10 +546,6 @@ var canvasPainter = {
   ctx.fillStyle = 'red';
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3);
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
-
-  if(obj.selected) ctx.strokeStyle = "#ffffff";
-  else ctx.strokeStyle = "transparent";
-  ctx.stroke();
   },
 
   //============================Lorsque l'objet est frappé par la lumière=================================
@@ -713,10 +709,6 @@ var canvasPainter = {
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3);
   ctx.fillStyle = 'indigo';
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
-
-  if(obj.selected) ctx.strokeStyle = "#ffffff";
-  else ctx.strokeStyle = "transparent";
-  ctx.stroke();
   },
 
   //===========================Lorsque l'objet est frappé par la lumière==================================
@@ -982,9 +974,6 @@ var canvasPainter = {
       }
     }
 
-    if(obj.selected) ctx.strokeStyle = "#ffffff";
-    else ctx.strokeStyle = "transparent";
-    ctx.stroke();
   },
 
   fillGlass: function(n)
@@ -1780,7 +1769,6 @@ var canvasPainter = {
     ctx.lineTo(obj.p2.x + par_x * arrow_size_par - per_x * arrow_size_per, obj.p2.y + par_y * arrow_size_par - per_y * arrow_size_per);
     ctx.fill();
   }
-
   },
 
 
@@ -2457,12 +2445,14 @@ var canvasPainter = {
       //Les trois points de l'arc sont colinéaires et traités comme un segment de ligne
       return objTypes['mirror'].rayIntersection(obj, ray);
     }
-    //alert("")
   },
 
   //===========================Lorsque l'objet est frappé par la lumière==================================
   shot: function(obj, ray, rayIndex, rp) {
-    //alert("")
+    console.log(ray);
+    console.log(rayIndex);
+    console.log(rp);
+    console.log(waitingRays[rayIndex])
     var center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(obj.p1, obj.p3)), graphs.perpendicular_bisector(graphs.line(obj.p2, obj.p3)));
     if (isFinite(center.x) && isFinite(center.y))
     {
@@ -3028,7 +3018,6 @@ objTypes['regular'] = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  //var ctx = canvas.getContext('2d');
   ctx.fillStyle = 'rgb(255,0,0)';
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 5, 5);
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
@@ -3039,8 +3028,7 @@ objTypes['regular'] = {
   shoot: function(obj) {
   var ray1 = graphs.ray(obj.p1, obj.p2);
   ray1.brightness = 1;
-  ray1.gap = true;
-  ray1.isNew = true;
+  ray1.regular = true;
   addRay(ray1);
   }
 };
