@@ -281,30 +281,6 @@ function createGroupNamer() {
     $("body").append(group);
 }
 
-function createSaveCanvas(img) {
-    /*
-    <div id="modal_canvas">
-        <img src="url" />
-    </div>
-    */
-   let div = document.createElement("div");
-   $(div).attr("id", "modal_canvas");
-   $(div).append(img);
-   $("body").append(div);
-}
-
-function displaySaveCanvas() {
-    $("#modal_canvas").dialog({
-        width: window.innerWidth*(2/3),
-        height: window.innerHeight*(2/3),
-        title: "Enregistrer la scène",
-        modal: true,
-        close: function(e, ui) {
-            $("#modal_canvas").remove();
-        },
-      });
-}
-
 $(document).ready(function(e) {
   $(document).on("keyup", function(e) {
       if(!isSelectingMultipleObject) return
@@ -333,6 +309,7 @@ $(document).ready(function(e) {
         }
       });
   });
+
   /* Open dropdown menu on mouse hover. */
   $(".dropdown-toggle").mouseenter(function () {
     $(this).find(".dropdown-menu").show();
@@ -362,3 +339,35 @@ $(document).ready(function(e) {
       });
   });
 })
+
+function addTool(name, message) {
+    //1) Add input in index.html
+    let optionsbar = $("#toolbar_title").parent();
+    let input = document.createElement("input");
+    $(input).attr("id", "tool_" + name);
+    $(input).attr("type", "button");
+    $(input).addClass("toolbtn");
+    $(optionsbar).append(input);
+
+    //2) Add name in tools_normal in index.js
+    tools_normal.splice(tools_normal.length-1, 0, name);
+
+    //3) Add idName and idName_popover and toolname_name in en.js
+    locales["en"]["tool_" + name] = {};
+    locales["en"]["tool_" + name].message = name.charAt(0).toUpperCase() + name.slice(1);
+
+    locales["en"]["toolname_" + name] = {};
+    locales["en"]["toolname_" + name].message = name.charAt(0).toUpperCase() + name.slice(1);
+
+    locales["en"]["tool_" + name + "_popover"] = {};
+    locales["en"]["tool_" + name + "_popover"].message = message;
+
+    //4) Add new ToolBarItem in ToolBarViewModel.js
+    window.toolBarViewModel.toolbarGroups[1].tools.push(
+        new ToolBarItem(name.charAt(0).toUpperCase() + name.slice(1), "tool_" + name, name, ToolTypeEnum.RADIO)
+    )
+
+    //5) Add name given by locales in index.js
+    document.getElementById("tool_" + name).value = getMsg("toolname_" + name);
+    document.getElementById("tool_" + name).dataset['n'] = getMsg("toolname_" + name);
+}

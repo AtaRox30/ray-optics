@@ -55,7 +55,7 @@
   var clickExtent_line = 10;
   var clickExtent_point = 10;
   var clickExtent_point_construct = 10;
-  var tools_normal = ['laser', 'radiant', 'parallel', 'blackline', 'ruler', 'protractor', 'regular', ''];
+  var tools_normal = ['laser', 'radiant', 'parallel', 'blackline', 'ruler', 'protractor', 'regular', 'text', ''];
   var tools_withList = ['mirror_', 'refractor_'];
   var tools_inList = ['mirror', 'arcmirror', 'idealmirror', 'lens', 'refractor', 'halfplane', 'circlelens'];
   var modes = ['light', 'extended_light', 'images', 'observer'];
@@ -212,6 +212,18 @@
     cancelMousedownEvent('reset');
     document.getElementById('accessJSON').onclick = accessJSON;
     cancelMousedownEvent('accessJSON');
+    document.getElementById('save_canvas').onclick = function() {
+      let can = $("#canvas1");
+      let img = can[0].toDataURL("image/png");
+
+      var link = document.createElement('a');
+      link.href = img;
+      link.download = 'Scene.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    cancelMousedownEvent('save_canvas');
     document.getElementById('save').onclick = function()
     {
       document.getElementById('saveBox').style.display = '';
@@ -376,16 +388,6 @@
       //Define onready script.js
     }
     cancelMousedownEvent('toggleGroupPanel_button');
-
-    document.getElementById('save_canvas').onclick = function() {
-      let can = $("#canvas1");
-      let img = can[0].toDataURL("image/png");
-      let imgHTML = document.createElement("img");
-      $(imgHTML).attr("src", img);
-      createSaveCanvas(imgHTML);
-      displaySaveCanvas();
-    }
-    cancelMousedownEvent('save_canvas');
 
     document.getElementById('save_name').onkeydown = function(e)
     {
@@ -1772,12 +1774,10 @@
 
   function highlightObject(index) {
     objs[index].selected = true;
-    console.log(objs[index]);
   }
 
   function unhighlightObject(index) {
     objs[index].selected = false;
-    console.log(objs[index]);
   }
 
   function endPositioning()
@@ -2435,6 +2435,10 @@
     document.getElementById('tool_regular').value = getMsg('toolname_regular');
     document.getElementById('tool_regular').dataset['n'] = getMsg('toolname_regular');
 
+    //Text
+    document.getElementById('tool_text').value = getMsg('toolname_text');
+    document.getElementById('tool_text').dataset['n'] = getMsg('toolname_text');
+
     //Move view
     document.getElementById('tool_').value = getMsg('toolname_');
 
@@ -2452,6 +2456,7 @@
     document.getElementById('undo').value = getMsg('undo');
     document.getElementById('redo').value = getMsg('redo');
     document.getElementById('reset').value = getMsg('reset');
+    document.getElementById('save_canvas').value = getMsg('save_canvas');
     document.getElementById('save').value = getMsg('save');
     document.getElementById('save_name_title').innerHTML = getMsg('save_name');
     document.getElementById('save_confirm').value = getMsg('save');
@@ -2465,7 +2470,8 @@
     document.getElementById('setAttrAll_title').innerHTML = getMsg('applytoall');
     document.getElementById('copy').value = getMsg('duplicate');
     document.getElementById('delete').value = getMsg('delete');
-    //document.getElementById('objSetPointRot_button').value = getMsg('placePtRotation');
+    document.getElementById('objSetPointRot_button').value = getMsg('placerotation');
+    document.getElementById('toggleGroupPanel_button').value = getMsg('grouppanel');
 
     document.getElementById('forceStop').innerHTML = getMsg('processing');
 

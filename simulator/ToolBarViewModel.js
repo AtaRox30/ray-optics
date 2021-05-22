@@ -17,7 +17,9 @@ function ToolBarViewModel() {
       new ToolBarItem("Save", "save", undefined,
         ToolTypeEnum.BUTTON, undefined, function () { alert(""); }),
       new ToolBarItem("Open", "open", undefined,
-        ToolTypeEnum.BUTTON, undefined, function () { alert(""); })
+        ToolTypeEnum.BUTTON, undefined, function () { alert(""); }),
+      new ToolBarItem("Save scene", "save_canvas", undefined,
+        ToolTypeEnum.BUTTON, undefined, function () { alert(""); }),
     ]),
     self.tools = new ToolBarGroup("Tools: ", [
       new ToolBarItem("Ray", "tool_laser", "ray",
@@ -52,8 +54,10 @@ function ToolBarViewModel() {
         ToolTypeEnum.RADIO),
       new ToolBarItem("Regular", "tool_regular", "regular",
         ToolTypeEnum.RADIO),
+      new ToolBarItem("Text", "tool_text", "text",
+        ToolTypeEnum.RADIO),
       new ToolBarItem("Move View", "tool_", undefined,
-        ToolTypeEnum.RADIO)
+        ToolTypeEnum.RADIO),
     ]),
     self.modes = new ToolBarGroup("View: ", [
       new ToolBarItem("Rays", "mode_light", "normal",

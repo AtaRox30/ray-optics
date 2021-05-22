@@ -66,6 +66,9 @@ locales["en"] = {
   "toolname_regular": {
     "message": "Regular"
   },
+  "toolname_text": {
+    "message": "Text"
+  },
   "toolname_": {
     "message": "Move view"
   },
@@ -327,4 +330,22 @@ locales["en"] = {
   "tool_regular_popover": {
     "message": "A simple line that is not affected by physics"
   },
+  "tool_text": {
+    "message": "Text"
+  },
+  "tool_text_popover": {
+    "message": "Display a caption"
+  },
+  "save_canvas": {
+    "message": "Save scene"
+  },
+  "save_canvas_popover": {
+    "message": "Save the scene as it is on your window"
+  },
+  "placerotation": {
+    "message": "Place rotation point"
+  },
+  "grouppanel": {
+    "message": "Toggle group panel"
+  }
 }

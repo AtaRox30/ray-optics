@@ -1622,10 +1622,6 @@ var canvasPainter = {
   ray1.isNew = true;
   addRay(ray1);
   }
-
-
-
-
   };
 
   //objet "miroir" (miroir) -> Coord are p1, p2
@@ -2999,13 +2995,47 @@ var canvasPainter = {
 
   }
 
-};
+  };
 
-objTypes['regular'] = {
+  //"regular"
+  objTypes['regular'] = {
+
+    //=======================================Créer un objet========================================
+    create: function(mouse) {
+      return {type: 'regular', p1: mouse, p2: mouse, group: [], selected: false};
+    },
+
+    //使用lineobj原型
+    c_mousedown: objTypes['lineobj'].c_mousedown,
+    c_mousemove: objTypes['lineobj'].c_mousemove,
+    c_mouseup: objTypes['lineobj'].c_mouseup,
+    move: objTypes['lineobj'].move,
+    clicked: objTypes['lineobj'].clicked,
+    dragging: objTypes['lineobj'].dragging,
+
+    //=================================Dessiner des objets sur le canevas====================================
+    draw: function(obj, canvas) {
+    ctx.fillStyle = 'rgb(255,0,0)';
+    ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 5, 5);
+    ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
+    },
+
+
+    //========================================Tirez sur la lumière======================================
+    shoot: function(obj) {
+    var ray1 = graphs.ray(obj.p1, obj.p2);
+    ray1.brightness = 1;
+    ray1.regular = true;
+    addRay(ray1);
+    }
+  };
+
+  //"text"
+  objTypes['text'] = {
 
   //=======================================Créer un objet========================================
   create: function(mouse) {
-    return {type: 'regular', p1: mouse, p2: mouse, group: [], selected: false};
+    return {type: 'text', p1: mouse, p2: mouse, group: [], selected: false};
   },
 
   //使用lineobj原型
@@ -3018,6 +3048,7 @@ objTypes['regular'] = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
+  //var ctx = canvas.getContext('2d');
   ctx.fillStyle = 'rgb(255,0,0)';
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 5, 5);
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
@@ -3028,10 +3059,12 @@ objTypes['regular'] = {
   shoot: function(obj) {
   var ray1 = graphs.ray(obj.p1, obj.p2);
   ray1.brightness = 1;
-  ray1.regular = true;
+  ray1.gap = true;
+  ray1.isNew = true;
   addRay(ray1);
   }
-};
+  };
+
 
 function slidingWholeLineHalfplane(shift, mouse, draggingPart, obj) {
   if (shift) {
