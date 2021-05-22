@@ -377,6 +377,16 @@
     }
     cancelMousedownEvent('toggleGroupPanel_button');
 
+    document.getElementById('save_canvas').onclick = function() {
+      let can = $("#canvas1");
+      let img = can[0].toDataURL("image/png");
+      let imgHTML = document.createElement("img");
+      $(imgHTML).attr("src", img);
+      createSaveCanvas(imgHTML);
+      displaySaveCanvas();
+    }
+    cancelMousedownEvent('save_canvas');
+
     document.getElementById('save_name').onkeydown = function(e)
     {
       if (e.keyCode == 13)

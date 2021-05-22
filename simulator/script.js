@@ -281,6 +281,30 @@ function createGroupNamer() {
     $("body").append(group);
 }
 
+function createSaveCanvas(img) {
+    /*
+    <div id="modal_canvas">
+        <img src="url" />
+    </div>
+    */
+   let div = document.createElement("div");
+   $(div).attr("id", "modal_canvas");
+   $(div).append(img);
+   $("body").append(div);
+}
+
+function displaySaveCanvas() {
+    $("#modal_canvas").dialog({
+        width: window.innerWidth*(2/3),
+        height: window.innerHeight*(2/3),
+        title: "Enregistrer la scène",
+        modal: true,
+        close: function(e, ui) {
+            $("#modal_canvas").remove();
+        },
+      });
+}
+
 $(document).ready(function(e) {
   $(document).on("keyup", function(e) {
       if(!isSelectingMultipleObject) return
