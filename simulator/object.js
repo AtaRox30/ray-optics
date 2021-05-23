@@ -269,7 +269,7 @@ var graphs = {
     var dx = l1.p2.x - l1.p1.x;
     var dy = l1.p2.y - l1.p1.y;
     return graphs.line(p1, graphs.point(p1.x + dx, p1.y + dy));
-  }
+  },
 };
 
 var canvasPainter = {
@@ -661,7 +661,7 @@ var canvasPainter = {
       draggingPart.targetPoint = graphs.point(obj.p2.x, obj.p2.y);
       return true;
     }
-    if (Math.abs(graphs.length(obj.p1, mouse_nogrid) - graphs.length_segment(obj)) < clickExtent_line)
+    if(Math.pow(graphs.length(obj.p1, obj.p2), 2) > (Math.pow(mouse.x - obj.p1.x, 2) + Math.pow(mouse.y - obj.p1.y, 2)))
     {
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -1016,16 +1016,6 @@ var canvasPainter = {
 
   //=======================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)==============================
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log("Enter clicked");
-    var p1;
-    var p2;
-    var p3;
-    var center;
-    var r;
-    var a1;
-    var a2;
-    var a3;
-
     var click_lensq = Infinity;
     var click_lensq_temp;
     var targetPoint_index = -1;
@@ -1049,59 +1039,14 @@ var canvasPainter = {
       draggingPart.targetPoint = graphs.point(obj.path[targetPoint_index].x, obj.path[targetPoint_index].y);
       return true;
     }
-
-    for (var i = 0; i < obj.path.length; i++)
-    {
-      if (obj.path[(i + 1) % obj.path.length].arc && !obj.path[i % obj.path.length].arc)
-      {
-        p1 = graphs.point(obj.path[i % obj.path.length].x, obj.path[i % obj.path.length].y);
-        p2 = graphs.point(obj.path[(i + 2) % obj.path.length].x, obj.path[(i + 2) % obj.path.length].y);
-        p3 = graphs.point(obj.path[(i + 1) % obj.path.length].x, obj.path[(i + 1) % obj.path.length].y);
-        center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(p1, p3)), graphs.perpendicular_bisector(graphs.line(p2, p3)));
-        if (isFinite(center.x) && isFinite(center.y))
-        {
-          r = graphs.length(center, p3);
-          a1 = Math.atan2(p1.y - center.y, p1.x - center.x);
-          a2 = Math.atan2(p2.y - center.y, p2.x - center.x);
-          a3 = Math.atan2(p3.y - center.y, p3.x - center.x);
-          var a_m = Math.atan2(mouse_nogrid.y - center.y, mouse_nogrid.x - center.x);
-          if (Math.abs(graphs.length(center, mouse_nogrid) - r) < clickExtent_line && (((a2 < a3 && a3 < a1) || (a1 < a2 && a2 < a3) || (a3 < a1 && a1 < a2)) == ((a2 < a_m && a_m < a1) || (a1 < a2 && a2 < a_m) || (a_m < a1 && a1 < a2))))
-          {
-            //Faites glisser l'objet entier
-            draggingPart.part = 0;
-            draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
-            draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
-            draggingPart.snapData = {};
-            return true;
-          }
-        }
-        else
-        {
-          //Les trois points de l'arc sont colinéaires et traités comme un segment de ligne
-          if (mouseOnSegment(mouse_nogrid, graphs.segment(obj.path[(i) % obj.path.length], obj.path[(i + 2) % obj.path.length])))
-          {
-            //Faites glisser l'objet entier
-            draggingPart.part = 0;
-            draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
-            draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
-            draggingPart.snapData = {};
-            return true;
-          }
-        }
-
-      }
-      else if (!obj.path[(i + 1) % obj.path.length].arc && !obj.path[i % obj.path.length].arc)
-      {
-        if (mouseOnSegment(mouse_nogrid, graphs.segment(obj.path[(i) % obj.path.length], obj.path[(i + 1) % obj.path.length])))
-        {
-          //Faites glisser l'objet entier
-          draggingPart.part = 0;
-          draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
-          draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
-          draggingPart.snapData = {};
-          return true;
-        }
-      }
+    draggingPart.snapData = {};
+    if(isIn(mouse, obj.path)) {
+      //Faites glisser l'objet entier
+      draggingPart.part = 0;
+      draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
+      draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
+      draggingPart.snapData = {};
+      return true;
     }
   },
 
@@ -1230,17 +1175,13 @@ var canvasPainter = {
 
   //============================Lorsque l'objet est frappé par la lumière=================================
   shot: function(obj, ray, rayIndex, rp, surfaceMerging_objs) {
-    if (obj.notDone) {return;}
-    //var ctx = canvas.getContext('2d');
-    //ctx.beginPath();
-    //ctx.moveTo(obj.path[0].x,obj.path[0].y);
+    if (obj.notDone) return
     var shotData = this.getShotData(obj, ray);
     var shotType = shotData.shotType;
     if (shotType == 1)
     {
       //Tourné de l'intérieur vers l'extérieur
       var n1 = obj.p; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
-      //canvasPainter.draw(graphs.segment(ray.p1,s_point),canvas,"red");
     }
     else if (shotType == -1)
     {
@@ -3048,21 +2989,13 @@ var canvasPainter = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  //var ctx = canvas.getContext('2d');
+  /*
+  ctx.font = "16px verdana";
+  ctx.fillText("TEXT", mouse.x, mouse.y);
   ctx.fillStyle = 'rgb(255,0,0)';
-  ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 5, 5);
-  ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
+  */
   },
 
-
-  //========================================Tirez sur la lumière======================================
-  shoot: function(obj) {
-  var ray1 = graphs.ray(obj.p1, obj.p2);
-  ray1.brightness = 1;
-  ray1.gap = true;
-  ray1.isNew = true;
-  addRay(ray1);
-  }
   };
 
 
@@ -3162,4 +3095,67 @@ function movingObjectInGroup(obj, diffX, diffY) {
         }
     }
   }
+}
+
+function getTwoExtreme(coordTab) {
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for(c of coordTab) {
+      if(c.x < minX) minX = c.x;
+      if(c.x > maxX) maxX = c.x;
+      if(c.y < minY) minY = c.y;
+      if(c.y > maxY) maxY = c.y;
+  }
+  return {"minX":minX, "minY":minY, "maxX":maxX, "maxY":maxY};
+}
+
+function affine(x1, y1, x2, y2) {
+  let slope = (y2 - y1)/(x2 - x1);
+  let constant = y1 - (slope * x1);
+  if(constant == Infinity) constant = y1;
+  if(constant == -Infinity) constant = y1;
+  return {m: slope, p: constant};
+}
+
+function getIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
+  let affine_1 = graphs.affineFunctionOfTwoPoints(x1, x2, y1, y2);
+  let affine_2 = graphs.affineFunctionOfTwoPoints(x3, x4, y3, y4);
+  let intersect_x = (affine_2.p - affine_1.p)/(affine_1.m - affine_2.m);
+  let intersect_y = affine_1.m * intersect_x + affine_1.p;
+  if(([Infinity, -Infinity].includes(affine_1.m) && [0, -0].includes(affine_2.m)) ||
+  ([0, -0].includes(affine_1.m) && [Infinity, -Infinity].includes(affine_2.m))) {
+      intersect_x = x1;
+      intersect_y = affine_2.p;
+  }
+  if([0, -0].includes(affine_1.m) && [0, -0].includes(affine_2.m)) {
+      intersect_x = null;
+      intersect_y = null;
+  }
+  return {x: intersect_x, y: intersect_y};
+}
+
+function isIn(pt, path) {
+  let isIn = false;
+  let count = 0;
+  let extreme = getTwoExtreme(path);
+  for(let e = 0; e < path.length; e++) {
+      let seg_fpt = path[e];
+      let seg_spt = e == path.length - 1 ? path[0] : path[(e+1)];
+      let inter = getIntersection(seg_fpt.x, seg_fpt.y, seg_spt.x, seg_spt.y, extreme.minX, pt.y, pt.x, pt.y);
+      isOk = true;
+      if(inter.x == null) isOk = false 
+      else {
+          if(!((inter.x > extreme.minX && inter.x < extreme.maxX) || (inter.y > extreme.minY && inter.y < extreme.maxY))) isOk = false;
+          if((inter.x < seg_fpt.x && inter.x < seg_spt.x) || (inter.x > seg_fpt.x && inter.x > seg_spt.x)) isOk = false;
+          if((inter.y < seg_fpt.y && inter.y < seg_spt.y) || (inter.y > seg_fpt.y && inter.y > seg_spt.y)) isOk = false;
+          if(inter.x >= pt.x) isOk = false;
+      }
+      if(isOk) count++;
+      isOk = false;
+  }
+  for(c of path) if(c.y == pt.y) count--;
+  if(count%2 != 0) isIn = true;
+  return isIn;
 }

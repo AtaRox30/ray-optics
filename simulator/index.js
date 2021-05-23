@@ -379,7 +379,7 @@
       createUndoPoint();
     };
     document.getElementById('objSetPointRot_button').onclick = function() {
-      if(!isMovingMultipleObject) isChoosingSeg = true;
+      if(!isMovingMultipleObject && objs[selectedObj].type == "refractor") isChoosingSeg = true;
       if(isMovingMultipleObject) isSettingRotationPoint = true;
     }
     cancelMousedownEvent('objSetPointRot_button');

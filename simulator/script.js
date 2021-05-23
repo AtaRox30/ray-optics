@@ -250,14 +250,17 @@ function addDeleteListenerForGroup() {
 function addSelectedToAll(group) {
     for(c of currentSelectedGr) c.group.push(group);
     selectGr.push({"name":group, "elements":currentSelectedGr});
-    console.log(currentSelectedGr);
     isMovingMultipleObject = true;
     currentSelectedGr = [];
-    for (c of selectGr) {
-        if (group == c.name) {
-            currentSelectedGr.push(c);
-        }
-    }
+    for(c of selectGr) if(group == c.name) currentSelectedGr.push(c);
+}
+
+function addGroupToGivenGroup(group) {
+    for(g of selectGr) if(g.name == group) for(c of currentSelectedGr) if(!g.elements.includes(c)) g.elements.push(c);
+    for(c of currentSelectedGr) if(!c.group.includes(group)) c.group.push(group);
+    isMovingMultipleObject = true;
+    currentSelectedGr = [];
+    for(c of selectGr) if(group == c.name) currentSelectedGr.push(c);
 }
 
 function createGroupNamer() {
@@ -265,6 +268,12 @@ function createGroupNamer() {
     <div id="groupName">
         <label for="inputName">Entrer le nom du groupe :</label>
         <input type="text" id="inputName" />
+        <button id="deleteField">Effacer</button>
+        <label for="inputGroup">Ou ajouter a un groupe existant :</label>
+        <select id="inputGroup">
+            <option value="">--Choisir--</option>
+            <option value="{idGroup}">{idGroup}</option>
+        </select>
     </div>
     */
 
@@ -278,6 +287,30 @@ function createGroupNamer() {
     $(input).attr("id", "inputName");
     $(group).append(label);
     $(group).append(input);
+
+    let button = $(document.createElement("button")).on("click", function() {$("input[type=text]#inputName").val("")});
+    $(button).attr("id", "deleteField");
+    $(button).text("Effacer");
+    $(group).append(button);
+
+    let labelS = document.createElement('label');
+    $(labelS).attr("for", "inputGroup");
+    $(labelS).text("Ou ajouter a un groupe existant :");
+
+    let select = document.createElement('select');
+    $(select).attr("id", "inputGroup");
+    let option = document.createElement("option");
+    $(option).attr("value", "");
+    $(option).text("--Choisir--");
+    $(select).append(option);
+    for(g of selectGr) {
+        option = document.createElement("option");
+        $(option).attr("value", g.name);
+        $(option).text(g.name);
+        $(select).append(option);
+    }
+    $(group).append(labelS);
+    $(group).append(select);
     $("body").append(group);
 }
 
@@ -290,7 +323,7 @@ $(document).ready(function(e) {
       isSelectingMultipleObject = false;
       createGroupNamer();
       $("#groupName").dialog({
-        width: 400,
+        width: 500,
         maxHeight: 300,
         title: "Nom du groupe",
         modal: true,
@@ -300,8 +333,12 @@ $(document).ready(function(e) {
         },
         buttons: {"Ok": function(t) {
             let group = $("#inputName").val();
-            addSelectedToAll(group);
-            $("#groupName").remove();
+            if(Boolean(group)) addSelectedToAll(group);
+            else {
+                group = $("#inputGroup").val();
+                if(Boolean(group)) addGroupToGivenGroup(group);
+            }
+            if(Boolean(group)) $("#groupName").remove();
         }, "Annuler": function(t) {
             currentSelectedGr = [];
             $("#groupName").remove();
