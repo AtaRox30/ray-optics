@@ -478,7 +478,7 @@ var canvasPainter = {
       draggingPart.targetPoint = graphs.point(obj.p2.x, obj.p2.y);
       return true;
     }
-    if (mouseOnLine(mouse_nogrid, obj))
+    if (isInHalplane(mouse, obj.p1, obj.p2))
     {
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -1040,7 +1040,7 @@ var canvasPainter = {
       return true;
     }
     draggingPart.snapData = {};
-    if(isIn(mouse, obj.path)) {
+    if(isInRefractor(mouse, obj.path)) {
       //Faites glisser l'objet entier
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -3136,7 +3136,7 @@ function getIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
   return {x: intersect_x, y: intersect_y};
 }
 
-function isIn(pt, path) {
+function isInRefractor(pt, path) {
   let isIn = false;
   let count = 0;
   let extreme = getTwoExtreme(path);
@@ -3158,4 +3158,16 @@ function isIn(pt, path) {
   for(c of path) if(c.y == pt.y) count--;
   if(count%2 != 0) isIn = true;
   return isIn;
+}
+
+function isInHalplane(pt, p1, p2) {
+  let aff = affine(p1.x, p1.y, p2.x, p2.y);
+  let isClick = false;
+  if(aff.m < 0 && ((aff.m * pt.x + aff.p) < pt.y)) isClick = true;
+  if(aff.m > 0 && ((aff.m * pt.x + aff.p) > pt.y)) isClick = true;
+  if(aff.m == 0) {
+      if(p1.x < p2.x && ((aff.m * pt.x + aff.p) < pt.y)) isClick = true;
+      if(p1.x > p2.x && ((aff.m * pt.x + aff.p) > pt.y)) isClick = true;
+  }
+  return isClick;
 }
