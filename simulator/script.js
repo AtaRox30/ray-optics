@@ -318,14 +318,14 @@ $(document).ready(function(e) {
   $(document).on("keyup", function(e) {
       if(!isSelectingMultipleObject) return
       if(e.which != 17) return
-      if(currentSelectedGr.length < 2) return
+      if(currentSelectedGr.length == 0) return
       //Here, CTRL is realeased and there is at least 2 objects in the group
       isSelectingMultipleObject = false;
       createGroupNamer();
       $("#groupName").dialog({
         width: 500,
         maxHeight: 300,
-        title: "Nom du groupe",
+        title: "Gestion de groupe",
         modal: true,
         close: function(e, ui) {
             $("#groupName").remove();

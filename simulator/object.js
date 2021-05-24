@@ -478,6 +478,7 @@ var canvasPainter = {
       draggingPart.targetPoint = graphs.point(obj.p2.x, obj.p2.y);
       return true;
     }
+    draggingPart.snapData = {};
     if (isInHalplane(mouse, obj.p1, obj.p2))
     {
       draggingPart.part = 0;
@@ -661,6 +662,7 @@ var canvasPainter = {
       draggingPart.targetPoint = graphs.point(obj.p2.x, obj.p2.y);
       return true;
     }
+    draggingPart.snapData = {};
     if(Math.pow(graphs.length(obj.p1, obj.p2), 2) > (Math.pow(mouse.x - obj.p1.x, 2) + Math.pow(mouse.y - obj.p1.y, 2)))
     {
       draggingPart.part = 0;
@@ -866,7 +868,6 @@ var canvasPainter = {
   },
   //===================================Dessiner des objets sur le canevas==================================
   draw: function(obj, canvas, aboveLight) {
-    //var ctx = canvas.getContext('2d');
     var p1;
     var p2;
     var p3;
@@ -982,8 +983,6 @@ var canvasPainter = {
     {
       ctx.globalCompositeOperation = 'lighter';
       ctx.fillStyle = 'white';
-      //ctx.fillStyle="rgb(128,128,128)";
-      //ctx.globalAlpha=1-(1/n);
       ctx.globalAlpha = Math.log(n) / Math.log(1.5) * 0.2;
 
       //ctx.globalAlpha=0.3;
