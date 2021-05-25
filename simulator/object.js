@@ -3156,10 +3156,17 @@ function isInRefractor(pt, path) {
 }
 
 function isInHalplane(pt, p1, p2) {
+  let p1isAbove = p1.y > p2.y;
   let aff = affine(p1.x, p1.y, p2.x, p2.y);
   let isClick = false;
-  if(aff.m < 0 && ((aff.m * pt.x + aff.p) < pt.y)) isClick = true;
-  if(aff.m > 0 && ((aff.m * pt.x + aff.p) > pt.y)) isClick = true;
+  if(aff.m < 0) {
+    if(p1isAbove && (aff.m * pt.x + aff.p) < pt.y) isClick = true;
+    if(!p1isAbove && (aff.m * pt.x + aff.p) > pt.y) isClick = true;
+  }
+  if(aff.m > 0) {
+    if(p1isAbove && (aff.m * pt.x + aff.p) > pt.y) isClick = true;
+    if(!p1isAbove && (aff.m * pt.x + aff.p) < pt.y) isClick = true;
+  }
   if(aff.m == 0) {
       if(p1.x < p2.x && ((aff.m * pt.x + aff.p) < pt.y)) isClick = true;
       if(p1.x > p2.x && ((aff.m * pt.x + aff.p) > pt.y)) isClick = true;
