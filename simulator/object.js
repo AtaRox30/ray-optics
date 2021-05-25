@@ -512,7 +512,7 @@ var canvasPainter = {
 
   //===================Déterminez si une lumière atteindra cet objet (si c'est le cas, renvoyez le point d'intersection)=====================
   rayIntersection: function(obj, ray) {
-    if (obj.p <= 0)return;
+    if (obj.p <= 0) return
     var rp_temp = graphs.intersection_2line(graphs.line(ray.p1, ray.p2), graphs.line(obj.p1, obj.p2));   //Trouvez l'intersection de (la ligne d'extension) de la lumière et de l'objet
 
     if (graphs.intersection_is_on_ray(rp_temp, ray))
@@ -541,7 +541,7 @@ var canvasPainter = {
     ctx.lineTo(obj.p1.x + (par_x - per_x) * sufficientlyLargeDistance, obj.p1.y + (par_y - per_y) * sufficientlyLargeDistance);
     ctx.lineTo(obj.p1.x - (par_x + per_x) * sufficientlyLargeDistance, obj.p1.y - (par_y + per_y) * sufficientlyLargeDistance);
 
-    objTypes['refractor'].fillGlass(obj.p);
+    objTypes['refractor'].fillGlass(obj.p, obj);
   }
 
   ctx.fillStyle = 'red';
@@ -551,13 +551,9 @@ var canvasPainter = {
 
   //============================Lorsque l'objet est frappé par la lumière=================================
   shot: function(obj, ray, rayIndex, rp, surfaceMerging_objs) {
-    //ray.exist=false;
-
     var rdots = (ray.p2.x - ray.p1.x) * (obj.p2.x - obj.p1.x) + (ray.p2.y - ray.p1.y) * (obj.p2.y - obj.p1.y); //ray與此線段之內積
     var ssq = (obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y); //此線段長度平方
     var normal = {x: rdots * (obj.p2.x - obj.p1.x) - ssq * (ray.p2.x - ray.p1.x), y: rdots * (obj.p2.y - obj.p1.y) - ssq * (ray.p2.y - ray.p1.y)};
-    //normal.x=rdots*(obj.p2.x-obj.p1.x)-ssq*(ray.p2.x-ray.p1.x);
-    //normal.y=rdots*(obj.p2.y-obj.p1.y)-ssq*(ray.p2.y-ray.p1.y);
 
     var shotType = this.getShotType(obj, ray);
     if (shotType == 1)
@@ -704,7 +700,7 @@ var canvasPainter = {
   {
     ctx.beginPath();
     ctx.arc(obj.p1.x, obj.p1.y, graphs.length_segment(obj), 0, Math.PI * 2, false);
-    objTypes['refractor'].fillGlass(obj.p);
+    objTypes['refractor'].fillGlass(obj.p, obj);
   }
   ctx.lineWidth = 1;
   ctx.fillStyle = 'red';
@@ -960,7 +956,7 @@ var canvasPainter = {
           ctx.lineTo(obj.path[(i + 1) % obj.path.length].x, obj.path[(i + 1) % obj.path.length].y);
         }
       }
-      this.fillGlass(obj.p);
+      this.fillGlass(obj.p, obj);
     }
     ctx.lineWidth = 1;
 
@@ -977,17 +973,16 @@ var canvasPainter = {
 
   },
 
-  fillGlass: function(n)
+  fillGlass: function(n, obj)
   {
     if (n >= 1)
     {
       ctx.globalCompositeOperation = 'lighter';
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = 'rgb(180, 180, 180)';
+      if(obj.selected) ctx.fillStyle = 'white';
       ctx.globalAlpha = Math.log(n) / Math.log(1.5) * 0.2;
 
-      //ctx.globalAlpha=0.3;
       ctx.fill('evenodd');
-      //ctx.fill();
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
 
@@ -1001,7 +996,6 @@ var canvasPainter = {
       ctx.stroke();
 
     }
-
   },
 
   //===============================Traduire l'objet==============================
@@ -1547,8 +1541,8 @@ var canvasPainter = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  //var ctx = canvas.getContext('2d');
   ctx.fillStyle = 'rgb(255,0,0)';
+  if(obj.selected) ctx.fillStyle = 'blue';
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 5, 5);
   ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
   },
@@ -1583,13 +1577,12 @@ var canvasPainter = {
 
   //===============================Dessiner des objets sur le canevas======================================
   draw: function(obj, canvas) {
-    //ctx.lineWidth=1.5;
     ctx.strokeStyle = 'rgb(168,168,168)';
+    if(obj.selected) ctx.strokeStyle = 'white';
     ctx.beginPath();
     ctx.moveTo(obj.p1.x, obj.p1.y);
     ctx.lineTo(obj.p2.x, obj.p2.y);
     ctx.stroke();
-    //ctx.lineWidth=1;
   },
 
 
@@ -1636,8 +1629,6 @@ var canvasPainter = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  //var ctx = canvas.getContext('2d');
-
   var len = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
   var par_x = (obj.p2.x - obj.p1.x) / len;
   var par_y = (obj.p2.y - obj.p1.y) / len;
@@ -1650,6 +1641,7 @@ var canvasPainter = {
 
   //Tracer une ligne
   ctx.strokeStyle = 'rgb(128,128,128)';
+  if(obj.selected) ctx.strokeStyle = 'white';
   ctx.globalAlpha = 1 / ((Math.abs(obj.p) / 100) + 1);
   //ctx.globalAlpha=0.3;
   ctx.lineWidth = 4;
@@ -1793,16 +1785,14 @@ var canvasPainter = {
 
   //Tracer une ligne
   ctx.strokeStyle = 'rgb(168,168,168)';
-  //ctx.globalAlpha=1/((Math.abs(obj.p)/100)+1);
+  if(obj.selected) ctx.strokeStyle = 'white';
   ctx.globalAlpha = 1;
   ctx.lineWidth = 1;
-  //ctx.lineCap = "round"
   ctx.beginPath();
   ctx.moveTo(obj.p1.x, obj.p1.y);
   ctx.lineTo(obj.p2.x, obj.p2.y);
   ctx.stroke();
   ctx.lineWidth = 1;
-  //ctx.lineCap = "butt"
 
 
   //Le point central du miroir de l'écran
@@ -1898,6 +1888,7 @@ var canvasPainter = {
   draw: function(obj, canvas) {
   //var ctx = canvas.getContext('2d');
   ctx.strokeStyle = 'rgb(70,35,10)';
+  if(obj.selected) ctx.strokeStyle = 'rgb(100,65,40)';
   ctx.lineWidth = 3;
   ctx.lineCap = 'butt';
   ctx.beginPath();
@@ -1935,11 +1926,6 @@ var canvasPainter = {
   //=================================Mouvement de la souris lors de la création d'objet====================================
   c_mousemove: function(obj, mouse, ctrl, shift)
   {
-    /*
-    obj.x=mouse.x;
-    obj.y=mouse.y;
-    draw();
-    */
   },
   //==================================Relâchez la souris lors de la création de l'objet===================================
   c_mouseup: function(obj, mouse)
@@ -1951,6 +1937,7 @@ var canvasPainter = {
   draw: function(obj, canvas) {
   //var ctx = canvas.getContext('2d');
   ctx.fillStyle = 'rgb(0,255,0)';
+  if(obj.selected) ctx.fillStyle = 'blue';
   ctx.fillRect(obj.x - 2, obj.y - 2, 5, 5);
 
   },
@@ -2046,7 +2033,6 @@ var canvasPainter = {
 
   //===================================Dessiner des objets sur le canevas==================================
   draw: function(obj, canvas) {
-    //var ctx = canvas.getContext('2d');
     var a_l = Math.atan2(obj.p1.x - obj.p2.x, obj.p1.y - obj.p2.y) - Math.PI / 2;
     ctx.strokeStyle = 'rgb(0,255,0)';
     ctx.lineWidth = 4;
@@ -2057,6 +2043,7 @@ var canvasPainter = {
     ctx.stroke();
 
     ctx.strokeStyle = 'rgba(128,128,128,255)';
+    if(obj.selected) ctx.strokeStyle = 'rgba(0,0,255,255)';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(obj.p1.x, obj.p1.y);
@@ -2182,6 +2169,7 @@ var canvasPainter = {
         var a2 = Math.atan2(obj.p2.y - center.y, obj.p2.x - center.x);
         var a3 = Math.atan2(obj.p3.y - center.y, obj.p3.x - center.x);
         ctx.strokeStyle = 'rgb(168,168,168)';
+        if(obj.selected) ctx.strokeStyle = 'white';
         ctx.beginPath();
         ctx.arc(center.x, center.y, r, a1, a2, (a2 < a3 && a3 < a1) || (a1 < a2 && a2 < a3) || (a3 < a1 && a1 < a2));
         ctx.stroke();
@@ -2216,7 +2204,6 @@ var canvasPainter = {
       ctx.fillStyle = 'rgb(255,0,0)';
       ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3);
     }
-    //ctx.lineWidth=1;
   },
 
   //==============================Traduire l'objet=======================================
@@ -2431,7 +2418,6 @@ var canvasPainter = {
 
   //============================Dessiner des objets sur le canevas=========================================
   draw: function(obj, canvas, aboveLight) {
-  //var ctx = canvas.getContext('2d');
   if (aboveLight)return;
   ctx.globalCompositeOperation = 'lighter';
   var len = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
@@ -2446,13 +2432,12 @@ var canvasPainter = {
   var scale_step_long = 100;
   var scale_len = 10;
   var scale_len_mid = 15;
-  //var scale_len_long=20;
 
 
   ctx.strokeStyle = 'rgb(128,128,128)';
-  //ctx.font="bold 14px Arial";
   ctx.font = '14px Arial';
   ctx.fillStyle = 'rgb(128,128,128)';
+  if(obj.selected) ctx.fillStyle = 'white';
 
   if (ang > Math.PI * (-0.25) && ang <= Math.PI * 0.25)
   {
@@ -2491,14 +2476,9 @@ var canvasPainter = {
     ctx.textBaseline = 'middle';
   }
 
-  //ctx.textBaseline="hanging";
-  //ctx.lineWidth=3;
-  //ctx.lineCap = "butt";
   ctx.beginPath();
   ctx.moveTo(obj.p1.x, obj.p1.y);
   ctx.lineTo(obj.p2.x, obj.p2.y);
-  //ctx.stroke();
-  //ctx.lineWidth=1;
   var x, y;
   for (var i = 0; i <= len; i += scale_step)
   {
@@ -2508,7 +2488,6 @@ var canvasPainter = {
       x = obj.p1.x + i * par_x + scale_direction * scale_len_long * per_x;
       y = obj.p1.y + i * par_y + scale_direction * scale_len_long * per_y;
       ctx.lineTo(x, y);
-      //ctx.stroke();
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(text_ang);
@@ -2518,16 +2497,13 @@ var canvasPainter = {
     else if (i % scale_step_mid == 0)
     {
       ctx.lineTo(obj.p1.x + i * par_x + scale_direction * scale_len_mid * per_x, obj.p1.y + i * par_y + scale_direction * scale_len_mid * per_y);
-      //ctx.stroke();
     }
     else
     {
       ctx.lineTo(obj.p1.x + i * par_x + scale_direction * scale_len * per_x, obj.p1.y + i * par_y + scale_direction * scale_len * per_y);
-      //ctx.stroke();
     }
   }
   ctx.stroke();
-  //ctx.stroke();
 
   ctx.globalCompositeOperation = 'source-over';
   }
@@ -2578,7 +2554,6 @@ var canvasPainter = {
 
   //================================Dessiner des objets sur le canevas=====================================
   draw: function(obj, canvas, aboveLight) {
-  //var ctx = canvas.getContext('2d');
   if (!aboveLight)
   {
     ctx.globalCompositeOperation = 'lighter';
@@ -2595,266 +2570,7 @@ var canvasPainter = {
     ctx.strokeStyle = 'rgb(128,128,128)';
     ctx.font = 'bold 14px Arial';
     ctx.fillStyle = 'rgb(128,128,128)';
-
-    if (r * scale_step * Math.PI / 180 < scale_width_limit)
-    {
-      //L'échelle est trop petite
-      scale_step = 2;
-      scale_step_mid = 10;
-      scale_step_long = 30;
-    }
-    if (r * scale_step * Math.PI / 180 < scale_width_limit)
-    {
-      //L'échelle est trop petite
-      scale_step = 5;
-      scale_step_mid = 10;
-      scale_step_long = 30;
-      scale_len = 5;
-      scale_len_mid = 8;
-      scale_len_long = 10;
-      ctx.font = 'bold 10px Arial';
-    }
-    if (r * scale_step * Math.PI / 180 < scale_width_limit)
-    {
-      //L'échelle est trop petite
-      scale_step = 10;
-      scale_step_mid = 30;
-      scale_step_long = 90;
-    }
-
-
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-
-    ctx.beginPath();
-    ctx.arc(obj.p1.x, obj.p1.y, r, 0, Math.PI * 2, false);
-    //ctx.stroke();
-
-    var ang, x, y;
-    for (var i = 0; i < 360; i += scale_step)
-    {
-      ang = i * Math.PI / 180 + Math.atan2(obj.p2.y - obj.p1.y, obj.p2.x - obj.p1.x);
-      ctx.moveTo(obj.p1.x + r * Math.cos(ang), obj.p1.y + r * Math.sin(ang));
-      if (i % scale_step_long == 0)
-      {
-        x = obj.p1.x + (r - scale_len_long) * Math.cos(ang);
-        y = obj.p1.y + (r - scale_len_long) * Math.sin(ang);
-        ctx.lineTo(x, y);
-        //ctx.stroke();
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(ang + Math.PI * 0.5);
-        ctx.fillText((i > 180) ? (360 - i) : i, 0, 0);
-        ctx.restore();
-      }
-      else if (i % scale_step_mid == 0)
-      {
-        ctx.lineTo(obj.p1.x + (r - scale_len_mid) * Math.cos(ang), obj.p1.y + (r - scale_len_mid) * Math.sin(ang));
-        //ctx.stroke();
-      }
-      else
-      {
-        ctx.lineTo(obj.p1.x + (r - scale_len) * Math.cos(ang), obj.p1.y + (r - scale_len) * Math.sin(ang));
-        //ctx.stroke();
-      }
-    }
-    ctx.stroke();
-    //ctx.stroke();
-
-    ctx.globalCompositeOperation = 'source-over';
-  }
-  ctx.fillStyle = 'red';
-  ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3);
-  ctx.fillStyle = 'rgb(255,0,255)';
-  //ctx.fillStyle="indigo";
-  ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
-
-  }
-
-  };
-
-  //objet "règle" -> Coord are p1, p2
-  objTypes['ruler'] = {
-
-  //====================================Créer un objet===========================================
-  create: function(mouse) {
-    return {type: 'ruler', p1: mouse, p2: mouse, group: [], selected: false};
-  },
-
-  //Utiliser le prototype lineobj
-  c_mousedown: objTypes['lineobj'].c_mousedown,
-  c_mousemove: objTypes['lineobj'].c_mousemove,
-  c_mouseup: objTypes['lineobj'].c_mouseup,
-  move: objTypes['lineobj'].move,
-  clicked: objTypes['lineobj'].clicked,
-  dragging: objTypes['lineobj'].dragging,
-
-  //============================Dessiner des objets sur le canevas=========================================
-  draw: function(obj, canvas, aboveLight) {
-  //var ctx = canvas.getContext('2d');
-  if (aboveLight)return;
-  ctx.globalCompositeOperation = 'lighter';
-  var len = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
-  var par_x = (obj.p2.x - obj.p1.x) / len;
-  var par_y = (obj.p2.y - obj.p1.y) / len;
-  var per_x = par_y;
-  var per_y = -par_x;
-  var ang = Math.atan2(obj.p2.y - obj.p1.y, obj.p2.x - obj.p1.x);
-
-  var scale_step = 10;
-  var scale_step_mid = 50;
-  var scale_step_long = 100;
-  var scale_len = 10;
-  var scale_len_mid = 15;
-  //var scale_len_long=20;
-
-
-  ctx.strokeStyle = 'rgb(128,128,128)';
-  //ctx.font="bold 14px Arial";
-  ctx.font = '14px Arial';
-  ctx.fillStyle = 'rgb(128,128,128)';
-
-  if (ang > Math.PI * (-0.25) && ang <= Math.PI * 0.25)
-  {
-    //↘~↗
-    var scale_direction = -1;
-    var scale_len_long = 20;
-    var text_ang = ang;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-  }
-  else if (ang > Math.PI * (-0.75) && ang <= Math.PI * (-0.25))
-  {
-    //↗~↖
-    var scale_direction = 1;
-    var scale_len_long = 15;
-    var text_ang = ang - Math.PI * (-0.5);
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-  }
-  else if (ang > Math.PI * 0.75 || ang <= Math.PI * (-0.75))
-  {
-    //↖~↙
-    var scale_direction = 1;
-    var scale_len_long = 20;
-    var text_ang = ang - Math.PI;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-  }
-  else
-  {
-    //↙~↘
-    var scale_direction = -1;
-    var scale_len_long = 15;
-    var text_ang = ang - Math.PI * 0.5;
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-  }
-
-  //ctx.textBaseline="hanging";
-  //ctx.lineWidth=3;
-  //ctx.lineCap = "butt";
-  ctx.beginPath();
-  ctx.moveTo(obj.p1.x, obj.p1.y);
-  ctx.lineTo(obj.p2.x, obj.p2.y);
-  //ctx.stroke();
-  //ctx.lineWidth=1;
-  var x, y;
-  for (var i = 0; i <= len; i += scale_step)
-  {
-    ctx.moveTo(obj.p1.x + i * par_x, obj.p1.y + i * par_y);
-    if (i % scale_step_long == 0)
-    {
-      x = obj.p1.x + i * par_x + scale_direction * scale_len_long * per_x;
-      y = obj.p1.y + i * par_y + scale_direction * scale_len_long * per_y;
-      ctx.lineTo(x, y);
-      //ctx.stroke();
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(text_ang);
-      ctx.fillText(i, 0, 0);
-      ctx.restore();
-    }
-    else if (i % scale_step_mid == 0)
-    {
-      ctx.lineTo(obj.p1.x + i * par_x + scale_direction * scale_len_mid * per_x, obj.p1.y + i * par_y + scale_direction * scale_len_mid * per_y);
-      //ctx.stroke();
-    }
-    else
-    {
-      ctx.lineTo(obj.p1.x + i * par_x + scale_direction * scale_len * per_x, obj.p1.y + i * par_y + scale_direction * scale_len * per_y);
-      //ctx.stroke();
-    }
-  }
-  ctx.stroke();
-  //ctx.stroke();
-
-  ctx.globalCompositeOperation = 'source-over';
-  }
-
-  };
-
-  //"protractor"物件 -> Coord are p1, p2
-  objTypes['protractor'] = {
-
-  //==========================================Créer un objet=====================================
-  create: function(mouse) {
-    return {type: 'protractor', p1: mouse, p2: mouse, group: [], selected: false};
-  },
-
-  //Utiliser le prototype lineobj
-  c_mousedown: objTypes['lineobj'].c_mousedown,
-  c_mousemove: function(obj, mouse, ctrl, shift) {objTypes['lineobj'].c_mousemove(obj, mouse, false, shift)},
-  c_mouseup: objTypes['lineobj'].c_mouseup,
-  move: objTypes['lineobj'].move,
-
-  //=========================Lorsque la zone de dessin est enfoncée (déterminer la partie pressée de l'objet)============================
-  clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    if (mouseOnPoint(mouse_nogrid, obj.p1) && graphs.length_squared(mouse_nogrid, obj.p1) <= graphs.length_squared(mouse_nogrid, obj.p2))
-    {
-      draggingPart.part = 1;
-      draggingPart.targetPoint = graphs.point(obj.p1.x, obj.p1.y);
-      return true;
-    }
-    if (mouseOnPoint(mouse_nogrid, obj.p2))
-    {
-      draggingPart.part = 2;
-      draggingPart.targetPoint = graphs.point(obj.p2.x, obj.p2.y);
-      return true;
-    }
-    if (Math.abs(graphs.length(obj.p1, mouse_nogrid) - graphs.length_segment(obj)) < clickExtent_line)
-    {
-      draggingPart.part = 0;
-      draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
-      draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
-      draggingPart.snapData = {};
-      return true;
-    }
-    return false;
-  },
-
-  //==================================Lorsque vous faites glisser un objet===================================
-  dragging: function(obj, mouse, draggingPart, ctrl, shift) {objTypes['lineobj'].dragging(obj, mouse, draggingPart, false, shift)},
-
-  //================================Dessiner des objets sur le canevas=====================================
-  draw: function(obj, canvas, aboveLight) {
-  //var ctx = canvas.getContext('2d');
-  if (!aboveLight)
-  {
-    ctx.globalCompositeOperation = 'lighter';
-    var r = Math.sqrt((obj.p2.x - obj.p1.x) * (obj.p2.x - obj.p1.x) + (obj.p2.y - obj.p1.y) * (obj.p2.y - obj.p1.y));
-    var scale_width_limit = 5;
-
-    var scale_step = 1;
-    var scale_step_mid = 5;
-    var scale_step_long = 10;
-    var scale_len = 10;
-    var scale_len_mid = 15;
-    var scale_len_long = 20;
-
-    ctx.strokeStyle = 'rgb(128,128,128)';
-    ctx.font = 'bold 14px Arial';
-    ctx.fillStyle = 'rgb(128,128,128)';
+    if(obj.selected) ctx.fillStyle = 'white';
 
     if (r * scale_step * Math.PI / 180 < scale_width_limit)
     {
@@ -2952,6 +2668,7 @@ var canvasPainter = {
     //=================================Dessiner des objets sur le canevas====================================
     draw: function(obj, canvas) {
     ctx.fillStyle = 'rgb(255,0,0)';
+    if(obj.selected) ctx.fillStyle = 'white';
     ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 5, 5);
     ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
     },
@@ -2971,7 +2688,7 @@ var canvasPainter = {
 
   //=======================================Créer un objet========================================
   create: function(mouse) {
-    return {type: 'text', p1: mouse, p2: mouse, group: [], selected: false};
+    return {type: 'text', p1: mouse, p2: graphs.point((mouse.x + text.length*5), mouse.y), group: [], selected: false};
   },
 
   //使用lineobj原型
@@ -2984,11 +2701,9 @@ var canvasPainter = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  /*
   ctx.font = "16px verdana";
-  ctx.fillText("TEXT", mouse.x, mouse.y);
+  ctx.fillText(text, obj.p1.x, obj.p1.y);
   ctx.fillStyle = 'rgb(255,0,0)';
-  */
   },
 
   };

@@ -348,5 +348,32 @@ locales["en"] = {
   },
   "grouppanel": {
     "message": "Toggle group panel"
+  },
+  "enter_groupname": {
+    "message": "Enter the group name :"
+  },
+  "addto_existingfile": {
+    "message": "Or add it to an existing file :"
+  },
+  "choose": {
+    "message": "Choose"
+  },
+  "group_management": {
+    "message": "Group management"
+  },
+  "name": {
+    "message":"Name"
+  },
+  "select": {
+    "message":"Select"
+  },
+  "unselect": {
+    "message":"Unselect"
+  },
+  "type": {
+    "message":"Type"
+  },
+  "properties": {
+    "message":"Properties"
   }
 }

@@ -344,10 +344,10 @@ locales["fr"] = {
     "message": "Enregistre la scène tel qu'elle est sur votre fenêtre."
   },
   "placerotation": {
-    "message": "Place un point de rotation"
+    "message": "Placer un point de rotation"
   },
   "grouppanel": {
-    "message": "Affiche le panneau de groupe"
+    "message": "Afficher le panneau de groupe"
   },
   "enter_groupname": {
     "message": "Entrez le nom du groupe :"

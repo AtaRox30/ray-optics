@@ -22,6 +22,9 @@
   var mouseAfterRotation = {x: Infinity, y: Infinity};
   var nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
   
+  //Text
+  var text = "Fibre";
+
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
   var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
@@ -1271,6 +1274,7 @@
       isChoosingSeg = false;
       isSettingRotationPoint = false;
       isRotating = false;
+      draw();
     }
     return
   }
@@ -1306,7 +1310,6 @@
           //Clic de souris pour observer
           draggingObj = -4;
           draggingPart = {};
-          //draggingPart.part=0;
           draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
           draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
           draggingPart.snapData = {};
@@ -1321,7 +1324,6 @@
       //var targetObj_index_temp;
       var targetIsPoint = false;
 
-      //for(var i=objs.length-1;i>=0;i--)
       for (var i = 0; i < objs.length; i++)
         {
         if (typeof objs[i] != 'undefined')
@@ -1349,7 +1351,6 @@
                 targetObj_index = i; //Dans le cas d'un non-point, sélectionnez le dernier créé
                 draggingPart = draggingPart_;
                 if(selectedObj != -1) unhighlightObject(selectedObj);
-                highlightObject(targetObj_index);
               }
               if(isChoosingSeg) {
                 //Here, the user clicked on the "Set a rotation point" and on the polygon
@@ -1609,8 +1610,6 @@
           document.getElementById('xybox').style.display = '';
           document.getElementById('xybox').select();
           document.getElementById('xybox').setSelectionRange(1, document.getElementById('xybox').value.length - 1);
-          //e.cancelBubble = true;
-          //if (e.stopPropagation) e.stopPropagation();
           xyBox_cancelContextMenu = true;
 
           return;
@@ -1623,10 +1622,7 @@
       var click_lensq = Infinity;
       var click_lensq_temp;
       var targetObj_index = -1;
-      //var targetObj_index_temp;
-      //var targetIsPoint=false;
 
-      //for(var i=objs.length-1;i>=0;i--)
       for (var i = 0; i < objs.length; i++)
         {
         if (typeof objs[i] != 'undefined')
@@ -1683,6 +1679,7 @@
 
   function selectObj(index)
   {
+    unhighlightAllObj();
     if (index < 0 || index >= objs.length)
     {
       //Si cet objet n'existe pas
@@ -1724,7 +1721,8 @@
     {
       document.getElementById('p_box').style.display = 'none';
     }
-
+    highlightObject(index);
+    draw();
     document.getElementById('obj_settings').style.display = '';
   }
 
@@ -1785,6 +1783,10 @@
 
   function unhighlightObject(index) {
     objs[index].selected = false;
+  }
+
+  function unhighlightAllObj() {
+    for(o of objs) o.selected = false;
   }
 
   function endPositioning()
