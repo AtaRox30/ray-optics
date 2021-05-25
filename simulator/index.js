@@ -1262,9 +1262,16 @@
   //Here, the user have clicked while setting rotation point (after choosing a segment)
   //Because right after the click, the program create a ray, we return to prevent that
   if(isSettingRotationPoint && !isChoosingSeg && !isMovingMultipleObject) {
-    isSettingRotationPoint = false;
-    isRotating = true;
-    rotationPoint = rotationPoint_;
+    let extreme = getTwoExtreme([objs[selectedObj].path[nearestSeg.path.from], objs[selectedObj].path[nearestSeg.path.to]])
+    if(extreme.minX < mouse.x && mouse.x < extreme.maxX && extreme.minY < mouse.y && mouse.y < extreme.maxY) {
+      isSettingRotationPoint = false;
+      isRotating = true;
+      rotationPoint = rotationPoint_;
+    } else {
+      isChoosingSeg = false;
+      isSettingRotationPoint = false;
+      isRotating = false;
+    }
     return
   }
 
