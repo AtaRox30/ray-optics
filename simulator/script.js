@@ -25,9 +25,9 @@ function createModalProperties(element) {
   $(trH).addClass("table-primary");
 
   let type = document.createElement('td');
-  $(type).text("Type");
+  $(type).text(getMsg("type"));
   let indice = document.createElement('td');
-  $(indice).text("Proprietés");
+  $(indice).text(getMsg("properties"));
   $(trH).append(type); $(trH).append(indice);
 
   $(thead).append(trH);
@@ -107,9 +107,9 @@ function createGroupPanel() {
   $(tr1).addClass("table-primary");
   for(let indexTR1 = 0; indexTR1 < 3; indexTR1++) {
       let td1 = document.createElement("td");
-      if(indexTR1 == 0) $(td1).text("Nom");
-      if(indexTR1 == 1) $(td1).text("Supprimer");
-      if(indexTR1 == 2) $(td1).text("Selectionner");
+      if(indexTR1 == 0) $(td1).text(getMsg("name"));
+      if(indexTR1 == 1) $(td1).text(getMsg("delete"));
+      if(indexTR1 == 2) $(td1).text(getMsg("select"));
       $(tr1).append(td1);
   }
   $(thead).append(tr1);
@@ -122,7 +122,7 @@ function createGroupPanel() {
   let ungroupButton = document.createElement("button");
   $(ungroupButton).attr("type", "button");
   $(ungroupButton).addClass("btn btn-outline-primary btn-sm");
-  $(ungroupButton).text("Deselectionner");
+  $(ungroupButton).text(getMsg("unselect"));
   $(ungroupTD).append(ungroupButton);
   $(ungroupTD).attr("colspan", "3");
   $(ungroupTD).attr("id", "ungroup");
@@ -144,7 +144,7 @@ function createGroupPanel() {
               $(el).attr("type", "button");
               $(el).attr("id", "deleteGr");
               $(el).addClass("btn btn-primary btn-sm");
-              $(el).text("Supprimer");
+              $(el).text(getMsg("delete"));
           }
           if(indexTD1 == 2) {
               el = document.createElement("input");
@@ -281,7 +281,7 @@ function createGroupNamer() {
     $(group).attr("id", "groupName");
     let label = document.createElement('label');
     $(label).attr("for", "inputName");
-    $(label).text("Entrer le nom du groupe :");
+    $(label).text(getMsg("enter_groupname"));
     let input = document.createElement('input');
     $(input).attr("type", "text");
     $(input).attr("id", "inputName");
@@ -290,18 +290,18 @@ function createGroupNamer() {
 
     let button = $(document.createElement("button")).on("click", function() {$("input[type=text]#inputName").val("")});
     $(button).attr("id", "deleteField");
-    $(button).text("Effacer");
+    $(button).text(getMsg("delete"));
     $(group).append(button);
 
     let labelS = document.createElement('label');
     $(labelS).attr("for", "inputGroup");
-    $(labelS).text("Ou ajouter a un groupe existant :");
+    $(labelS).text(getMsg("addto_existingfile"));
 
     let select = document.createElement('select');
     $(select).attr("id", "inputGroup");
     let option = document.createElement("option");
     $(option).attr("value", "");
-    $(option).text("--Choisir--");
+    $(option).text("--" + getMsg("choose") + "--");
     $(select).append(option);
     for(g of selectGr) {
         option = document.createElement("option");
@@ -325,7 +325,7 @@ $(document).ready(function(e) {
       $("#groupName").dialog({
         width: 500,
         maxHeight: 300,
-        title: "Gestion de groupe",
+        title: getMsg("group_management"),
         modal: true,
         close: function(e, ui) {
             $("#groupName").remove();
@@ -339,7 +339,7 @@ $(document).ready(function(e) {
                 if(Boolean(group)) addGroupToGivenGroup(group);
             }
             if(Boolean(group)) $("#groupName").remove();
-        }, "Annuler": function(t) {
+        }, "Cancel": function(t) {
             currentSelectedGr = [];
             $("#groupName").remove();
         }

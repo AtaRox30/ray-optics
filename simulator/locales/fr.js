@@ -322,7 +322,8 @@ locales["fr"] = {
     "message": "Zoom sur la vue avec un pourcentage."
   },
   "help_popover": {
-    "message": "Montrer/Cacher la fenêtre d'aide. <br><br>Quelques autre astuces: <br>Clic sur l'objet selectionné, <br>Ctrl+D pour dupliquer, <br>Touche Supprimer pour supprimer, <br>Flèches directionneles pour bouger lentement, <br>Double clic ou clic droit sur un point pour modifier ses coordonnées directement. <br>En créant un objet linéaire, <br>Tenir Maj pour verrouiller l'angle, <br>Tenir Ctrl pour dessiner le premier point par rapport au centre."
+    "message": "Montrer/Cacher la fenêtre d'aide. <br><br>Quelques autre astuces: <br>Clic sur l'objet selectionné, <br>Ctrl+D pour dupliquer, <br>Touche Supprimer pour supprimer, <br>Flèches directionneles pour bouger lentement, <br>Double clic ou clic droit sur un point pour modifier ses coordonnées directement." + 
+    "<br>En créant un objet linéaire, <br>Tenir Maj pour verrouiller l'angle, <br>Tenir Ctrl pour dessiner le premier point par rapport au centre.<br>Avant de cliquer sur un ou plusieurs objet(s), <br>Touche Ctrl pour le selectionné en vue de l'ajouter a un nouveau groupe/groupe existant,<br>Relâcher Ctrl pour crée un groupe avec les objets selectionnés precedemment."
   },
   "tool_regular": {
     "message": "Ligne"
@@ -347,5 +348,32 @@ locales["fr"] = {
   },
   "grouppanel": {
     "message": "Affiche le panneau de groupe"
+  },
+  "enter_groupname": {
+    "message": "Entrez le nom du groupe :"
+  },
+  "addto_existingfile": {
+    "message": "Ou ajouter a un groupe existant :"
+  },
+  "choose": {
+    "message": "Choisir"
+  },
+  "group_management": {
+    "message": "Gestion du groupe"
+  },
+  "name": {
+    "message":"Nom"
+  },
+  "select": {
+    "message":"Selectionner"
+  },
+  "unselect": {
+    "message":"Deselectionner"
+  },
+  "type": {
+    "message":"Type"
+  },
+  "properties": {
+    "message":"Proprietés"
   }
 }

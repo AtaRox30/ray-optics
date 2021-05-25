@@ -3148,7 +3148,6 @@ function isInRefractor(pt, path) {
           if(inter.x >= pt.x) isOk = false;
       }
       if(isOk) count++;
-      isOk = false;
   }
   for(c of path) if(c.y == pt.y) count--;
   if(count%2 != 0) isIn = true;
