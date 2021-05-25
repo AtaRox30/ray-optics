@@ -22,7 +22,7 @@ locales["fr"] = {
     "message": "Faisceau"
   },
   "toolname_mirror_": {
-    "message": "Mirror"
+    "message": "Miroir"
   },
   "tooltitle_mirror": {
     "message": "Segment lineaire"
@@ -277,7 +277,7 @@ locales["fr"] = {
     "message": "Verre avec une forme circulaire, definie par son centre et un point sur sa surface. (Glisser ou cliquer pour le crée.)"
   },
   "tool_refractor_popover": {
-    "message": "Verre avec une forme quelconque construis avec des segments et des arcs circulaire, prismes and lentilles spherique inclus. (Cliquer pour crée un segment, glisser pour crée un arc, cliquer sur le point de depart pour finir de dessiner.)"
+    "message": "Verre avec une forme quelconque construis avec des segments et des arcs circulaire, prismes et lentilles spherique inclus. (Cliquer pour crée un segment, glisser pour crée un arc, cliquer sur le point de depart pour finir de dessiner.)"
   },
   "tool_lens_popover": {
     "message": "Une lentille obeissant exactement à l'equation de lentille (1/p + 1/q = 1/f). La distance focale (en pixels) peut être definie directement. (Glisser ou cliquer pour le crée.)"

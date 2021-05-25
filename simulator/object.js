@@ -2385,10 +2385,6 @@ var canvasPainter = {
 
   //===========================Lorsque l'objet est frappé par la lumière==================================
   shot: function(obj, ray, rayIndex, rp) {
-    console.log(ray);
-    console.log(rayIndex);
-    console.log(rp);
-    console.log(waitingRays[rayIndex])
     var center = graphs.intersection_2line(graphs.perpendicular_bisector(graphs.line(obj.p1, obj.p3)), graphs.perpendicular_bisector(graphs.line(obj.p2, obj.p3)));
     if (isFinite(center.x) && isFinite(center.y))
     {

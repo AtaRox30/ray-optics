@@ -2333,7 +2333,6 @@
 
   }
 
-  var lang = 'en';
   function getMsg(msg) {
     return locales[lang][msg].message;
   }
@@ -2347,12 +2346,14 @@
       if (browser_lang.toLowerCase() == 'zh-cn') {
         lang = 'zh-CN';
       }
+      if (browser_lang.toLowerCase() == 'fr-fr') {
+        lang = 'fr';
+      }
     }
     var url_lang = location.search.substr(1)
     if (url_lang && locales[url_lang]) {
       lang = url_lang;
     }
-
     var downarraw = '\u25BC';
     //var downarraw="\u25BE";
     document.title = getMsg('appName');
