@@ -64,7 +64,7 @@ locales["en"] = {
     "message": "Protractor"
   },
   "toolname_regular": {
-    "message": "Regular"
+    "message": "Line"
   },
   "toolname_text": {
     "message": "Text"
@@ -328,7 +328,7 @@ locales["en"] = {
     "message": "Line"
   },
   "tool_regular_popover": {
-    "message": "A simple line that is not affected by physics"
+    "message": "A simple line crossing any matter, without being affected."
   },
   "tool_text": {
     "message": "Text"

@@ -2335,11 +2335,7 @@
 
   var lang = 'en';
   function getMsg(msg) {
-    //if (typeof chrome != 'undefined') {
-    //  return chrome.i18n.getMessage(msg);
-    //} else {
     return locales[lang][msg].message;
-    //}
   }
 
   function init_i18n() {
@@ -2352,12 +2348,10 @@
         lang = 'zh-CN';
       }
     }
-
     var url_lang = location.search.substr(1)
     if (url_lang && locales[url_lang]) {
       lang = url_lang;
     }
-
 
     var downarraw = '\u25BC';
     //var downarraw="\u25BE";

@@ -39,7 +39,7 @@ function createModalProperties(element) {
         let tr = document.createElement('tr');
         for(let j = 0; j < 2; j++) {
             let td = document.createElement('td');
-            if(j == 0) $(td).text(element[0][i].type);
+            if(j == 0) $(td).text(getMsg("tool_" + element[0][i].type));
             if(j == 1) $(td).text(element[0][i].p);
             $(tr).append(td);
         }
