@@ -23,7 +23,7 @@
   var nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
   
   //Text
-  var text = "Fibre";
+  var text = "Exemple";
 
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
@@ -1195,7 +1195,6 @@
     }
   }
 
-
   if (!((e.which && (e.which == 1 || e.which == 3)) || (e.changedTouches)))
   {
     return;
@@ -1265,17 +1264,9 @@
   //Here, the user have clicked while setting rotation point (after choosing a segment)
   //Because right after the click, the program create a ray, we return to prevent that
   if(isSettingRotationPoint && !isChoosingSeg && !isMovingMultipleObject) {
-    let extreme = getTwoExtreme([objs[selectedObj].path[nearestSeg.path.from], objs[selectedObj].path[nearestSeg.path.to]])
-    if(extreme.minX < mouse.x && mouse.x < extreme.maxX && extreme.minY < mouse.y && mouse.y < extreme.maxY) {
-      isSettingRotationPoint = false;
-      isRotating = true;
-      rotationPoint = rotationPoint_;
-    } else {
-      isChoosingSeg = false;
-      isSettingRotationPoint = false;
-      isRotating = false;
-      draw();
-    }
+    isSettingRotationPoint = false;
+    isRotating = true;
+    rotationPoint = rotationPoint_;
     return
   }
 
@@ -1361,9 +1352,7 @@
                 if(!isSelectingMultipleObject) currentSelectedGr = [];
                 isSelectingMultipleObject = true;
                 let isAlreadyIn = false;
-                for(c of currentSelectedGr) {
-                  if(objs[i] == c) isAlreadyIn = true;
-                }
+                for(c of currentSelectedGr) if(objs[i] == c) isAlreadyIn = true;
                 if(!isAlreadyIn) currentSelectedGr.push(objs[i]);
               }
             }
@@ -1484,20 +1473,7 @@
       {
        //À ce stade, cela signifie que la souris fait glisser un objet
 
-      //Insert the isMovingMultipleObject here
-      /*
-        if(isMovingMultipleObject) {
-          for(o of currentSelectedGr[0].elements) {
-            (mouse);
-            (o);
-            let virtualMouse = {type: mouse.type, x: 0,y: 0, exist: mouse.exist}
-            objTypes[o.type].dragging(o, mouse, draggingPart, e.ctrlKey, e.shiftKey);
-          }
-        } else {
-          objTypes[objs[draggingObj].type].dragging(objs[draggingObj], mouse, draggingPart, e.ctrlKey, e.shiftKey);
-        }
-        */
-        objTypes[objs[draggingObj].type].dragging(objs[draggingObj], mouse, draggingPart, e.ctrlKey, e.shiftKey);
+      objTypes[objs[draggingObj].type].dragging(objs[draggingObj], mouse, draggingPart, e.ctrlKey, e.shiftKey);
       //Si l'objet entier est déplacé, l'objet d'origine sera copié lorsque la touche Ctrl est enfoncée
       if (draggingPart.part == 0)
       {
@@ -1534,16 +1510,6 @@
 
       var mouseDiffX = (mouse_snapped.x - draggingPart.mouse1.x); //La différence sur l'axe X entre la position actuelle de la souris et la dernière position de la souris
       var mouseDiffY = (mouse_snapped.y - draggingPart.mouse1.y); //La différence de l'axe Y entre la position actuelle de la souris et la dernière position de la souris
-      /*for (var i = 0; i < objs.length; i++)
-      {
-        objTypes[objs[i].type].move(objs[i], mouseDiffX, mouseDiffY);
-      }*/
-      //draggingPart.mouse1 = mouse_snapped; //將"上一次的滑鼠位置"設為目前的滑鼠位置(給下一次使用)
-      /*if (observer)
-      {
-        observer.c.x += mouseDiffX;
-        observer.c.y += mouseDiffY;
-      }*/
       origin.x = mouseDiffX * scale + draggingPart.mouse2.x;
       origin.y = mouseDiffY * scale + draggingPart.mouse2.y;
       draw();
@@ -2143,7 +2109,7 @@
 
   function toolbtn_clicked(tool, e)
   {
-
+    if(tool == "text") chooseText();
     tools_normal.forEach(function(element, index)
     {
       document.getElementById('tool_' + element).className = 'toolbtn';
@@ -2211,8 +2177,6 @@
 
   function toollistbtn_clicked(tool, e)
   {
-    //document.getElementById("tool_"+AddingObjType).className="toolbtn";
-
     var selected_toolbtn; //Toolbtn précédemment pressé
     var selecting_toolbtnwithlist; //Toolbtn avec la liste à laquelle appartient ce toollistbtn
     tools_withList.forEach(function(element, index)

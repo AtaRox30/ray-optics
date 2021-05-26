@@ -479,7 +479,7 @@ var canvasPainter = {
       return true;
     }
     draggingPart.snapData = {};
-    if (isInHalplane(mouse, obj.p1, obj.p2))
+    if (isInHalplane(mouse_nogrid, obj.p1, obj.p2))
     {
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -658,8 +658,7 @@ var canvasPainter = {
       draggingPart.targetPoint = graphs.point(obj.p2.x, obj.p2.y);
       return true;
     }
-    draggingPart.snapData = {};
-    if(Math.pow(graphs.length(obj.p1, obj.p2), 2) > (Math.pow(mouse.x - obj.p1.x, 2) + Math.pow(mouse.y - obj.p1.y, 2)))
+    if(Math.pow(graphs.length(obj.p1, obj.p2), 2) > (Math.pow(mouse_nogrid.x - obj.p1.x, 2) + Math.pow(mouse_nogrid.y - obj.p1.y, 2)))
     {
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -1032,8 +1031,7 @@ var canvasPainter = {
       draggingPart.targetPoint = graphs.point(obj.path[targetPoint_index].x, obj.path[targetPoint_index].y);
       return true;
     }
-    draggingPart.snapData = {};
-    if(isInRefractor(mouse, obj.path)) {
+    if(isInRefractor(mouse_nogrid, obj.path)) {
       //Faites glisser l'objet entier
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -2668,7 +2666,7 @@ var canvasPainter = {
     //=================================Dessiner des objets sur le canevas====================================
     draw: function(obj, canvas) {
     ctx.fillStyle = 'rgb(255,0,0)';
-    if(obj.selected) ctx.fillStyle = 'white';
+    if(obj.selected) ctx.fillStyle = 'blue';
     ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 5, 5);
     ctx.fillRect(obj.p2.x - 2, obj.p2.y - 2, 3, 3);
     },
@@ -2688,7 +2686,7 @@ var canvasPainter = {
 
   //=======================================Créer un objet========================================
   create: function(mouse) {
-    return {type: 'text', p1: mouse, p2: graphs.point((mouse.x + text.length*5), mouse.y), group: [], selected: false};
+    return {type: 'text', text: text, p1: mouse, p2: graphs.point((mouse.x + text.length*10), mouse.y), group: [], selected: false};
   },
 
   //使用lineobj原型
@@ -2696,8 +2694,8 @@ var canvasPainter = {
   c_mousemove: objTypes['lineobj'].c_mousemove,
   c_mouseup: objTypes['lineobj'].c_mouseup,
   move: objTypes['lineobj'].move,
-  clicked: objTypes['lineobj'].clicked,
   dragging: objTypes['lineobj'].dragging,
+  clicked: objTypes['lineobj'].clicked,
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {

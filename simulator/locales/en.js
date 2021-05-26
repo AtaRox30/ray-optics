@@ -375,5 +375,14 @@ locales["en"] = {
   },
   "properties": {
     "message":"Properties"
+  },
+  "create_group": {
+    "message":"Create a group"
+  },
+  "enter_text": {
+    "message":"Enter your text :"
+  },
+  "choose_text": {
+    "message":"Choose your text"
   }
 }

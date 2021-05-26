@@ -1,3 +1,56 @@
+function chooseText() {
+    createText();
+    displayText();
+}
+
+function createText() {
+    /*
+    <div id="createText">
+        <label for="textInput">Entrez votre texte : </label>
+        <input type="text" id="choosetextInput" />
+        <button id="deleteFieldText">Effacer</button>
+    </div>
+    */
+
+    let div = document.createElement("div");
+    $(div).attr("id", "createText");
+    let label = document.createElement("label");
+    $(label).attr("for", "textInput");
+    $(label).text(getMsg("enter_text"));
+    let input = document.createElement("input");
+    $(input).attr("type", "text");
+    $(input).attr("id", "choosetextInput");
+    let button = $(document.createElement("button")).on("click", function() {$("#choosetextInput").val("");});
+    $(button).attr("id", "deleteFieldText");
+    $(button).text(getMsg("delete"));
+    $(div).append(label);
+    $(div).append(input);
+    $(div).append(button);
+    $("body").append(div);
+}
+
+function displayText() {
+    $("#createText").dialog({
+        width: 500,
+        maxHeight: 300,
+        title: getMsg("choose_text"),
+        modal: true,
+        close: function(e, ui) {
+            $("#createText").remove();
+        },
+        buttons: {"Ok": function(t) {
+            let choosenText = $("#choosetextInput").val();
+            if(Boolean(choosenText)) {
+                text = choosenText;
+                $("#createText").remove();
+            }
+        }, "Cancel": function(t) {
+            $("#createText").remove();
+        }
+        }
+      });
+}
+
 function createModalProperties(element) {
   /* 
       <div id="elementInGr">
@@ -248,6 +301,7 @@ function addDeleteListenerForGroup() {
 }
 
 function addSelectedToAll(group) {
+    for(c of selectGr) if(c.name == group) {addGroupToGivenGroup(group); return}
     for(c of currentSelectedGr) c.group.push(group);
     selectGr.push({"name":group, "elements":currentSelectedGr});
     isMovingMultipleObject = true;
@@ -289,7 +343,7 @@ function createGroupNamer() {
     $(group).append(input);
 
     let button = $(document.createElement("button")).on("click", function() {$("input[type=text]#inputName").val("")});
-    $(button).attr("id", "deleteField");
+    $(button).attr("id", "deleteFieldGroup");
     $(button).text(getMsg("delete"));
     $(group).append(button);
 
@@ -325,7 +379,7 @@ $(document).ready(function(e) {
       $("#groupName").dialog({
         width: 500,
         maxHeight: 300,
-        title: getMsg("group_management"),
+        title: getMsg("create_group"),
         modal: true,
         close: function(e, ui) {
             $("#groupName").remove();
@@ -368,7 +422,7 @@ $(document).ready(function(e) {
       $("#sideMultipleGroup").dialog({
           width: 400,
           maxHeight: 300,
-          title: "Selection",
+          title: getMsg("group_management"),
           modal: true,
           close: function(e, ui) {
               $("#sideMultipleGroup").remove();
