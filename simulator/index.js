@@ -620,9 +620,6 @@
     }
     //Here we want to prevent the user to choose another segment while he will choose the right location of the point
     isChoosingSeg = false;
-
-    //Here, now the user have choosed the segment, give him the right to set a point of rotation while moving the mouse
-    isSettingRotationPoint = true;
   }
 
   function choosingRotationPoint() {
@@ -1343,9 +1340,38 @@
                 draggingPart = draggingPart_;
                 if(selectedObj != -1) unhighlightObject(selectedObj);
               }
-              if(isChoosingSeg) {
+              if(AddingObjType == "regular") {
+                let perp;
+                let f_point_away;
+                let s_point_away
+                let regular;
+                if(objs[targetObj_index].type == "refractor") {
+                  //Let's draw a normal on the refractor
+                  choosingSeg(draggingPart_, i);
+                  perp = graphs.perpendicularOfLine(nearestSeg.affine.m, mouse.x, mouse.y);
+                  nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}};
+                  f_point_away = {"x": mouse.x + 400, "y": (mouse.x + 400) * perp.m + perp.p};
+                  s_point_away = {"x": mouse.x - 400, "y": (mouse.x - 400) * perp.m + perp.p};
+                  regular = {type: 'regular', p1: f_point_away, p2: s_point_away, group: [], selected: false};
+                  objs.push(regular);
+                }
+                if(objs[targetObj_index].type == "halfplane") {
+                  //Let's draw a normal on the halfplane
+                  let obj = objs[i];
+                  let affineHalfplane = graphs.affineFunctionOfTwoPoints(obj.p1.x, obj.p2.x, obj.p1.y, obj.p2.y);
+                  perp = graphs.perpendicularOfLine(affineHalfplane.m, mouse.x, mouse.y);
+                  f_point_away = {"x": mouse.x + 400, "y": (mouse.x + 400) * perp.m + perp.p};
+                  s_point_away = {"x": mouse.x - 400, "y": (mouse.x - 400) * perp.m + perp.p};
+                  regular = {type: 'regular', p1: f_point_away, p2: s_point_away, group: [], selected: false};
+                  objs.push(regular);
+                }
+                draw();
+              }
+              if(isChoosingSeg && AddingObjType != "regular") {
                 //Here, the user clicked on the "Set a rotation point" and on the polygon
                 choosingSeg(draggingPart_, i);
+                //Here, now the user have choosed the segment, give him the right to set a point of rotation while moving the mouse
+                isSettingRotationPoint = true;
               }
               if(e.which == 1 && e.ctrlKey) {
                 //Enter here to add on selected gr

@@ -323,7 +323,8 @@ locales["fr"] = {
   },
   "help_popover": {
     "message": "Montrer/Cacher la fenêtre d'aide. <br><br>Quelques autres astuces: <br>Clic sur l'objet selectionné, <br>Ctrl+D pour dupliquer, <br>Touche Supprimer pour supprimer, <br>Flèches du clavier pour bouger lentement, <br>Double clic ou clic droit sur un point pour modifier ses coordonnées directement." + 
-    "<br>En créant un objet linéaire, <br>Tenir Maj pour verrouiller l'angle, <br>Tenir Ctrl pour dessiner le premier point par rapport au centre.<br>Avant de cliquer sur un ou plusieurs objet(s), <br>Touche Ctrl pour le séléctionner en vue de l'ajouter a un nouveau groupe/groupe existant,<br>Relâcher Ctrl pour crée un groupe avec les objets selectionnés précédemment."
+    "<br>En créant un objet linéaire, <br>Tenir Maj pour verrouiller l'angle, <br>Tenir Ctrl pour dessiner le premier point par rapport au centre.<br>Avant de cliquer sur un ou plusieurs objet(s), <br>Touche Ctrl pour le séléctionner en vue de l'ajouter a un nouveau groupe/groupe existant,<br>Relâcher Ctrl pour crée un groupe avec les objets selectionnés précédemment." + 
+    "<br>En créant une ligne, <br>Clic sur une forme libre pour tracer une normale au segment le plus proche de la souris."
   },
   "tool_regular": {
     "message": "Ligne"
