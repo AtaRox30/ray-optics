@@ -274,7 +274,6 @@ var graphs = {
 
 var canvasPainter = {
   draw: function(graph, color) {
-    //var ctx = canvas.getContext('2d');
     // point
     if (graph.type == 1) {
       ctx.fillStyle = color ? color : 'red';
@@ -294,17 +293,20 @@ var canvasPainter = {
     else if (graph.type == 3) {
       ctx.strokeStyle = color ? color : 'black';
       var ang1, cvsLimit;
+      var arrowStep = 100;
       if (Math.abs(graph.p2.x - graph.p1.x) > 1e-5 || Math.abs(graph.p2.y - graph.p1.y) > 1e-5)
       {
+        //TODO: Draw arrow to ray
         ctx.beginPath();
         ang1 = Math.atan2((graph.p2.x - graph.p1.x), (graph.p2.y - graph.p1.y)); //Prenez l'angle de la pente
         cvsLimit = (Math.abs(graph.p1.x + origin.x) + Math.abs(graph.p1.y + origin.y) + canvas.height + canvas.width) / Math.min(1, scale);  //Prenez une distance qui dépassera la zone de dessin (comme la fin de la ligne)
         ctx.moveTo(graph.p1.x, graph.p1.y);
         ctx.lineTo(graph.p1.x + Math.sin(ang1) * cvsLimit, graph.p1.y + Math.cos(ang1) * cvsLimit);
+        let count = Math.round(cvsLimit / arrowStep);
+        let aff = graphs.affineFunctionOfTwoPoints(graph.p1.x, graph.p2.x, graph.p1.y, graph.p2.y);
         ctx.stroke();
       }
     }
-    // (line_)segment
     else if (graph.type == 4) {
       ctx.strokeStyle = color ? color : 'black';
       ctx.beginPath();

@@ -75,10 +75,6 @@
 
 
     mouse = graphs.point(0, 0);
-    //mode=document.getElementById("mode").value;
-    //observer=graphs.circle(graphs.point(canvas.width*0.5,canvas.height*0.5),20);
-    //document.getElementById('objAttr_text').value="";
-    //toolbtn_clicked(AddingObjType);
 
     if (typeof(Storage) !== "undefined" && localStorage.rayOpticsData) {
       document.getElementById('textarea1').value = localStorage.rayOpticsData;
@@ -752,11 +748,8 @@
   function shootWaitingRays() {
     timerID = -1;
     var st_time = new Date();
-    //var instantObserver=mode=="observer";
     var alpha0 = 1;
-    //var alpha0=document.getElementById("lightAlpha").value;
     ctx.globalAlpha = alpha0;
-    //canvas.getContext('2d').lineWidth = 2;
     var ray1;
     var observed;
     var last_ray;
@@ -766,7 +759,6 @@
     var last_s_obj_index;
     var s_point;
     var s_point_temp;
-    //var s_len;
     var s_lensq;
     var s_lensq_temp;
     var observed_point;
@@ -775,7 +767,6 @@
     var leftRayCount = waitingRays.length;
     var surfaceMerging_objs = [];
 
-    //ctx.beginPath();
     while (leftRayCount != 0 && !forceStop)
     {
       if (new Date() - st_time > 200)
@@ -786,7 +777,6 @@
         hasExceededTime = true;
         timerID = setTimeout(shootWaitingRays, 10); //10ms Revenez ici plus tard function
         document.getElementById('forceStop').style.display = '';
-        //(timerID)
         return; //Hors de la function
       }
 
@@ -807,8 +797,6 @@
           s_obj_index = -1;
           s_point = null;  //L'intersection de s_obj et du rayon
           surfaceMerging_objs = []; //L'objet à interfacer avec l'objet tiré
-          //surfaceMerging_obj_index=-1;
-          //s_len=Infinity;
           s_lensq = Infinity; //Réglez "Le carré de la distance entre [s_obj et l'intersection du rayon] et [la tête du rayon] à l'infini (car aucun objet n'a encore été vérifié, et maintenant je recherche la valeur minimale)
           observed = false; //waitingRays[j]Vu par les observateurs
           for (var i = 0; i < objs.length; i++)
@@ -865,12 +853,8 @@
           {
             if (mode == 'light' || mode == 'extended_light')
             {
-              if(!waitingRays[j].regular) {
-                canvasPainter.draw(waitingRays[j], 'rgb(255,255,128)'); //Dessine cette lumière
-              } else {
-                canvasPainter.draw(waitingRays[j], 'rgb(128,236,255)'); //Dessine cette normale
-              }
-              //if(waitingRays[j].gap)canvasPainter.draw(waitingRays[j],canvas,"rgb(0,0,255)");
+              let color = waitingRays[j].regular ? 'rgb(128,236,255)' : 'rgb(255,255,128)';
+              canvasPainter.draw(waitingRays[j], color); //Dessine cette normale/lumière
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)
             {
@@ -889,9 +873,6 @@
                 }
               }
             }
-
-            //waitingRays[j]=null  //Retirez cette lumière de la zone d'attente
-            //Cette lumière a atteint l'infini, pas besoin de s'en occuper
           }
           else
           {
@@ -899,7 +880,6 @@
             if (mode == 'light' || mode == 'extended_light')
             {
               canvasPainter.draw(graphs.segment(waitingRays[j].p1, s_point), 'rgb(255,255,128)'); //Dessine cette lumière
-              //if(waitingRays[j].gap)canvasPainter.draw(graphs.segment(waitingRays[j].p1,s_point),canvas,"rgb(0,0,255)");
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)
             {
@@ -941,16 +921,10 @@
                   {
 
                     ctx.globalAlpha = alpha0 * (waitingRays[j].brightness + last_ray.brightness) * 0.5;
-                    if (s_point)
-                    {
-                      rpd = (observed_intersection.x - waitingRays[j].p1.x) * (s_point.x - waitingRays[j].p1.x) + (observed_intersection.y - waitingRays[j].p1.y) * (s_point.y - waitingRays[j].p1.y);
-                      //(observed_intersection-waitingRays[j].p1)與(s_point-waitingRays[j].p1)之內積
-                    }
-                    else
-                    {
-                      rpd = (observed_intersection.x - waitingRays[j].p1.x) * (waitingRays[j].p2.x - waitingRays[j].p1.x) + (observed_intersection.y - waitingRays[j].p1.y) * (waitingRays[j].p2.y - waitingRays[j].p1.y);
-                      //(observed_intersection-waitingRays[j].p1)與(waitingRays[j].p2-waitingRays[j].p1)之內積
-                    }
+                    if (s_point) 
+                    rpd = (observed_intersection.x - waitingRays[j].p1.x) * (s_point.x - waitingRays[j].p1.x) + (observed_intersection.y - waitingRays[j].p1.y) * (s_point.y - waitingRays[j].p1.y);
+                    else 
+                    rpd = (observed_intersection.x - waitingRays[j].p1.x) * (waitingRays[j].p2.x - waitingRays[j].p1.x) + (observed_intersection.y - waitingRays[j].p1.y) * (waitingRays[j].p2.y - waitingRays[j].p1.y);
                     if (rpd < 0)
                     {
                       //Image virtuelle
@@ -968,18 +942,12 @@
                     canvasPainter.draw(graphs.ray(observed_point, waitingRays[j].p1), 'rgb(0,0,255)'); //畫出觀察到的光線(射線)
                   }
                 }
-                else //if(last_intersection && (last_intersection.x*last_intersection.x+last_intersection.y*last_intersection.y>100))
+                else
                 {
                   if (last_intersection)
                   {
                     canvasPainter.draw(graphs.ray(observed_point, waitingRays[j].p1), 'rgb(0,0,255)'); //畫出觀察到的光線(射線)
                   }
-                  /*
-                  else
-                  {
-                    canvasPainter.draw(graphs.ray(observed_point,waitingRays[j].p1),canvas,"rgb(255,0,0)");
-                  }
-                  */
                 }
               }
               last_intersection = observed_intersection;
@@ -1032,10 +1000,6 @@
             }
 
           }
-
-
-
-
           if (last_s_obj_index != s_obj_index)
           {
             waitingRays[j].gap = true;
@@ -1043,10 +1007,7 @@
           waitingRays[j].isNew = false;
 
 
-          //==================
-          //last_ray=waitingRays[j];
           last_ray = {p1: waitingRays[j].p1, p2: waitingRays[j].p2};
-          //last_s_obj=s_obj;
           last_s_obj_index = s_obj_index;
           if (s_obj)
           {
@@ -1340,34 +1301,43 @@
                 draggingPart = draggingPart_;
                 if(selectedObj != -1) unhighlightObject(selectedObj);
               }
-              if(AddingObjType == "regular") {
+              if(AddingObjType == "regular" && e.shiftKey) {
                 let perp;
                 let f_point_away;
                 let s_point_away
                 let regular;
+                let mouse_away = 200;
                 if(objs[targetObj_index].type == "refractor") {
                   //Let's draw a normal on the refractor
                   choosingSeg(draggingPart_, i);
                   perp = graphs.perpendicularOfLine(nearestSeg.affine.m, mouse.x, mouse.y);
                   nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}};
-                  f_point_away = {"x": mouse.x + 400, "y": (mouse.x + 400) * perp.m + perp.p};
-                  s_point_away = {"x": mouse.x - 400, "y": (mouse.x - 400) * perp.m + perp.p};
+                  f_point_away = {"x": mouse.x + mouse_away, "y": (mouse.x + mouse_away) * perp.m + perp.p};
+                  s_point_away = {"x": mouse.x - mouse_away, "y": (mouse.x - mouse_away) * perp.m + perp.p};
                   regular = {type: 'regular', p1: f_point_away, p2: s_point_away, group: [], selected: false};
                   objs.push(regular);
                 }
-                if(objs[targetObj_index].type == "halfplane") {
-                  //Let's draw a normal on the halfplane
+                if(["halfplane", "lens", "mirror"].includes(objs[targetObj_index].type)) {
+                  //Let's draw a normal on the halfplane/lens
                   let obj = objs[i];
-                  let affineHalfplane = graphs.affineFunctionOfTwoPoints(obj.p1.x, obj.p2.x, obj.p1.y, obj.p2.y);
-                  perp = graphs.perpendicularOfLine(affineHalfplane.m, mouse.x, mouse.y);
-                  f_point_away = {"x": mouse.x + 400, "y": (mouse.x + 400) * perp.m + perp.p};
-                  s_point_away = {"x": mouse.x - 400, "y": (mouse.x - 400) * perp.m + perp.p};
+                  let affine = graphs.affineFunctionOfTwoPoints(obj.p1.x, obj.p2.x, obj.p1.y, obj.p2.y);
+                  perp = graphs.perpendicularOfLine(affine.m, mouse.x, mouse.y);
+                  f_point_away = {"x": mouse.x + mouse_away, "y": (mouse.x + mouse_away) * perp.m + perp.p};
+                  s_point_away = {"x": mouse.x - mouse_away, "y": (mouse.x - mouse_away) * perp.m + perp.p};
+                  regular = {type: 'regular', p1: f_point_away, p2: s_point_away, group: [], selected: false};
+                  objs.push(regular);
+                }
+                if(objs[targetObj_index].type == "circlelens") {
+                  let obj = objs[i];
+                  let affine = graphs.affineFunctionOfTwoPoints(obj.p1.x, mouse.x, obj.p1.y, mouse.y);
+                  f_point_away = {"x": mouse.x + mouse_away, "y": (mouse.x + mouse_away) * affine.m + affine.p};
+                  s_point_away = {"x": mouse.x - mouse_away, "y": (mouse.x - mouse_away) * affine.m + affine.p};
                   regular = {type: 'regular', p1: f_point_away, p2: s_point_away, group: [], selected: false};
                   objs.push(regular);
                 }
                 draw();
               }
-              if(isChoosingSeg && AddingObjType != "regular") {
+              if(isChoosingSeg) {
                 //Here, the user clicked on the "Set a rotation point" and on the polygon
                 choosingSeg(draggingPart_, i);
                 //Here, now the user have choosed the segment, give him the right to set a point of rotation while moving the mouse
