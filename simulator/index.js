@@ -25,6 +25,9 @@
   //Text
   var text = "Exemple";
 
+  //Arrows on rays
+  var showArrows = false;
+
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
   var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
@@ -78,6 +81,11 @@
 
     if (typeof(Storage) !== "undefined" && localStorage.rayOpticsData) {
       document.getElementById('textarea1').value = localStorage.rayOpticsData;
+    }
+    if (typeof(Storage) !== "undefined" && localStorage.showArrows) {
+      showArrows = JSON.parse(localStorage.getItem("showArrows"));
+      if(showArrows) document.querySelector("input[id=showArrowOnRay]").checked = true;
+      else document.querySelector("input[id=showArrowOnRay]").checked = false;
     }
 
 
@@ -382,6 +390,14 @@
       if(isMovingMultipleObject) isSettingRotationPoint = true;
     }
     cancelMousedownEvent('objSetPointRot_button');
+
+    document.getElementById('showArrowOnRay').onchange = function() {
+      if(showArrows) showArrows = false;
+      else showArrows = true;
+      localStorage.setItem("showArrows", showArrows)
+      draw();
+    }
+    cancelMousedownEvent('showArrowOnRay');
     
     document.getElementById('toggleGroupPanel_button').onclick = function() {
       //Define onready script.js
@@ -807,6 +823,8 @@
               s_point_temp = objTypes[objs[i].type].rayIntersection(objs[i], waitingRays[j]);
               if (s_point_temp && !waitingRays[j].regular)
               {
+                //Add the last intersection in order to draw arrow
+                if(waitingRays[j].last_intersection) waitingRays[j].last_intersection.push(s_point_temp);
                 //À ce stade, cela signifie que objs [i] est "l'objet qui croise cette lumière", et que le point d'intersection est s_point_temp
                 s_lensq_temp = graphs.length_squared(waitingRays[j].p1, s_point_temp); //La distance entre l'intersection et [la tête du rayon]
                 if (s_point && graphs.length_squared(s_point_temp, s_point) < minShotLength_squared && (objTypes[objs[i].type].supportSurfaceMerging || objTypes[s_obj.type].supportSurfaceMerging))
@@ -1006,7 +1024,6 @@
           }
           waitingRays[j].isNew = false;
 
-
           last_ray = {p1: waitingRays[j].p1, p2: waitingRays[j].p2};
           last_s_obj_index = s_obj_index;
           if (s_obj)
@@ -1029,17 +1046,13 @@
 
     }
     ctx.globalAlpha = 1.0;
-    //if(showLight)
-    //{
       for (var i = 0; i < objs.length; i++)
         {
         objTypes[objs[i].type].draw(objs[i], canvas, true); //Dessiner objs[i]
         }
-    //}
     if (mode == 'observer')
     {
       //Dessinez un observateur instantané
-      //var ctx = canvas.getContext('2d');
       ctx.globalAlpha = 1;
       ctx.beginPath();
       ctx.fillStyle = 'blue';
@@ -1060,7 +1073,6 @@
       document.getElementById('status').innerHTML = shotRayCount + ' rays (' + (new Date() - st_time) + 'ms)';
     }
     document.getElementById('forceStop').style.display = 'none';
-    //ctx.stroke();
     setTimeout(draw_, 10);
   }
 
@@ -1924,17 +1936,6 @@
     return false;
     }
 
-    //Ctrl
-    /*
-    if(e.keyCode==17)
-    {
-      if(draggingObj!=-1)
-      {
-        canvas_onmousemove(e,true);
-      }
-    }
-    */
-
     //Arrow Keys
     if (e.keyCode >= 37 && e.keyCode <= 40)
     {
@@ -2217,12 +2218,10 @@
     mode = mode1;
     if (mode == 'images' || mode == 'observer')
     {
-      //document.getElementById('rayDensity').value = Math.log(rayDensity_images);
       window.toolBarViewModel.rayDensity.value(Math.log(rayDensity_images));
     }
     else
     {
-      //document.getElementById('rayDensity').value = Math.log(rayDensity_light);
       window.toolBarViewModel.rayDensity.value(Math.log(rayDensity_light));
     }
     if (mode == 'observer' && !observer)
@@ -2433,6 +2432,7 @@
     document.getElementById('delete').value = getMsg('delete');
     document.getElementById('objSetPointRot_button').value = getMsg('placerotation');
     document.getElementById('toggleGroupPanel_button').value = getMsg('grouppanel');
+    document.querySelector("label[for=showArrowOnRay]").innerHTML = getMsg('show_arrow_ray');
 
     document.getElementById('forceStop').innerHTML = getMsg('processing');
 

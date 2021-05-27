@@ -293,17 +293,14 @@ var canvasPainter = {
     else if (graph.type == 3) {
       ctx.strokeStyle = color ? color : 'black';
       var ang1, cvsLimit;
-      var arrowStep = 100;
       if (Math.abs(graph.p2.x - graph.p1.x) > 1e-5 || Math.abs(graph.p2.y - graph.p1.y) > 1e-5)
       {
-        //TODO: Draw arrow to ray
         ctx.beginPath();
         ang1 = Math.atan2((graph.p2.x - graph.p1.x), (graph.p2.y - graph.p1.y)); //Prenez l'angle de la pente
         cvsLimit = (Math.abs(graph.p1.x + origin.x) + Math.abs(graph.p1.y + origin.y) + canvas.height + canvas.width) / Math.min(1, scale);  //Prenez une distance qui dépassera la zone de dessin (comme la fin de la ligne)
         ctx.moveTo(graph.p1.x, graph.p1.y);
         ctx.lineTo(graph.p1.x + Math.sin(ang1) * cvsLimit, graph.p1.y + Math.cos(ang1) * cvsLimit);
-        let count = Math.round(cvsLimit / arrowStep);
-        let aff = graphs.affineFunctionOfTwoPoints(graph.p1.x, graph.p2.x, graph.p1.y, graph.p2.y);
+        if(showArrows) drawArrow(cvsLimit, graph);
         ctx.stroke();
       }
     }
@@ -312,6 +309,7 @@ var canvasPainter = {
       ctx.beginPath();
       ctx.moveTo(graph.p1.x, graph.p1.y);
       ctx.lineTo(graph.p2.x, graph.p2.y);
+      if(showArrows) drawArrow(10000, graph);
       ctx.stroke();
     }
     // circle
@@ -1554,6 +1552,7 @@ var canvasPainter = {
   ray1.brightness = 1;
   ray1.gap = true;
   ray1.isNew = true;
+  ray1.last_intersection = [];
   addRay(ray1);
   }
   };
@@ -1996,6 +1995,7 @@ var canvasPainter = {
   {
     var ray1 = graphs.ray(graphs.point(obj.x, obj.y), graphs.point(obj.x + Math.sin(i), obj.y + Math.cos(i)));
     ray1.brightness = Math.min(obj.p / getRayDensity(), 1);
+    ray1.last_intersection = [];
     ray1.isNew = true;
     if (i == i0)
     {
@@ -2069,6 +2069,7 @@ var canvasPainter = {
     {
       var ray1 = graphs.ray(graphs.point(obj.p1.x + i * stepX, obj.p1.y + i * stepY), graphs.point(rayp2_x + i * stepX, rayp2_y + i * stepY));
       ray1.brightness = Math.min(obj.p / getRayDensity(), 1);
+      ray1.last_intersection = [];
       ray1.isNew = true;
       if (i == 0)
       {
@@ -2886,4 +2887,53 @@ function isInHalplane(pt, p1, p2) {
       if(p1.x > p2.x && ((aff.m * pt.x + aff.p) > pt.y)) isClick = true;
   }
   return isClick;
+}
+
+function getArrow(from, to) {
+  let length = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
+  let aff = graphs.affineFunctionOfTwoPoints(from.x, to.x, from.y, to.y);
+  let perp = graphs.perpendicularOfLine(aff.m, from.x, from.y);
+  let ret = intersectionLineAndCircle(length, from, perp)
+  return ret;
+}
+
+function intersectionLineAndCircle(radius, center, aff) {
+  let a = Math.pow(aff.m, 2) + 1;
+  let b = (-2) * center.x + 2 * aff.m * (aff.p - center.y);
+  let c = Math.pow(center.x, 2) + Math.pow(aff.p - center.y, 2) - Math.pow(radius, 2);
+  let delta = Math.pow(b, 2) - 4 * a * c;
+  let x1 = (-b - Math.sqrt(delta)) / (2 * a);
+  let x2 = (-b + Math.sqrt(delta)) / (2 * a);
+  let y1 = x1 * aff.m + aff.p;
+  let y2 = x2 * aff.m + aff.p;
+  return {0: {x: x1,y: y1}, 1: {x: x2,y: y2}}
+}
+
+function drawArrow(cvsLimit, graph) {
+  let arrowStep = 100;
+  let arrowSize = 5;
+  let count = Math.round(cvsLimit / arrowStep);
+  let aff = graphs.affineFunctionOfTwoPoints(graph.p1.x, graph.p2.x, graph.p1.y, graph.p2.y);
+  let index = 0;
+  while(index < count) {
+    let isOk = true;
+    let to = {"x": index * arrowStep,"y": aff.m * index * arrowStep + aff.p};
+    let arr = intersectionLineAndCircle(arrowSize, to, aff);
+    let from = {"x": arr["0"].x,"y": arr["0"].y};
+    if(graph.p1.x < graph.p2.x && from.x < graph.p1.x) isOk = false;
+    if(graph.p1.x > graph.p2.x && from.x > graph.p1.x) isOk = false;
+    if(graph.p1.x < graph.p2.x && graph.p2.x < from.x && !graph.last_intersection) isOk = false;
+    if(graph.p1.x > graph.p2.x && graph.p2.x > from.x && !graph.last_intersection) isOk = false;
+    if(isOk) {
+      if(graph.p1.x > graph.p2.x) from = {"x": arr["1"].x,"y": arr["1"].y};
+      let arrow = getArrow(from, to);
+      ctx.fillStyle = "rgb(128, 128, 128)";
+      ctx.moveTo(to.x, to.y);
+      ctx.lineTo(arrow["0"].x, arrow["0"].y);
+      ctx.lineTo(arrow["1"].x, arrow["1"].y);
+      ctx.lineTo(to.x, to.y);
+      ctx.fill()
+    }
+  index++;
+  }
 }

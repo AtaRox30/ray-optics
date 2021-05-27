@@ -385,5 +385,8 @@ locales["fr"] = {
   },
   "choose_text": {
     "message":"Choisir votre texte"
+  },
+  "show_arrow_ray": {
+    "message":"Montrer les rayons"
   }
 }
