@@ -300,7 +300,7 @@ var canvasPainter = {
         cvsLimit = (Math.abs(graph.p1.x + origin.x) + Math.abs(graph.p1.y + origin.y) + canvas.height + canvas.width) / Math.min(1, scale);  //Prenez une distance qui dépassera la zone de dessin (comme la fin de la ligne)
         ctx.moveTo(graph.p1.x, graph.p1.y);
         ctx.lineTo(graph.p1.x + Math.sin(ang1) * cvsLimit, graph.p1.y + Math.cos(ang1) * cvsLimit);
-        if(showArrows) drawArrow(cvsLimit, graph);
+        if(showArrows && !graph.regular) drawArrow(cvsLimit, graph);
         ctx.stroke();
       }
     }
@@ -309,7 +309,7 @@ var canvasPainter = {
       ctx.beginPath();
       ctx.moveTo(graph.p1.x, graph.p1.y);
       ctx.lineTo(graph.p2.x, graph.p2.y);
-      if(showArrows) drawArrow(10000, graph);
+      if(showArrows && !graph.regular) drawArrow(10000, graph);
       ctx.stroke();
     }
     // circle
