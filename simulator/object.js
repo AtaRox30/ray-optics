@@ -2927,7 +2927,7 @@ function drawArrow(cvsLimit, graph) {
     if(isOk) {
       if(graph.p1.x > graph.p2.x) from = {"x": arr["1"].x,"y": arr["1"].y};
       let arrow = getArrow(from, to);
-      ctx.fillStyle = "rgb(128, 128, 128)";
+      ctx.fillStyle = "yellow";
       ctx.moveTo(to.x, to.y);
       ctx.lineTo(arrow["0"].x, arrow["0"].y);
       ctx.lineTo(arrow["1"].x, arrow["1"].y);

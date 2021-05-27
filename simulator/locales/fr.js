@@ -387,6 +387,6 @@ locales["fr"] = {
     "message":"Choisir votre texte"
   },
   "show_arrow_ray": {
-    "message":"Montrer les rayons"
+    "message":"Montrer les flèches sur les rayons"
   }
 }

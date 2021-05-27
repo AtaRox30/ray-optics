@@ -385,5 +385,8 @@ locales["en"] = {
   },
   "choose_text": {
     "message":"Choose your text"
+  },
+  "show_arrow_ray": {
+    "message":"Show arrows on rays"
   }
 }
