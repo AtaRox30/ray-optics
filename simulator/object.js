@@ -2919,8 +2919,8 @@ function drawArrow(cvsLimit, graph) {
   while(index < count) {
     let isOk = true;
     //Side is 1 when right, -1 when left
-    let side = 1;
-    if(graph.p1.x > graph.p2.x) side = -1;
+    let side;
+    graph.p1.x > graph.p2.x ? side = -1 : side = 1;
     let to = {
       "x": side * index * arrowStep * Math.cos(Math.atan(aff.m)) + graph.p1.x,
       "y": aff.m * (side * index * arrowStep * Math.cos(Math.atan(aff.m)) + graph.p1.x) + aff.p
@@ -2928,7 +2928,7 @@ function drawArrow(cvsLimit, graph) {
     let arrSize = intersectionLineAndCircle(arrowSize, to, aff);
     let from = {"x": arrSize["0"].x,"y": arrSize["0"].y};
     if(graph.p1.x < graph.p2.x && from.x < graph.p1.x) isOk = false;
-    if(graph.p1.x > graph.p2.x && from.x > graph.p1.x) isOk = false;
+    if(graph.p1.x > graph.p2.x && (from.x > graph.p1.x || index == 0)) isOk = false;
     if(graph.p1.x < graph.p2.x && graph.p2.x < from.x && !graph.last_intersection) isOk = false;
     if(graph.p1.x > graph.p2.x && graph.p2.x > from.x && !graph.last_intersection) isOk = false;
     if(isOk) {
