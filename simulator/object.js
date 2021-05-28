@@ -309,7 +309,8 @@ var canvasPainter = {
       ctx.beginPath();
       ctx.moveTo(graph.p1.x, graph.p1.y);
       ctx.lineTo(graph.p2.x, graph.p2.y);
-      if(showArrows && !graph.regular) drawArrow(10000, graph);
+      cvsLimit = (Math.abs(graph.p1.x + origin.x) + Math.abs(graph.p1.y + origin.y) + canvas.height + canvas.width) / Math.min(1, scale);  //Prenez une distance qui dépassera la zone de dessin (comme la fin de la ligne)
+      if(showArrows && !graph.regular) drawArrow(cvsLimit, graph);
       ctx.stroke();
     }
     // circle
@@ -2917,15 +2918,21 @@ function drawArrow(cvsLimit, graph) {
   let index = 0;
   while(index < count) {
     let isOk = true;
-    let to = {"x": index * arrowStep,"y": aff.m * index * arrowStep + aff.p};
-    let arr = intersectionLineAndCircle(arrowSize, to, aff);
-    let from = {"x": arr["0"].x,"y": arr["0"].y};
+    //Side is 1 when right, -1 when left
+    let side = 1;
+    if(graph.p1.x > graph.p2.x) side = -1;
+    let to = {
+      "x": side * index * arrowStep * Math.cos(Math.atan(aff.m)) + graph.p1.x,
+      "y": aff.m * (side * index * arrowStep * Math.cos(Math.atan(aff.m)) + graph.p1.x) + aff.p
+    };
+    let arrSize = intersectionLineAndCircle(arrowSize, to, aff);
+    let from = {"x": arrSize["0"].x,"y": arrSize["0"].y};
     if(graph.p1.x < graph.p2.x && from.x < graph.p1.x) isOk = false;
     if(graph.p1.x > graph.p2.x && from.x > graph.p1.x) isOk = false;
     if(graph.p1.x < graph.p2.x && graph.p2.x < from.x && !graph.last_intersection) isOk = false;
     if(graph.p1.x > graph.p2.x && graph.p2.x > from.x && !graph.last_intersection) isOk = false;
     if(isOk) {
-      if(graph.p1.x > graph.p2.x) from = {"x": arr["1"].x,"y": arr["1"].y};
+      if(graph.p1.x > graph.p2.x) from = {"x": arrSize["1"].x,"y": arrSize["1"].y};
       let arrow = getArrow(from, to);
       ctx.fillStyle = "yellow";
       ctx.moveTo(to.x, to.y);
