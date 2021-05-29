@@ -391,5 +391,26 @@ locales["en"] = {
   },
   "create_refractor": {
     "message":"Create free-shape"
+  },
+  "point": {
+    "message":"Point"
+  },
+  "coords": {
+    "message":"Coordinates"
+  },
+  "angle": {
+    "message": "Angle"
+  },
+  "length": {
+    "message": "Length"
+  },
+  "add_point": {
+    "message": "Add a point"
+  },
+  "delete_point": {
+    "message": "Remove a point"
+  },
+  "create_shape": {
+    "message": "Create shape"
   }
 }
