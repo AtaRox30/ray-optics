@@ -1349,6 +1349,8 @@
                 }
                 draw();
               }
+              if(objs[targetObj_index].type == "refractor") $("#objSetPointRot_button").css("display", "inline-flex");
+              else $("#objSetPointRot_button").css("display", "none");
               if(isChoosingSeg) {
                 //Here, the user clicked on the "Set a rotation point" and on the polygon
                 choosingSeg(draggingPart_, i);
@@ -1397,6 +1399,10 @@
        else
        {
        //======================Créer un nouvel objet=========================
+       if(AddingObjType == "refractor" && e.shiftKey) {
+          constructRefractorFromInstructions()
+          return
+       }
         objs[objs.length] = objTypes[AddingObjType].create(mouse);
         isConstructing = true;
         constructionPoint = mouse;
@@ -1654,6 +1660,12 @@
   function selectObj(index)
   {
     unhighlightAllObj();
+
+    if(currentSelectedGr[0] != undefined) {
+      if(isMovingMultipleObject && objs[index].group.includes(currentSelectedGr[0].name)) $("#objSetPointRot_button").css("display", "inline-flex");
+      else $("#objSetPointRot_button").css("display", "none");
+    }
+
     if (index < 0 || index >= objs.length)
     {
       //Si cet objet n'existe pas
@@ -1668,7 +1680,6 @@
       //Si cet objet a des paramètres ajustables (tels que l'indice de réfraction)
       document.getElementById('p_box').style.display = '';
       var p_temp = objs[index].p;
-      //document.getElementById('p_name').innerHTML=objTypes[objs[index].type].p_name;
       document.getElementById('p_name').innerHTML = document.getElementById('tool_' + objs[index].type).dataset['p'];
       document.getElementById('objAttr_range').min = objTypes[objs[index].type].p_min;
       document.getElementById('objAttr_range').max = objTypes[objs[index].type].p_max;
@@ -1682,7 +1693,6 @@
         {
           //S'il existe un autre objet du même type, l'option "Appliquer tout" sera affichée
           document.getElementById('setAttrAll_box').style.display = '';
-          //document.getElementById('setAttrAll').checked=false;
           break;
         }
         if (i == objs.length - 1)
@@ -2082,7 +2092,6 @@
     scale = jsonData.scale;
     modebtn_clicked(jsonData.mode);
     selectObj(selectedObj);
-    //draw();
   }
 
   function accessJSON()

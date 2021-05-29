@@ -1,6 +1,307 @@
+function constructRefractorFromInstructions() {
+    createRefractorModal();
+    displayRefractorModal();
+}
+
 function chooseText() {
     createText();
     displayText();
+}
+
+function customRefractor(instructions) {
+    let path = [];
+    if(!instructions[0].is_coord) return path;
+    path.push(instructions[0].coord);
+    for(let index = 1; index < instructions.length; index++) {
+        let ins = instructions[index];
+        if(ins.is_coord) path.push(ins.coord);
+        else {
+            let pente, totalangle;
+            index == 1 ? pente = ins.angle : pente = affine(path[index-2].x, path[index-2].y, path[index-1].x, path[index-1].y).m;
+            index == 1 ? totalangle = pente : totalangle = pente + ins.angle;
+            let newCoord = {
+                "x": Math.round(path[index-1].x + ins.length * Math.cos((Math.PI * totalangle)/180)),
+                "y": Math.round(path[index-1].y + ins.length * Math.sin((Math.PI * totalangle)/180))
+            }
+            path.push(newCoord);
+        }
+    }
+    return path
+}
+
+function getDataFromCustomRefractorCreator() {
+    let tr = $("#customRefractor tbody tr");
+    let count = 0;
+    let instructions = [];
+    for(line of tr) {
+        if(count != $("#customRefractor tbody tr").length - 1) {
+            //Array with x = coord[0] and y = coord[1]
+            let coord = $(line).find("td").eq(0).find("input").val().split(",");
+            //NaN or Float
+            let angle = Number.parseInt($(line).find("td").eq(1).find("input").val().replace(",", "."));
+            //NaN or Float
+            let length = Number.parseInt($(line).find("td").eq(2).find("input").val().replace(",", "."));
+
+            if(coord[1] != undefined) instructions.push({"is_coord": true, "coord":{x: Number.parseInt(coord[0]), y: Number.parseInt(coord[1])}})
+            else instructions.push({"is_coord":false, "length":!isNaN(length) ? length : 0, "angle":!isNaN(angle) ? angle : 0});
+        }
+        count++;
+    }
+    return instructions;
+}
+
+function addPointLine(button) {
+    let tr = $(button).parent().parent();
+    
+    /*
+    <tr>
+        <th scope="row"><div class="form-group"><input type="text" class="form-control" placeholder="Point" id="inputDefault"></div></th>
+        <td><div class="form-group"><input type="text" class="form-control" placeholder="Coordonnées" id="inputDefault"></div></td>
+        <td><div class="form-group"><input type="text" class="form-control" placeholder="Angle" id="inputDefault" disabled></div></td>
+        <td><div class="form-group"><input type="text" class="form-control" placeholder="Longueur" id="inputDefault" disabled></div></td>
+    </tr>
+    */
+
+    let line = document.createElement("tr");
+    
+    //Point
+    let pointTH = document.createElement("th");
+    $(pointTH).attr("scope", "row");
+    $(line).append(pointTH);
+
+    let pointDIV = document.createElement("div");
+    $(pointDIV).addClass("form-group");
+    $(pointTH).append(pointDIV);
+
+    let pointINPUT = document.createElement("input");
+    $(pointINPUT).addClass("form-control");
+    $(pointINPUT).attr("type", "text");
+    $(pointINPUT).attr("placeholder", "Point");
+    $(pointINPUT).attr("id", "inputDefault");
+    $(pointDIV).append(pointINPUT);
+
+    //Coords
+    let coordTD = document.createElement("td");
+    $(line).append(coordTD);
+
+    let coordDIV = document.createElement("div");
+    $(coordDIV).addClass("form-group");
+    $(coordTD).append(coordDIV);
+
+    let coordINPUT = document.createElement("input");
+    $(coordINPUT).addClass("form-control");
+    $(coordINPUT).attr("type", "text");
+    $(coordINPUT).attr("placeholder", "Coordonnées");
+    $(coordINPUT).attr("id", "inputDefault");
+    $(coordDIV).append(coordINPUT);
+
+    //Angle
+    let angleTD = document.createElement("td");
+    $(line).append(angleTD);
+
+    let angleDIV = document.createElement("div");
+    $(angleDIV).addClass("form-group");
+    $(angleTD).append(angleDIV);
+
+    let angleINPUT = document.createElement("input");
+    $(angleINPUT).addClass("form-control");
+    $(angleINPUT).attr("type", "text");
+    $(angleINPUT).attr("placeholder", "Angle");
+    $(angleINPUT).attr("id", "inputDefault");
+    $(angleDIV).append(angleINPUT);
+
+    //Length
+    let lengthTD = document.createElement("td");
+    $(line).append(lengthTD);
+
+    let lengthDIV = document.createElement("div");
+    $(lengthDIV).addClass("form-group");
+    $(lengthTD).append(lengthDIV);
+
+    let lengthINPUT = document.createElement("input");
+    $(lengthINPUT).addClass("form-control");
+    $(lengthINPUT).attr("type", "text");
+    $(lengthINPUT).attr("placeholder", "Length");
+    $(lengthINPUT).attr("id", "inputDefault");
+    $(lengthDIV).append(lengthINPUT);
+
+    $(line).insertBefore(tr);
+}
+
+function deletePointLine(button) {
+    let length = $("#customRefractor tbody tr:last-child").index();
+    let c = $("#customRefractor tbody tr:nth-child(" + length + ")");
+    $(c).remove();
+}
+
+function createRefractorModal() {
+    /*
+    <div id="customRefractor">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Point</th>
+                    <th scope="col">Coordonnées</th>
+                    <th scope="col">Angle</th>
+                    <th scope="col">Longueur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row"><div class="form-group"><input type="text" class="form-control" placeholder="Point" id="inputDefault"></div></th>
+                    <td><div class="form-group"><input type="text" class="form-control" placeholder="Coordonnées" id="inputDefault"></div></td>
+                    <td><div class="form-group"><input type="text" class="form-control" placeholder="Angle" id="inputDefault" disabled></div></td>
+                    <td><div class="form-group"><input type="text" class="form-control" placeholder="Longueur" id="inputDefault" disabled></div></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td><button type="button" class="btn btn-primary">Ajouter un point</button></td>
+                    <td><button type="button" class="btn btn-primary">Supprimer un point</button></td>
+                    <td><button type="button" class="btn btn-primary">Créer la forme</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    */
+
+    let div = document.createElement("div");
+    $(div).attr("id", "customRefractor");
+
+    let table = document.createElement("table");
+    $(table).addClass("table table-hover");
+
+    let thead = document.createElement("thead");
+    let trHead = document.createElement("tr");
+
+    for(let i = 0; i < 4; i++) {
+        let arr = ["Point", "Coordonnées", "Angle", "Longueue"];
+        let th = document.createElement("th");
+        $(th).attr("scope", "col");
+        $(th).text(arr[i]);
+        $(trHead).append(th);
+    }
+
+    $(thead).append(trHead);
+    $(table).append(thead);
+
+    let tbody = document.createElement("tbody");
+
+    let line = document.createElement("tr");
+    
+    //Point
+    let pointTH = document.createElement("th");
+    $(pointTH).attr("scope", "row");
+    $(line).append(pointTH);
+
+    let pointDIV = document.createElement("div");
+    $(pointDIV).addClass("form-group");
+    $(pointTH).append(pointDIV);
+
+    let pointINPUT = document.createElement("input");
+    $(pointINPUT).addClass("form-control");
+    $(pointINPUT).attr("type", "text");
+    $(pointINPUT).attr("placeholder", "Point");
+    $(pointINPUT).attr("id", "inputDefault");
+    $(pointDIV).append(pointINPUT);
+
+    //Coords
+    let coordTD = document.createElement("td");
+    $(line).append(coordTD);
+
+    let coordDIV = document.createElement("div");
+    $(coordDIV).addClass("form-group");
+    $(coordTD).append(coordDIV);
+
+    let coordINPUT = document.createElement("input");
+    $(coordINPUT).addClass("form-control");
+    $(coordINPUT).attr("type", "text");
+    $(coordINPUT).attr("placeholder", "Coordonnées");
+    $(coordINPUT).attr("id", "inputDefault");
+    $(coordINPUT).val(Math.round(mouse.x) + "," + Math.round(mouse.y));
+    $(coordDIV).append(coordINPUT);
+
+    //Angle
+    let angleTD = document.createElement("td");
+    $(line).append(angleTD);
+
+    let angleDIV = document.createElement("div");
+    $(angleDIV).addClass("form-group");
+    $(angleTD).append(angleDIV);
+
+    let angleINPUT = document.createElement("input");
+    $(angleINPUT).addClass("form-control");
+    $(angleINPUT).attr("type", "text");
+    $(angleINPUT).attr("placeholder", "Angle");
+    $(angleINPUT).attr("id", "inputDefault");
+    $(angleINPUT).attr("disabled", "");
+    $(angleDIV).append(angleINPUT);
+
+    //Length
+    let lengthTD = document.createElement("td");
+    $(line).append(lengthTD);
+
+    let lengthDIV = document.createElement("div");
+    $(lengthDIV).addClass("form-group");
+    $(lengthTD).append(lengthDIV);
+
+    let lengthINPUT = document.createElement("input");
+    $(lengthINPUT).addClass("form-control");
+    $(lengthINPUT).attr("type", "text");
+    $(lengthINPUT).attr("placeholder", "Length");
+    $(lengthINPUT).attr("id", "inputDefault");
+    $(lengthINPUT).attr("disabled", "");
+    $(lengthDIV).append(lengthINPUT);
+
+    $(tbody).append(line);
+
+    let trBody = document.createElement("tr");
+    let thBody = document.createElement("th");
+    $(thBody).attr("scope", "row");
+    $(trBody).append(thBody);
+
+    for(let i = 0; i < 3; i++) {
+        let arr = ["Ajouter un point", "Supprimer un point", "Créer la forme"];
+        let td = document.createElement("th");
+        let button = $(document.createElement("button")).on("click", function() {
+            if(i == 0) addPointLine(this);
+            if(i == 1) deletePointLine();
+            if(i == 2) {
+                let instr = getDataFromCustomRefractorCreator();
+                let path = customRefractor(instr);
+                objs.push({type: 'refractor', path: path, notDone: false, p: 1.5, group: [], selected: false});
+                draw();
+                $("#customRefractor").remove();
+            }
+        });
+        $(button).attr("type", "button");
+        $(button).addClass("btn btn-primary");
+        $(button).text(arr[i]);
+        $(td).append(button);
+        $(trBody).append(td);
+    }
+
+    $(tbody).append(trBody);
+    $(table).append(tbody);
+
+    $(div).append(table);
+    $("body").append(div);
+}
+
+function displayRefractorModal() {
+    $("#customRefractor").dialog({
+        width: 650,
+        title: getMsg("create_refractor"),
+        modal: true,
+        close: function(e, ui) {
+            $("#customRefractor").remove();
+        },
+        buttons: {"Ok": function(t) {
+            $("#customRefractor").remove();
+        }, "Cancel": function(t) {
+            $("#customRefractor").remove();
+        }
+        }
+      });
 }
 
 function createText() {

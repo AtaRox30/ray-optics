@@ -388,5 +388,8 @@ locales["en"] = {
   },
   "show_arrow_ray": {
     "message":"Show arrows on rays"
+  },
+  "create_refractor": {
+    "message":"Create free-shape"
   }
 }

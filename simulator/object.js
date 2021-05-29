@@ -2699,7 +2699,19 @@ var canvasPainter = {
   c_mouseup: objTypes['lineobj'].c_mouseup,
   move: objTypes['lineobj'].move,
   dragging: objTypes['lineobj'].dragging,
-  clicked: objTypes['lineobj'].clicked,
+  clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
+    ctx.fillStyle = "black"
+    ctx.fillRect(obj.p1.x, obj.p1.y, text.length * 10, obj.p1.y + 70);
+    if (mouse_nogrid.x > obj.p1.x && mouse_nogrid.x < obj.p1.x + text.length * 10 && mouse_nogrid.y > obj.p1.y && mouse_nogrid.y < obj.p1.y + 70)
+    {
+      draggingPart.part = 0;
+      draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
+      draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
+      draggingPart.snapData = {};
+      return true;
+    }
+    return false;
+  },
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {

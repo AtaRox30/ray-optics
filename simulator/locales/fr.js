@@ -388,5 +388,8 @@ locales["fr"] = {
   },
   "show_arrow_ray": {
     "message":"Montrer les flèches sur les rayons"
+  },
+  "create_refractor": {
+    "message":"Créer la forme libre"
   }
 }
