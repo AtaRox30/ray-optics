@@ -18,7 +18,7 @@ function customRefractor(instructions) {
         if(ins.is_coord) path.push(ins.coord);
         else {
             let pente, totalangle;
-            index == 1 ? pente = ins.angle : pente = Math.atan2(path[index-1].y - path[index-2].y, path[index-1].x - path[index-2].x) * (180/Math.PI);
+            index == 1 ? pente = -ins.angle : pente = Math.atan2(path[index-1].y - path[index-2].y, path[index-1].x - path[index-2].x) * (180/Math.PI);
             index == 1 ? totalangle = pente : totalangle = pente - ins.angle;
             let newCoord = {
                 "x": Math.round(path[index-1].x + ins.length * Math.cos((Math.PI * totalangle)/180)),
