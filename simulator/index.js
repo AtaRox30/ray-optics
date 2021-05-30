@@ -1332,7 +1332,9 @@
                 if(["halfplane", "lens", "mirror"].includes(objs[targetObj_index].type)) {
                   //Let's draw a normal on the halfplane/lens
                   let obj = objs[i];
-                  let affine = graphs.affineFunctionOfTwoPoints(obj.p1.x, obj.p2.x, obj.p1.y, obj.p2.y);
+                  let aff = graphs.affineFunctionOfTwoPoints(obj.p1.x, mouse.x, obj.p1.y, mouse.y);
+                  let affine = {"m": 0, "p": 0};
+                  if([Infinity, -Infinity].includes(aff.m)) affine = {"m": 10E6, "p": aff.p};
                   perp = graphs.perpendicularOfLine(affine.m, mouse.x, mouse.y);
                   f_point_away = {"x": mouse.x + mouse_away, "y": (mouse.x + mouse_away) * perp.m + perp.p};
                   s_point_away = {"x": mouse.x - mouse_away, "y": (mouse.x - mouse_away) * perp.m + perp.p};
@@ -1341,7 +1343,9 @@
                 }
                 if(objs[targetObj_index].type == "circlelens") {
                   let obj = objs[i];
-                  let affine = graphs.affineFunctionOfTwoPoints(obj.p1.x, mouse.x, obj.p1.y, mouse.y);
+                  let aff = graphs.affineFunctionOfTwoPoints(obj.p1.x, mouse.x, obj.p1.y, mouse.y);
+                  let affine = {"m": 0, "p": 0};
+                  if([Infinity, -Infinity].includes(aff.m)) affine = {"m": 10E6, "p": aff.p};
                   f_point_away = {"x": mouse.x + mouse_away, "y": (mouse.x + mouse_away) * affine.m + affine.p};
                   s_point_away = {"x": mouse.x - mouse_away, "y": (mouse.x - mouse_away) * affine.m + affine.p};
                   regular = {type: 'regular', p1: f_point_away, p2: s_point_away, group: [], selected: false};

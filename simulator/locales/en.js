@@ -322,9 +322,22 @@ locales["en"] = {
     "message": "Zoom the view with percentage."
   },
   "help_popover": {
-    "message": "Toggle help popup. <br><br>Some other tips: <br>Click to select object, <br>Ctrl+D to duplicate, <br>Delete key to delete, <br>Arrow keys to move slowly, <br>Double-click or right-click the dot can edit its coordinates directly.<br>" + 
-      "When creating line objects, <br>Hold Shift to lock angle, <br>Hold Ctrl to make the first point be the center point.<br>Before clicking on one or many object(s), <br>Hold Ctrl to select it in order to add it to a new group or an existing group<br>Realease Ctrl to create a new groupe with the previous objects or add it to an existing group." + 
-      "<br>When creating a regular line, <br>Click on a glasse by holding Shift to draw the normale to the nearest segment from the cursor."
+    "message": "Toggle help popup. " + 
+    "<br><br>Some other tips: " + 
+    "<br>Click to select object, " + 
+    "<br>Ctrl+D to duplicate, " + 
+    "<br>Delete key to delete, " + 
+    "<br>Arrow keys to move slowly, " + 
+    "<br>Double-click or right-click the dot can edit its coordinates directly." + 
+    "<br>When creating line objects, " + 
+    "<br>Hold Shift to lock angle, " + 
+    "<br>Hold Ctrl to make the first point be the center point.<br>Before clicking on one or many object(s), " + 
+    "<br>Hold Ctrl to select it in order to add it to a new group or an existing group" + 
+    "<br>Realease Ctrl to create a new groupe with the previous objects or add it to an existing group." + 
+    "<br>When creating a regular line, " + 
+    "<br>Click on a glasse by holding Shift to draw the normale to the nearest segment from the cursor." + 
+    "<br>When creating a free-shape, " + 
+    "<br>Hold Shift when clicking to create from coordinates, angle and length."
   },
   "tool_regular": {
     "message": "Line"

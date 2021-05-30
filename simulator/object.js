@@ -119,6 +119,9 @@ var graphs = {
   affineFunctionOfTwoPoints : function(x1, x2, y1, y2) {
       let slope = (y2 - y1)/(x2 - x1);
       let constant = y1 - (slope * x1);
+      if([Infinity, -Infinity].includes(constant)) {
+        constant = x1;
+      }
       return {m: slope, p: constant};
   },
 
@@ -1062,7 +1065,7 @@ var canvasPainter = {
         draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez Maj
       }
       this.move(obj, mouse_snapped.x - draggingPart.mouse1.x, mouse_snapped.y - draggingPart.mouse1.y);
-      if(isMovingMultipleObject) {
+      if(isMovingMultipleObject && currentSelectedGr[0]) {
         for(g of obj.group) {
           if(g == currentSelectedGr[0].name) movingObjectInGroup(obj, mouse_snapped.x - draggingPart.mouse1.x, mouse_snapped.y - draggingPart.mouse1.y);
         }
@@ -1978,7 +1981,7 @@ var canvasPainter = {
     let diffY = mouse_snapped.y - obj.y;
     obj.x = mouse_snapped.x;
     obj.y = mouse_snapped.y;
-    if(isMovingMultipleObject) {
+    if(isMovingMultipleObject && currentSelectedGr[0]) {
       for(g of obj.group) {
         if(g == currentSelectedGr[0].name) movingObjectInGroup(obj, diffX, diffY);
       }
@@ -2761,7 +2764,7 @@ function updateMousePositionOnDragging(draggingPart, mouse_snapped, obj) {
   obj.p2.y = obj.p2.y - mouseDiffY;
   //Mettre à jour la position de la souris
   draggingPart.mouse1 = mouse_snapped;
-  if(isMovingMultipleObject) {
+  if(isMovingMultipleObject && currentSelectedGr[0]) {
     for(g of obj.group) {
       if(g == currentSelectedGr[0].name) movingObjectInGroup(obj, -mouseDiffX, -mouseDiffY);
     }

@@ -352,7 +352,7 @@ function createText() {
     /*
     <div id="createText">
         <label for="textInput">Entrez votre texte : </label>
-        <input type="text" id="choosetextInput" />
+        <div class="form-group"><input type="text" class="form-control" placeholder="Coordonnées" id="inputDefault"></div>
         <button id="deleteFieldText">Effacer</button>
     </div>
     */
@@ -363,15 +363,17 @@ function createText() {
     let label = document.createElement("label");
     $(label).attr("for", "textInput");
     $(label).text(getMsg("enter_text"));
+
+    let divInput = document.createElement("div");
+    $(divInput).addClass("form-group");
     let input = document.createElement("input");
+    $(input).addClass("form-control");
     $(input).attr("type", "text");
     $(input).attr("id", "choosetextInput");
-    let button = $(document.createElement("button")).on("click", function() {$("#choosetextInput").val("");});
-    $(button).attr("id", "deleteFieldText");
-    $(button).text(getMsg("delete"));
+    $(divInput).append(input);
+
     $(div).append(label);
-    $(div).append(input);
-    $(div).append(button);
+    $(div).append(divInput);
     $("body").append(div);
 }
 
@@ -669,33 +671,52 @@ function createGroupNamer() {
     /*
     <div id="groupName">
         <label for="inputName">Entrer le nom du groupe :</label>
-        <input type="text" id="inputName" />
-        <label for="inputGroup">Ou ajouter a un groupe existant :</label>
-        <select id="inputGroup">
-            <option value="">--Choisir--</option>
-            <option value="{idGroup}">{idGroup}</option>
-        </select>
+        <div class="form-group"><input type="text" class="form-control" id="inputName"></div>
+
+        <div class="form-group">
+            <label for="inputGroup" class="form-label mt-4">Ajouter</label>
+            <select class="form-select" id="inputGroup">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+        </div>
     </div>
     */
 
     let group = document.createElement('div');
     cancelKeyEvent(group);
     $(group).attr("id", "groupName");
+
     let label = document.createElement('label');
     $(label).attr("for", "inputName");
     $(label).text(getMsg("enter_groupname"));
-    let input = document.createElement('input');
+    $(group).append(label);
+
+    let divInput = document.createElement("div");
+    $(divInput).addClass("form-group");
+
+    let input = document.createElement("input");
+    $(input).addClass("form-control");
     $(input).attr("type", "text");
     $(input).attr("id", "inputName");
-    $(group).append(label);
-    $(group).append(input);
+    $(divInput).append(input);
+    $(group).append(divInput);
+
+    let divSelect = document.createElement("div");
+    $(divSelect).addClass("form-group");
 
     let labelS = document.createElement('label');
     $(labelS).attr("for", "inputGroup");
+    $(labelS).addClass("form-label mt-4");
     $(labelS).text(getMsg("addto_existingfile"));
+    $(divSelect).append(labelS);
 
     let select = document.createElement('select');
     $(select).attr("id", "inputGroup");
+    $(select).addClass("form-select");
     let option = document.createElement("option");
     $(option).attr("value", "");
     $(option).text("--" + getMsg("choose") + "--");
@@ -706,8 +727,9 @@ function createGroupNamer() {
         $(option).text(g.name);
         $(select).append(option);
     }
+    $(divSelect).append(select);
     $(group).append(labelS);
-    $(group).append(select);
+    $(group).append(divSelect);
     $("body").append(group);
 }
 
