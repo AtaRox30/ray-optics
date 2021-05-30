@@ -89,7 +89,22 @@ function addPointLine(button) {
     $(coordDIV).addClass("form-group");
     $(coordTD).append(coordDIV);
 
-    let coordINPUT = document.createElement("input");
+    let coordINPUT = $(document.createElement("input"))
+    .on("input", function() {
+        let val = $(coordINPUT).val().trim();
+        if(Boolean(val)) {
+            $(angleINPUT).attr("disabled", "");
+            $(lengthINPUT).attr("disabled", "");
+        }
+        else {
+            $(angleINPUT).removeAttr("disabled");
+            $(lengthINPUT).removeAttr("disabled");
+        }
+    })
+    .on("change", function() {
+        let val = $(coordINPUT).val(); 
+        $(coordINPUT).val(val.trim())
+    })
     $(coordINPUT).addClass("form-control");
     $(coordINPUT).attr("type", "text");
     $(coordINPUT).attr("placeholder", getMsg("coords"));
@@ -104,7 +119,16 @@ function addPointLine(button) {
     $(angleDIV).addClass("form-group");
     $(angleTD).append(angleDIV);
 
-    let angleINPUT = document.createElement("input");
+    let angleINPUT = $(document.createElement("input"))
+    .on("input", function() {
+        let val = $(angleINPUT).val().trim();
+        if(Boolean(val)) $(coordINPUT).attr("disabled", "");
+        else $(coordINPUT).removeAttr("disabled");
+    })
+    .on("change", function() {
+        let val = $(angleINPUT).val(); 
+        $(angleINPUT).val(val.trim());
+    })
     $(angleINPUT).addClass("form-control");
     $(angleINPUT).attr("type", "text");
     $(angleINPUT).attr("placeholder", getMsg("angle"));
@@ -119,7 +143,16 @@ function addPointLine(button) {
     $(lengthDIV).addClass("form-group");
     $(lengthTD).append(lengthDIV);
 
-    let lengthINPUT = document.createElement("input");
+    let lengthINPUT = $(document.createElement("input"))
+    .on("input", function() {
+        let val = $(lengthINPUT).val().trim();
+        if(Boolean(val)) $(coordINPUT).attr("disabled", "");
+        else $(coordINPUT).removeAttr("disabled");
+    })
+    .on("change", function() {
+        let val = $(lengthINPUT).val(); 
+        $(lengthINPUT).val(val.trim())
+    })
     $(lengthINPUT).addClass("form-control");
     $(lengthINPUT).attr("type", "text");
     $(lengthINPUT).attr("placeholder", getMsg("length"));
@@ -129,7 +162,7 @@ function addPointLine(button) {
     $(line).insertBefore(tr);
 }
 
-function deletePointLine(button) {
+function deletePointLine() {
     let length = $("#customRefractor tbody tr:last-child").index();
     let c = $("#customRefractor tbody tr:nth-child(" + length + ")");
     $(c).remove();
@@ -167,6 +200,7 @@ function createRefractorModal() {
 
     let div = document.createElement("div");
     $(div).attr("id", "customRefractor");
+    cancelKeyEvent(div);
 
     let table = document.createElement("table");
     $(table).addClass("table table-hover");
@@ -219,6 +253,7 @@ function createRefractorModal() {
     $(coordINPUT).attr("placeholder", getMsg("coords"));
     $(coordINPUT).attr("id", "inputDefault");
     $(coordINPUT).val(Math.round(mouse.x) + "," + Math.round(mouse.y));
+    $(coordINPUT).attr("disabled", "");
     $(coordDIV).append(coordINPUT);
 
     //Angle
@@ -274,7 +309,6 @@ function createRefractorModal() {
                     draw();
                     $("#customRefractor").remove();
                 } 
-                
             }
         });
         $(button).attr("type", "button");
@@ -300,12 +334,18 @@ function displayRefractorModal() {
             $("#customRefractor").remove();
         },
         buttons: {"Ok": function(t) {
-            $("#customRefractor").remove();
-        }, "Cancel": function(t) {
-            $("#customRefractor").remove();
+                let instr = getDataFromCustomRefractorCreator();
+                let path = customRefractor(instr);
+                if(path.length != 0) {
+                    objs.push({type: 'refractor', path: path, notDone: false, p: 1.5, group: [], selected: false});
+                    draw();
+                    $("#customRefractor").remove();
+                } 
+            }, "Cancel": function(t) {
+                $("#customRefractor").remove();
+            }
         }
-        }
-      });
+    });
 }
 
 function createText() {
@@ -318,6 +358,7 @@ function createText() {
     */
 
     let div = document.createElement("div");
+    cancelKeyEvent(div);
     $(div).attr("id", "createText");
     let label = document.createElement("label");
     $(label).attr("for", "textInput");
@@ -375,6 +416,7 @@ function createModalProperties(element) {
   */
 
   let div = document.createElement('div');
+  cancelKeyEvent(div);
   $(div).attr("id", "elementInGr");
   $(div).css("display","none");
   let table = document.createElement('table');
@@ -458,6 +500,7 @@ function createGroupPanel() {
   */
 
   let div = document.createElement("div");
+  cancelKeyEvent(div);
   $(div).attr("id", "sideMultipleGroup");
   let table = document.createElement("table");
   let thead = document.createElement("thead");
@@ -627,7 +670,6 @@ function createGroupNamer() {
     <div id="groupName">
         <label for="inputName">Entrer le nom du groupe :</label>
         <input type="text" id="inputName" />
-        <button id="deleteField">Effacer</button>
         <label for="inputGroup">Ou ajouter a un groupe existant :</label>
         <select id="inputGroup">
             <option value="">--Choisir--</option>
@@ -637,6 +679,7 @@ function createGroupNamer() {
     */
 
     let group = document.createElement('div');
+    cancelKeyEvent(group);
     $(group).attr("id", "groupName");
     let label = document.createElement('label');
     $(label).attr("for", "inputName");
@@ -646,11 +689,6 @@ function createGroupNamer() {
     $(input).attr("id", "inputName");
     $(group).append(label);
     $(group).append(input);
-
-    let button = $(document.createElement("button")).on("click", function() {$("input[type=text]#inputName").val("")});
-    $(button).attr("id", "deleteFieldGroup");
-    $(button).text(getMsg("delete"));
-    $(group).append(button);
 
     let labelS = document.createElement('label');
     $(labelS).attr("for", "inputGroup");

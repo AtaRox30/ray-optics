@@ -1661,7 +1661,7 @@
   {
     unhighlightAllObj();
 
-    if(currentSelectedGr[0] != undefined) {
+    if(currentSelectedGr[0] != undefined && objs[index]) {
       if(isMovingMultipleObject && objs[index].group.includes(currentSelectedGr[0].name)) $("#objSetPointRot_button").css("display", "inline-flex");
       else $("#objSetPointRot_button").css("display", "none");
     }
@@ -2255,6 +2255,18 @@
       e.cancelBubble = true;
       if (e.stopPropagation) e.stopPropagation();
     };
+  }
+
+  function cancelKeyEvent(obj) {
+    $(obj)
+    .on("keydown", function(e) {
+      e.cancelBubble = true;
+      if (e.stopPropagation) e.stopPropagation();
+    })
+    .on("keyup", function(e) {
+      e.cancelBubble = true;
+      if (e.stopPropagation) e.stopPropagation();
+    })
   }
 
 

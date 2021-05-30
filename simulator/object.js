@@ -2700,9 +2700,9 @@ var canvasPainter = {
   move: objTypes['lineobj'].move,
   dragging: objTypes['lineobj'].dragging,
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    ctx.fillStyle = "black"
-    ctx.fillRect(obj.p1.x, obj.p1.y, text.length * 10, obj.p1.y + 70);
-    if (mouse_nogrid.x > obj.p1.x && mouse_nogrid.x < obj.p1.x + text.length * 10 && mouse_nogrid.y > obj.p1.y && mouse_nogrid.y < obj.p1.y + 70)
+    console.log(mouse_nogrid);
+    console.log(obj);
+    if (mouse_nogrid.x > obj.p1.x && mouse_nogrid.x < obj.p1.x + text.length * 10 && mouse_nogrid.y < obj.p1.y && mouse_nogrid.y > (obj.p1.y + 70))
     {
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -2716,7 +2716,7 @@ var canvasPainter = {
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
   ctx.font = "16px verdana";
-  ctx.fillText(text, obj.p1.x, obj.p1.y);
+  ctx.fillText(obj.text, obj.p1.x, obj.p1.y);
   ctx.fillStyle = 'rgb(255,0,0)';
   },
 
