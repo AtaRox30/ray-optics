@@ -1460,6 +1460,7 @@ var canvasPainter = {
   //========================Traitement de la réfraction===============================
   refract: function(ray, rayIndex, s_point, normal, n1)
   {
+    //TODO: Change n1 to edit refraction index (Cauchy)
     var normal_len = Math.sqrt(normal.x * normal.x + normal.y * normal.y);
     var normal_x = normal.x / normal_len;
     var normal_y = normal.y / normal_len;
@@ -1497,6 +1498,7 @@ var canvasPainter = {
 
       //處理反射光
       var ray2 = graphs.ray(s_point, graphs.point(s_point.x + ray_x + 2 * cos1 * normal_x, s_point.y + ray_y + 2 * cos1 * normal_y));
+      //TODO: Multiply to highlight parasite rays
       ray2.brightness = ray.brightness * R;
       ray2.gap = ray.gap;
       if (ray2.brightness > 0.01)
