@@ -122,8 +122,9 @@ function addPointLine(button) {
     let angleINPUT = $(document.createElement("input"))
     .on("input", function() {
         let val = $(angleINPUT).val().trim();
+        let lenVal = $(lengthINPUT).val().trim();
         if(Boolean(val)) $(coordINPUT).attr("disabled", "");
-        else $(coordINPUT).removeAttr("disabled");
+        if(!Boolean(val) && !Boolean(lenVal)) $(coordINPUT).removeAttr("disabled");
     })
     .on("change", function() {
         let val = $(angleINPUT).val(); 
@@ -146,8 +147,9 @@ function addPointLine(button) {
     let lengthINPUT = $(document.createElement("input"))
     .on("input", function() {
         let val = $(lengthINPUT).val().trim();
-        if(Boolean(val)) $(coordINPUT).attr("disabled", "");
-        else $(coordINPUT).removeAttr("disabled");
+        let angVal = $(angleINPUT).val().trim();
+        if(Boolean(val) && Boolean(angVal)) $(coordINPUT).attr("disabled", "");
+        if(!Boolean(val) && !Boolean(angVal)) $(coordINPUT).removeAttr("disabled");
     })
     .on("change", function() {
         let val = $(lengthINPUT).val(); 
