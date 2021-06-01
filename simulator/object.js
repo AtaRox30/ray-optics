@@ -2705,9 +2705,7 @@ var canvasPainter = {
   move: objTypes['lineobj'].move,
   dragging: objTypes['lineobj'].dragging,
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    console.log(mouse_nogrid);
-    console.log(obj);
-    if (mouse_nogrid.x > obj.p1.x && mouse_nogrid.x < obj.p1.x + text.length * 10 && mouse_nogrid.y < obj.p1.y && mouse_nogrid.y > (obj.p1.y + 70))
+    if (mouse_nogrid.x > obj.p1.x && mouse_nogrid.x < obj.p1.x + text.length * 10 && mouse_nogrid.y < obj.p1.y && mouse_nogrid.y > (obj.p1.y - 10))
     {
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -2720,11 +2718,10 @@ var canvasPainter = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  ctx.font = "16px verdana";
+  ctx.font = "16px impact";
   ctx.fillText(obj.text, obj.p1.x, obj.p1.y);
   ctx.fillStyle = 'rgb(255,0,0)';
   },
-
   };
 
 
@@ -2924,7 +2921,7 @@ function intersectionLineAndCircle(radius, center, aff) {
   let x2 = (-b + Math.sqrt(delta)) / (2 * a);
   let y1 = x1 * aff.m + aff.p;
   let y2 = x2 * aff.m + aff.p;
-  return {0: {x: x1,y: y1}, 1: {x: x2,y: y2}}
+  return [{x: x1,y: y1}, {x: x2,y: y2}];
 }
 
 function drawArrow(cvsLimit, graph) {
@@ -2943,18 +2940,18 @@ function drawArrow(cvsLimit, graph) {
       "y": aff.m * (side * index * arrowStep * Math.cos(Math.atan(aff.m)) + graph.p1.x) + aff.p
     };
     let arrSize = intersectionLineAndCircle(arrowSize, to, aff);
-    let from = {"x": arrSize["0"].x,"y": arrSize["0"].y};
+    let from = {"x": arrSize[0].x,"y": arrSize[0].y};
     if(graph.p1.x < graph.p2.x && from.x < graph.p1.x) isOk = false;
     if(graph.p1.x > graph.p2.x && (from.x > graph.p1.x || index == 0)) isOk = false;
     if(graph.p1.x < graph.p2.x && graph.p2.x < from.x && !graph.last_intersection) isOk = false;
     if(graph.p1.x > graph.p2.x && graph.p2.x > from.x && !graph.last_intersection) isOk = false;
     if(isOk) {
-      if(graph.p1.x > graph.p2.x) from = {"x": arrSize["1"].x,"y": arrSize["1"].y};
+      if(graph.p1.x > graph.p2.x) from = {"x": arrSize[1].x,"y": arrSize[1].y};
       let arrow = getArrow(from, to);
       ctx.fillStyle = "yellow";
       ctx.moveTo(to.x, to.y);
-      ctx.lineTo(arrow["0"].x, arrow["0"].y);
-      ctx.lineTo(arrow["1"].x, arrow["1"].y);
+      ctx.lineTo(arrow[0].x, arrow[0].y);
+      ctx.lineTo(arrow[1].x, arrow[1].y);
       ctx.lineTo(to.x, to.y);
       ctx.fill()
     }
