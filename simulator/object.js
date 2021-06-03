@@ -2718,7 +2718,7 @@ var canvasPainter = {
 
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
-  ctx.font = "16px impact";
+  ctx.font = "16px Verdana";
   ctx.fillText(obj.text, obj.p1.x, obj.p1.y);
   ctx.fillStyle = 'rgb(255,0,0)';
   },
