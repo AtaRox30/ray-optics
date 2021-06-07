@@ -368,7 +368,7 @@ function createText() {
 
     let divInput = document.createElement("div");
     $(divInput).addClass("form-group");
-    let input = document.createElement("input");
+    let input = document.createElement("input")
     $(input).addClass("form-control");
     $(input).attr("type", "text");
     $(input).attr("id", "choosetextInput");

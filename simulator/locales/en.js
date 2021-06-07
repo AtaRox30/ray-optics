@@ -400,7 +400,10 @@ locales["en"] = {
     "message":"Choose your text"
   },
   "show_arrow_ray": {
-    "message":"Show arrows on rays"
+    "message":"Arrows on rays"
+  },
+  "show_parasitic_ray": {
+    "message": "Parasitic rays"
   },
   "create_refractor": {
     "message":"Create free-shape"

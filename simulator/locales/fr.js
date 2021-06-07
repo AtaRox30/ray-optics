@@ -399,7 +399,10 @@ locales["fr"] = {
     "message":"Choisir votre texte"
   },
   "show_arrow_ray": {
-    "message":"Montrer les flèches sur les rayons"
+    "message":"Flèches sur les rayons"
+  },
+  "show_parasitic_ray": {
+    "message": "Rayons parasites"
   },
   "create_refractor": {
     "message":"Créer la forme libre"

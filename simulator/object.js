@@ -295,6 +295,7 @@ var canvasPainter = {
     // ray
     else if (graph.type == 3) {
       ctx.strokeStyle = color ? color : 'black';
+      if(showParasiticRays) ctx.strokeStyle = "rgb(20, 150, 50)";
       var ang1, cvsLimit;
       if (Math.abs(graph.p2.x - graph.p1.x) > 1e-5 || Math.abs(graph.p2.y - graph.p1.y) > 1e-5)
       {
@@ -309,6 +310,7 @@ var canvasPainter = {
     }
     else if (graph.type == 4) {
       ctx.strokeStyle = color ? color : 'black';
+      if(showParasiticRays) ctx.strokeStyle = "rgb(20, 150, 50)";
       ctx.beginPath();
       ctx.moveTo(graph.p1.x, graph.p1.y);
       ctx.lineTo(graph.p2.x, graph.p2.y);
@@ -1480,7 +1482,6 @@ var canvasPainter = {
     if (sq1 < 0)
     {
       //Réflexion totale
-      //var a_out=a_n*2-a_r;
       ray.p1 = s_point;
       ray.p2 = graphs.point(s_point.x + ray_x + 2 * cos1 * normal_x, s_point.y + ray_y + 2 * cos1 * normal_y);
 
@@ -1496,9 +1497,9 @@ var canvasPainter = {
       var R = 0.5 * (R_s + R_p);
       //參考http://en.wikipedia.org/wiki/Fresnel_equations#Definitions_and_power_equations
 
-      //處理反射光
       var ray2 = graphs.ray(s_point, graphs.point(s_point.x + ray_x + 2 * cos1 * normal_x, s_point.y + ray_y + 2 * cos1 * normal_y));
       //TODO: Multiply to highlight parasite rays
+      if(showParasiticRays) ray2.parasitic = true;
       ray2.brightness = ray.brightness * R;
       ray2.gap = ray.gap;
       if (ray2.brightness > 0.01)
@@ -2705,7 +2706,7 @@ var canvasPainter = {
   move: objTypes['lineobj'].move,
   dragging: objTypes['lineobj'].dragging,
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    if (mouse_nogrid.x > obj.p1.x && mouse_nogrid.x < obj.p1.x + text.length * 10 && mouse_nogrid.y < obj.p1.y && mouse_nogrid.y > (obj.p1.y - 10))
+    if (mouse_nogrid.x > obj.p1.x && mouse_nogrid.x < obj.p2.x && mouse_nogrid.y < obj.p1.y && mouse_nogrid.y > (obj.p1.y - 10))
     {
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
@@ -2724,19 +2725,6 @@ var canvasPainter = {
   },
   };
 
-
-function slidingWholeLineHalfplane(shift, mouse, draggingPart, obj) {
-  if (shift) {
-    var mouse_snapped = snapToDirection(mouse, draggingPart.mouse0, [{ x: (draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x), y: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y) }, { x: (draggingPart.originalObj.p2.y - draggingPart.originalObj.p1.y), y: -(draggingPart.originalObj.p2.x - draggingPart.originalObj.p1.x) }], draggingPart.snapData);
-  }
-
-  else {
-    var mouse_snapped = mouse;
-    draggingPart.snapData = {}; //Déverrouillez la direction de glissement d'origine lorsque vous relâchez la touche Maj
-  }
-
-  updateMousePositionOnDragging(draggingPart, mouse_snapped, obj);
-}
 
 function slidingWholeLineHalfplane(shift, mouse, draggingPart, obj) {
   if (shift) {

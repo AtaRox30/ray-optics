@@ -28,6 +28,9 @@
   //Arrows on rays
   var showArrows = false;
 
+  //Parasitic rays
+  var showParasiticRays = false;
+
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
   var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
@@ -86,6 +89,11 @@
       showArrows = JSON.parse(localStorage.getItem("showArrows"));
       if(showArrows) document.querySelector("input[id=showArrowOnRay]").checked = true;
       else document.querySelector("input[id=showArrowOnRay]").checked = false;
+    }
+    if (typeof(Storage) !== "undefined" && localStorage.showParasiticRays) {
+      showParasiticRays = JSON.parse(localStorage.getItem("showParasiticRays"));
+      if(showParasiticRays) document.querySelector("input[id=showParasiticRays]").checked = true;
+      else document.querySelector("input[id=showParasiticRays]").checked = false;
     }
 
 
@@ -398,6 +406,14 @@
       draw();
     }
     cancelMousedownEvent('showArrowOnRay');
+
+    document.getElementById('showParasiticRays').onclick = function() {
+      if(showParasiticRays) showParasiticRays = false;
+      else showParasiticRays = true;
+      localStorage.setItem("showParasiticRays", showParasiticRays)
+      draw();
+    };
+    cancelMousedownEvent('showParasiticRays');
     
     document.getElementById('toggleGroupPanel_button').onclick = function() {
       //Define onready script.js
@@ -866,6 +882,9 @@
             }
           }
           ctx.globalAlpha = alpha0 * waitingRays[j].brightness;
+          if(showParasiticRays) {
+            ctx.globalAlpha = 1;
+          }
           //↓Si la lumière ne frappe aucun objet
           if (s_lensq == Infinity)
           {
@@ -1194,8 +1213,8 @@
     if(!isMovingMultipleObject) {
       if(objs[selectedObj].type == "refractor") {
         for(s of objs[selectedObj].path) {
-          s.x = Math.trunc(s.x);
-          s.y = Math.trunc(s.y);
+          s.x = Math.round(s.x);
+          s.y = Math.round(s.y);
         }
       }
     }
@@ -1204,24 +1223,24 @@
         switch(o.type) {
           case "refractor": {
             for(pt of o.path) {
-              pt.x = Math.trunc(pt.x);
-              pt.y = Math.trunc(pt.y);
+              pt.x = Math.round(pt.x);
+              pt.y = Math.round(pt.y);
             }
             break
           };
           case "radiant": {
-            o.x = Math.trunc(o.x);
-            o.y = Math.trunc(o.y);
+            o.x = Math.round(o.x);
+            o.y = Math.round(o.y);
             break
           };
           default: {
-            o.p1.x = Math.trunc(o.p1.x);
-            o.p1.y = Math.trunc(o.p1.y);
-            o.p2.x = Math.trunc(o.p2.x);
-            o.p2.y = Math.trunc(o.p2.y);
+            o.p1.x = Math.round(o.p1.x);
+            o.p1.y = Math.round(o.p1.y);
+            o.p2.x = Math.round(o.p2.x);
+            o.p2.y = Math.round(o.p2.y);
             if(o.p3) {
-              o.p3.x = Math.trunc(o.p3.x);
-              o.p3.y = Math.trunc(o.p3.y);
+              o.p3.x = Math.round(o.p3.x);
+              o.p3.y = Math.round(o.p3.y);
             }
             break;
           };
@@ -2454,6 +2473,7 @@
     document.getElementById('objSetPointRot_button').value = getMsg('placerotation');
     document.getElementById('toggleGroupPanel_button').value = getMsg('grouppanel');
     document.querySelector("label[for=showArrowOnRay]").innerHTML = getMsg('show_arrow_ray');
+    document.querySelector("label[for=showParasiticRays]").innerHTML = getMsg('show_parasitic_ray');
 
     document.getElementById('forceStop').innerHTML = getMsg('processing');
 
