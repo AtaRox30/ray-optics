@@ -19,9 +19,10 @@ function customRefractor(instructions) {
     for(let index = 1; index < instructions.length; index++) {
         let ins = instructions[index];
         if(ins.is_coord) {
-            translatedCoord.x = ins.coord.x * centimeterInPixel;
-            translatedCoord.y = ins.coord.y * centimeterInPixel;
-            path.push(translatedCoord);
+            let coord = {};
+            coord.x = Math.round(ins.coord.x * centimeterInPixel);
+            coord.y = Math.round(ins.coord.y * centimeterInPixel);
+            path.push(coord);
         } 
         else {
             let pente, totalangle;
