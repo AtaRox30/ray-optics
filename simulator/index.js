@@ -4,6 +4,7 @@
   var mouse_lastmousedown; //Position de la souris lors du dernier clic de la souris
   var objs = []; //objet
   var objCount = 0; //Nombre d'objets
+  const centimeterInPixel = 37.7928949;
 
   //Multiple select
   var selectGr = [] // {name:, elements:[{}, {}]}, {name:, elements:[{}, {}]}
@@ -23,7 +24,7 @@
   var nearestSeg = {diff: Infinity, path: {from: -1, to: -1}, affine: {m: 0, p: 0}}; //Le côté de l'objet le plus proche de la souris lors du placement du point de rotation
   
   //Text
-  var text = "Exemple";
+  var text = "";
 
   //Arrows on rays
   var showArrows = false;
@@ -1009,12 +1010,10 @@
                 if (s_point)
                 {
                   rpd = (observed_intersection.x - waitingRays[j].p1.x) * (s_point.x - waitingRays[j].p1.x) + (observed_intersection.y - waitingRays[j].p1.y) * (s_point.y - waitingRays[j].p1.y);
-                  //(observed_intersection-waitingRays[j].p1)與(s_point-waitingRays[j].p1)Produit intérieur
                 }
                 else
                 {
                   rpd = (observed_intersection.x - waitingRays[j].p1.x) * (waitingRays[j].p2.x - waitingRays[j].p1.x) + (observed_intersection.y - waitingRays[j].p1.y) * (waitingRays[j].p2.y - waitingRays[j].p1.y);
-                  //(observed_intersection-waitingRays[j].p1)與(waitingRays[j].p2-waitingRays[j].p1)Produit intérieur
                 }
 
                 if (rpd < 0)
@@ -1604,7 +1603,7 @@
 
           document.getElementById('xybox').style.left = (draggingPart.targetPoint.x * scale + origin.x) + 'px';
           document.getElementById('xybox').style.top = (draggingPart.targetPoint.y * scale + origin.y) + 'px';
-          document.getElementById('xybox').value = '(' + (draggingPart.targetPoint.x) + ',' + (draggingPart.targetPoint.y) + ')';
+          document.getElementById('xybox').value = '(' + (draggingPart.targetPoint.x) / centimeterInPixel + ',' + (draggingPart.targetPoint.y) / centimeterInPixel + ')';
           document.getElementById('xybox').size = document.getElementById('xybox').value.length;
           document.getElementById('xybox').style.display = '';
           document.getElementById('xybox').select();
@@ -1655,7 +1654,7 @@
 
           document.getElementById('xybox').style.left = (draggingPart.targetPoint.x * scale + origin.x) + 'px';
           document.getElementById('xybox').style.top = (draggingPart.targetPoint.y * scale + origin.y) + 'px';
-          document.getElementById('xybox').value = '(' + (draggingPart.targetPoint.x) + ',' + (draggingPart.targetPoint.y) + ')';
+          document.getElementById('xybox').value = '(' + (draggingPart.targetPoint.x) / centimeterInPixel + ',' + (draggingPart.targetPoint.y) / centimeterInPixel + ')';
           document.getElementById('xybox').size = document.getElementById('xybox').value.length;
           document.getElementById('xybox').style.display = '';
           document.getElementById('xybox').select();
@@ -1758,20 +1757,19 @@
   function confirmPositioning(ctrl, shift)
   {
     var xyData = JSON.parse('[' + document.getElementById('xybox').value.replace(/\(|\)/g, '') + ']');
-    //if(xyData.length==2)
     //Ce n'est que lorsque deux valeurs (coordonnées) sont entrées que l'action sera entreprise
     if (xyData.length == 2)
     {
       if (positioningObj == -4)
       {
         //Observateur
-        observer.c.x = xyData[0];
-        observer.c.y = xyData[1];
+        observer.c.x = xyData[0] * centimeterInPixel;
+        observer.c.y = xyData[1] * centimeterInPixel;
       }
       else
       {
         //objet
-        objTypes[objs[positioningObj].type].dragging(objs[positioningObj], graphs.point(xyData[0], xyData[1]), draggingPart, ctrl, shift);
+        objTypes[objs[positioningObj].type].dragging(objs[positioningObj], graphs.point(xyData[0] * centimeterInPixel, xyData[1] * centimeterInPixel), draggingPart, ctrl, shift);
       }
       draw();
       createUndoPoint();

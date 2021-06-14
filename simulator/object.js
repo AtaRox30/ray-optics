@@ -2435,9 +2435,10 @@ var canvasPainter = {
   var per_y = -par_x;
   var ang = Math.atan2(obj.p2.y - obj.p1.y, obj.p2.x - obj.p1.x);
 
-  var scale_step = 10;
-  var scale_step_mid = 50;
-  var scale_step_long = 100;
+  const pixelInCentimeter = 38;
+  var scale_step = 10 * pixelInCentimeter / 10;
+  var scale_step_mid = 50 * pixelInCentimeter / 10;
+  var scale_step_long = 100 * pixelInCentimeter / 10;
   var scale_len = 10;
   var scale_len_mid = 15;
 
@@ -2446,7 +2447,7 @@ var canvasPainter = {
   ctx.font = '14px Arial';
   ctx.fillStyle = 'rgb(128,128,128)';
   if(obj.selected) ctx.fillStyle = 'white';
-
+  //Display according to the slope
   if (ang > Math.PI * (-0.25) && ang <= Math.PI * 0.25)
   {
     //↘~↗
@@ -2490,24 +2491,28 @@ var canvasPainter = {
   var x, y;
   for (var i = 0; i <= len; i += scale_step)
   {
+    //Ruler line
     ctx.moveTo(obj.p1.x + i * par_x, obj.p1.y + i * par_y);
     if (i % scale_step_long == 0)
     {
+      //Big line for step long
       x = obj.p1.x + i * par_x + scale_direction * scale_len_long * per_x;
       y = obj.p1.y + i * par_y + scale_direction * scale_len_long * per_y;
       ctx.lineTo(x, y);
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(text_ang);
-      ctx.fillText(i, 0, 0);
+      ctx.fillText(i / pixelInCentimeter, 0, 0);
       ctx.restore();
     }
     else if (i % scale_step_mid == 0)
     {
+      //Intermediate line for intermediate step
       ctx.lineTo(obj.p1.x + i * par_x + scale_direction * scale_len_mid * per_x, obj.p1.y + i * par_y + scale_direction * scale_len_mid * per_y);
     }
     else
     {
+      //Little line for little step
       ctx.lineTo(obj.p1.x + i * par_x + scale_direction * scale_len * per_x, obj.p1.y + i * par_y + scale_direction * scale_len * per_y);
     }
   }

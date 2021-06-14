@@ -12,17 +12,24 @@ function customRefractor(instructions) {
     let path = [];
     if(!instructions[0].is_coord) return path;
     if(instructions.length < 3) return path;
-    path.push(instructions[0].coord);
+    let translatedCoord = {};
+    translatedCoord.x = instructions[0].coord.x * centimeterInPixel;
+    translatedCoord.y = instructions[0].coord.y * centimeterInPixel;
+    path.push(translatedCoord);
     for(let index = 1; index < instructions.length; index++) {
         let ins = instructions[index];
-        if(ins.is_coord) path.push(ins.coord);
+        if(ins.is_coord) {
+            translatedCoord.x = ins.coord.x * centimeterInPixel;
+            translatedCoord.y = ins.coord.y * centimeterInPixel;
+            path.push(translatedCoord);
+        } 
         else {
             let pente, totalangle;
             index == 1 ? pente = -ins.angle : pente = Math.atan2(path[index-1].y - path[index-2].y, path[index-1].x - path[index-2].x) * (180/Math.PI);
             index == 1 ? totalangle = pente : totalangle = pente - ins.angle;
             let newCoord = {
-                "x": Math.round(path[index-1].x + ins.length * Math.cos((Math.PI * totalangle)/180)),
-                "y": Math.round(path[index-1].y + ins.length * Math.sin((Math.PI * totalangle)/180))
+                "x": Math.round(path[index-1].x + ins.length * centimeterInPixel * Math.cos((Math.PI * totalangle)/180)),
+                "y": Math.round(path[index-1].y + ins.length * centimeterInPixel * Math.sin((Math.PI * totalangle)/180))
             }
             path.push(newCoord);
         }
@@ -148,7 +155,7 @@ function addPointLine(button) {
     .on("input", function() {
         let val = $(lengthINPUT).val().trim();
         let angVal = $(angleINPUT).val().trim();
-        if(Boolean(val) && Boolean(angVal)) $(coordINPUT).attr("disabled", "");
+        if(Boolean(val)) $(coordINPUT).attr("disabled", "");
         if(!Boolean(val) && !Boolean(angVal)) $(coordINPUT).removeAttr("disabled");
     })
     .on("change", function() {
@@ -254,7 +261,7 @@ function createRefractorModal() {
     $(coordINPUT).attr("type", "text");
     $(coordINPUT).attr("placeholder", getMsg("coords"));
     $(coordINPUT).attr("id", "inputDefault");
-    $(coordINPUT).val(Math.round(mouse.x) + "," + Math.round(mouse.y));
+    $(coordINPUT).val(Math.round(mouse.x / centimeterInPixel) + "," + Math.round(mouse.y / centimeterInPixel));
     $(coordINPUT).attr("disabled", "");
     $(coordDIV).append(coordINPUT);
 
