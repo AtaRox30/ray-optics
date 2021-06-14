@@ -28,10 +28,9 @@ function customRefractor(instructions) {
             let pente, totalangle;
             index == 1 ? pente = -ins.angle : pente = Math.atan2(path[index-1].y - path[index-2].y, path[index-1].x - path[index-2].x) * (180/Math.PI);
             index == 1 ? totalangle = pente : totalangle = pente - ins.angle;
-            let newCoord = {
-                "x": Math.round(path[index-1].x + ins.length * centimeterInPixel * Math.cos((Math.PI * totalangle)/180)),
-                "y": Math.round(path[index-1].y + ins.length * centimeterInPixel * Math.sin((Math.PI * totalangle)/180))
-            }
+            let newCoord = {};
+            newCoord.x = Math.round(path[index-1].x + ins.length * centimeterInPixel * Math.cos((Math.PI * totalangle)/180));
+            newCoord.y = Math.round(path[index-1].y + ins.length * centimeterInPixel * Math.sin((Math.PI * totalangle)/180));
             path.push(newCoord);
         }
     }

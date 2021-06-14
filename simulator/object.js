@@ -2435,10 +2435,10 @@ var canvasPainter = {
   var per_y = -par_x;
   var ang = Math.atan2(obj.p2.y - obj.p1.y, obj.p2.x - obj.p1.x);
 
-  const pixelInCentimeter = 38;
-  var scale_step = 10 * pixelInCentimeter / 10;
-  var scale_step_mid = 50 * pixelInCentimeter / 10;
-  var scale_step_long = 100 * pixelInCentimeter / 10;
+  const cmToPx = Math.round(centimeterInPixel);
+  var scale_step = 10 * cmToPx / 10;
+  var scale_step_mid = 50 * cmToPx / 10;
+  var scale_step_long = 100 * cmToPx / 10;
   var scale_len = 10;
   var scale_len_mid = 15;
 
@@ -2502,7 +2502,7 @@ var canvasPainter = {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(text_ang);
-      ctx.fillText(i / pixelInCentimeter, 0, 0);
+      ctx.fillText(i / cmToPx, 0, 0);
       ctx.restore();
     }
     else if (i % scale_step_mid == 0)
