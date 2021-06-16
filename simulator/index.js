@@ -32,6 +32,15 @@
   //Parasitic rays
   var showParasiticRays = false;
 
+  //Cauchy
+  var isCauchyActive = false;
+  const red_length = 0.8;
+  const green_length = 0.6;
+  const blue_length = 0.4;
+  var A_cauchy_coefficient = 1;
+  var B_cauchy_coefficient = 0;
+  const environment_coefficient = {"Eau":{A: 1.324, B: 0.00312}, "Verre":{A: 1.498, B: 0.00424}, "Air":{A: 1, B: 0}}
+
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
   var positioningObj = -1; //Entrez le numéro de l'objet dans les coordonnées (-1 signifie non, -4 signifie observateur)
@@ -417,9 +426,24 @@
     cancelMousedownEvent('showParasiticRays');
     
     document.getElementById('toggleGroupPanel_button').onclick = function() {
-      //Define onready script.js
+      createGroupPanel();
+      $("#sideMultipleGroup").dialog({
+          width: 400,
+          maxHeight: 300,
+          title: getMsg("group_management"),
+          modal: true,
+          close: function(e, ui) {
+              $("#sideMultipleGroup").remove();
+          }
+      });
     }
     cancelMousedownEvent('toggleGroupPanel_button');
+
+    document.getElementById('cauchy_button').onclick = function() {
+      //Define onready script.js
+      cauchyPanel();
+    }
+    cancelMousedownEvent('cauchy_button');
 
     document.getElementById('save_name').onkeydown = function(e)
     {
@@ -2470,6 +2494,7 @@
     document.getElementById('delete').value = getMsg('delete');
     document.getElementById('objSetPointRot_button').value = getMsg('placerotation');
     document.getElementById('toggleGroupPanel_button').value = getMsg('grouppanel');
+    document.getElementById('cauchy_button').value = getMsg('cauchy');
     document.querySelector("label[for=showArrowOnRay]").innerHTML = getMsg('show_arrow_ray');
     document.querySelector("label[for=showParasiticRays]").innerHTML = getMsg('show_parasitic_ray');
 

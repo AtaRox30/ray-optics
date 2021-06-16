@@ -427,5 +427,8 @@ locales["fr"] = {
   },
   "create_shape": {
     "message": "Créer une forme"
+  },
+  "cauchy": {
+    "message": "Loi de cauchy"
   }
 }

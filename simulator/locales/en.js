@@ -428,5 +428,8 @@ locales["en"] = {
   },
   "create_shape": {
     "message": "Create shape"
+  },
+  "cauchy": {
+    "message": "Cauchy's law"
   }
 }

@@ -742,6 +742,170 @@ function createGroupNamer() {
     $("body").append(group);
 }
 
+function cauchyPanel() {
+    createCauchyPanel();
+    displayCauchyPanel();
+}
+
+function createCauchyPanel() {
+    /* 
+    <div id="cauchy">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Milieu</th>
+                <th scope="col">Coefficient A</th>
+                <th scope="col">Coefficient B</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <select class="form-select" id="environment">
+                            <option>Personnalisé</option>
+                            <option>Air</option>
+                            <option>Eau</option>
+                            <option>Plexiglas</option>
+                        </select>
+                    </div>
+                </td>
+                <td><div class="form-group"><input type="text" class="form-control" placeholder="A (sans dimension)" id="coefficient_A"></div></td>
+                <td><div class="form-group"><input type="text" class="form-control" placeholder="B (en µm²)" id="coefficient_B"></div></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    */
+
+    let cauchy = document.createElement("div");
+    cancelKeyEvent(cauchy);
+    $(cauchy).attr("id", "cauchy");
+
+    let table = document.createElement("table");
+    $(table).addClass("table table-hover");
+
+    let thead = document.createElement("thead");
+    
+    let trHead = document.createElement("tr");
+
+    let thMilieu = document.createElement("th");
+    $(thMilieu).attr("scope", "col");
+    $(thMilieu).text("Milieu");
+    $(trHead).append(thMilieu);
+
+    let thCoefA = document.createElement("th");
+    $(thCoefA).attr("scope", "col");
+    $(thCoefA).text("Coefficient A");
+    $(trHead).append(thCoefA);
+
+    let thCoefB = document.createElement("th");
+    $(thCoefB).attr("scope", "col");
+    $(thCoefB).text("Coefficient B");
+    $(trHead).append(thCoefB);
+
+    $(thead).append(trHead); $(table).append(thead);
+
+    let tbody = document.createElement("tbody");
+
+    let trBody = document.createElement("tr");
+
+    let tdSelect = document.createElement("td");
+
+    let divSelect = document.createElement("div");
+    $(divSelect).addClass("form-group");
+
+    let select = $(document.createElement("select")).on("change", function() {
+        let value = $(this).val();
+        if(value != environment[0]) {
+            $(inputCoeffA).val(environment_coefficient[value]["A"]);
+            $(inputCoeffB).val(environment_coefficient[value]["B"]);
+            isCauchyActive = true;
+        }
+        if(value == environment[0] && $(inputCoeffA).val() == 1 && $(inputCoeffB).val() == 0) isCauchyActive = false;
+    });
+    $(select).attr("environment");
+    $(select).addClass("form-select");
+
+    let environment = ["Personnalisé", "Air", "Eau", "Verre"];
+    for(e of environment) {
+        let option = document.createElement("option");
+        $(option).attr("value", e);
+        $(option).text(e);
+        $(select).append(option);
+    }
+
+    $(divSelect).append(select); $(tdSelect).append(divSelect); $(trBody).append(tdSelect); 
+
+    let tdCoeffA = document.createElement("td");
+
+    let divCoeffA = document.createElement("div");
+    $(divCoeffA).addClass("form-group");
+
+    let inputCoeffA = $(document.createElement("input")).on("input", function() {
+        let value = $(this).val();
+        let selectValue = $(select).val();
+        if(selectValue != environment[0])
+        if(value != environment_coefficient[selectValue]["A"]) $(select).val("Personnalisé");
+        if(value == 1 && $(inputCoeffB).val() == 0) isCauchyActive = false;
+        else isCauchyActive = true;
+    });
+    $(inputCoeffA).attr("type", "text");
+    $(inputCoeffA).attr("id", "coefficient_A");
+    $(inputCoeffA).attr("placeholder", "Coefficient A (sans dimmension)");
+    $(inputCoeffA).addClass("form-control");
+
+    $(divCoeffA).append(inputCoeffA); $(tdCoeffA).append(divCoeffA); $(trBody).append(tdCoeffA);
+
+    let tdCoeffB = document.createElement("td");
+
+    let divCoeffB = document.createElement("div");
+    $(divCoeffB).addClass("form-group");
+
+    let inputCoeffB = $(document.createElement("input")).on("input", function() {
+        let value = $(this).val();
+        let selectValue = $(select).val();
+        if(selectValue != environment[0])
+        if(value != environment_coefficient[selectValue]["B"]) $(select).val("Personnalisé");
+        if(value == 0 && $(inputCoeffA).val() == 1) isCauchyActive = false;
+        else isCauchyActive = true;
+    });;
+    $(inputCoeffB).attr("type", "text");
+    $(inputCoeffB).attr("id", "coefficient_B");
+    $(inputCoeffB).attr("placeholder", "Coefficient B (en µm²)");
+    $(inputCoeffB).addClass("form-control");
+
+    $(divCoeffB).append(inputCoeffB); $(tdCoeffB).append(divCoeffB); $(trBody).append(tdCoeffB);
+
+    $(tbody).append(trBody);
+
+    $(table).append(thead); $(table).append(tbody);
+
+    $(cauchy).append(table);
+
+    $("body").append(cauchy);
+
+}
+
+function displayCauchyPanel() {
+    $("#cauchy").dialog({
+        width: 500,
+        maxHeight: 300,
+        title: "Loi de Cauchy",
+        modal: true,
+        close: function(e, ui) {
+            $("#cauchy").remove();
+        },
+        buttons: {"Ok": function(t) {
+            draw();
+            $("#cauchy").remove();
+        }, "Cancel": function(t) {
+            $("#cauchy").remove();
+        }
+        }
+      });
+}
+
 $(document).ready(function(e) {
   $(document).on("keyup", function(e) {
       if(!isSelectingMultipleObject) return
@@ -791,16 +955,4 @@ $(document).ready(function(e) {
   /* Initialize Bootstrap Popover */
   $("[data-toggle=popover]").popover();
 
-  $("#toggleGroupPanel_button").on("click", function() {
-      createGroupPanel();
-      $("#sideMultipleGroup").dialog({
-          width: 400,
-          maxHeight: 300,
-          title: getMsg("group_management"),
-          modal: true,
-          close: function(e, ui) {
-              $("#sideMultipleGroup").remove();
-          }
-      });
-  });
 })
