@@ -753,6 +753,9 @@ function createCauchyPanel() {
         <table class="table table-hover">
             <thead>
             <tr>
+                <td colspan="3"><button type="button" class="btn btn-primary">Loi de cauchy</button></td>
+            </tr>
+            <tr>
                 <th scope="col">Milieu</th>
                 <th scope="col">Coefficient A</th>
                 <th scope="col">Coefficient B</th>
@@ -786,6 +789,25 @@ function createCauchyPanel() {
     $(table).addClass("table table-hover");
 
     let thead = document.createElement("thead");
+
+    let trButton = document.createElement("tr");
+    let tdButton = document.createElement("td");
+    $(tdButton).attr("colspan", "3");
+    $(tdButton).css("text-align", "center");
+    let button = $(document.createElement("button")).on("click", function() {
+        if(isCauchyActive) {
+            isCauchyActive = false
+            $(tbody).hide();
+        }
+        else {
+            isCauchyActive = true;
+            $(tbody).show();
+        } 
+    });
+    $(button).attr("type", "button");
+    $(button).addClass("btn btn-primary");
+    $(button).text("Loi de cauchy");
+    $(tdButton).append(button); $(trButton).append(tdButton); $(thead).append(trButton);
     
     let trHead = document.createElement("tr");
 
@@ -807,6 +829,8 @@ function createCauchyPanel() {
     $(thead).append(trHead); $(table).append(thead);
 
     let tbody = document.createElement("tbody");
+    if(isCauchyActive) $(tbody).show();
+    else $(tbody).hide();
 
     let trBody = document.createElement("tr");
 
@@ -820,14 +844,16 @@ function createCauchyPanel() {
         if(value != environment[0]) {
             $(inputCoeffA).val(environment_coefficient[value]["A"]);
             $(inputCoeffB).val(environment_coefficient[value]["B"]);
-            isCauchyActive = true;
+            A_cauchy_coefficient = environment_coefficient[value]["A"];
+            B_cauchy_coefficient = environment_coefficient[value]["B"];
         }
-        if(value == environment[0] && $(inputCoeffA).val() == 1 && $(inputCoeffB).val() == 0) isCauchyActive = false;
     });
     $(select).attr("environment");
     $(select).addClass("form-select");
 
-    let environment = ["Personnalisé", "Air", "Eau", "Verre"];
+    let environment = Object.keys(environment_coefficient);
+    environment.splice(0, 0, "Personnalisé");
+    //["Personnalisé", "Air", "Eau", "Verre flint", "Verre crown", "Plexiglas", "Diamant"];
     for(e of environment) {
         let option = document.createElement("option");
         $(option).attr("value", e);
@@ -847,12 +873,12 @@ function createCauchyPanel() {
         let selectValue = $(select).val();
         if(selectValue != environment[0])
         if(value != environment_coefficient[selectValue]["A"]) $(select).val("Personnalisé");
-        if(value == 1 && $(inputCoeffB).val() == 0) isCauchyActive = false;
-        else isCauchyActive = true;
+        A_cauchy_coefficient = Number.parseFloat(value);
     });
     $(inputCoeffA).attr("type", "text");
     $(inputCoeffA).attr("id", "coefficient_A");
     $(inputCoeffA).attr("placeholder", "Coefficient A (sans dimmension)");
+    $(inputCoeffA).val(A_cauchy_coefficient);
     $(inputCoeffA).addClass("form-control");
 
     $(divCoeffA).append(inputCoeffA); $(tdCoeffA).append(divCoeffA); $(trBody).append(tdCoeffA);
@@ -867,12 +893,12 @@ function createCauchyPanel() {
         let selectValue = $(select).val();
         if(selectValue != environment[0])
         if(value != environment_coefficient[selectValue]["B"]) $(select).val("Personnalisé");
-        if(value == 0 && $(inputCoeffA).val() == 1) isCauchyActive = false;
-        else isCauchyActive = true;
+        B_cauchy_coefficient = Number.parseFloat(value);
     });;
     $(inputCoeffB).attr("type", "text");
     $(inputCoeffB).attr("id", "coefficient_B");
     $(inputCoeffB).attr("placeholder", "Coefficient B (en µm²)");
+    $(inputCoeffB).val(B_cauchy_coefficient);
     $(inputCoeffB).addClass("form-control");
 
     $(divCoeffB).append(inputCoeffB); $(tdCoeffB).append(divCoeffB); $(trBody).append(tdCoeffB);
@@ -890,7 +916,7 @@ function createCauchyPanel() {
 function displayCauchyPanel() {
     $("#cauchy").dialog({
         width: 500,
-        maxHeight: 300,
+        height: 300,
         title: "Loi de Cauchy",
         modal: true,
         close: function(e, ui) {
@@ -898,6 +924,16 @@ function displayCauchyPanel() {
         },
         buttons: {"Ok": function(t) {
             draw();
+            if(isCauchyActive) {
+                $("#objAttr_range").attr("disabled", "");
+                $("#objAttr_range").val(1.5);
+                $("#objAttr_text").attr("disabled", "");
+                $("#objAttr_text").val("1.5");
+            } 
+            else {
+                $("#objAttr_range").removeAttr("disabled");
+                $("#objAttr_text").removeAttr("disabled");
+            } 
             $("#cauchy").remove();
         }, "Cancel": function(t) {
             $("#cauchy").remove();

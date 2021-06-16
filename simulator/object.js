@@ -565,13 +565,20 @@ var canvasPainter = {
     if (shotType == 1)
     {
       //Tourné de l'intérieur vers l'extérieur
-      var n1 = obj.p; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
-      //canvasPainter.draw(graphs.segment(ray.p1,s_point),canvas,"red");
+      var n1; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
+      if(!ray.cauchy_color) n1 = obj.p;
+      if(ray.cauchy_color == "red") n1 = cauchy(red_length);
+      if(ray.cauchy_color == "green") n1 = cauchy(green_length);
+      if(ray.cauchy_color == "blue") n1 = cauchy(blue_length);
     }
     else if (shotType == -1)
     {
       //Tourné de l'extérieur vers l'intérieur
-      var n1 = 1 / obj.p;
+      var n1; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
+      if(!ray.cauchy_color) n1 = 1 / obj.p;
+      if(ray.cauchy_color == "red") n1 = 1 / cauchy(red_length);
+      if(ray.cauchy_color == "green") n1 = 1 / cauchy(green_length);
+      if(ray.cauchy_color == "blue") n1 = 1 / cauchy(blue_length);
     }
     else
     {
@@ -721,14 +728,22 @@ var canvasPainter = {
     if (d > 0)
     {
       //Tourné de l'intérieur vers l'extérieur
-      var n1 = obj.p; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
       var normal = {x: obj.p1.x - rp.x, y: obj.p1.y - rp.y};
+      var n1; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
+      if(!ray.cauchy_color) n1 = obj.p;
+      if(ray.cauchy_color == "red") n1 = cauchy(red_length);
+      if(ray.cauchy_color == "green") n1 = cauchy(green_length);
+      if(ray.cauchy_color == "blue") n1 = cauchy(blue_length);
     }
     else if (d < 0)
     {
       //Tourné de l'extérieur vers l'intérieur
-      var n1 = 1 / obj.p;
       var normal = {x: rp.x - obj.p1.x, y: rp.y - obj.p1.y};
+      var n1; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
+      if(!ray.cauchy_color) n1 = 1 / obj.p;
+      if(ray.cauchy_color == "red") n1 = 1 / cauchy(red_length);
+      if(ray.cauchy_color == "green") n1 = 1 / cauchy(green_length);
+      if(ray.cauchy_color == "blue") n1 = 1 / cauchy(blue_length);
     }
     else
     {
@@ -1178,17 +1193,28 @@ var canvasPainter = {
     if (shotType == 1)
     {
       //Tourné de l'intérieur vers l'extérieur
-      var n1 = obj.p; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
+      var n1; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
+      if(!ray.cauchy_color) n1 = obj.p;
+      if(ray.cauchy_color == "red") n1 = cauchy(red_length);
+      if(ray.cauchy_color == "green") n1 = cauchy(green_length);
+      if(ray.cauchy_color == "blue") n1 = cauchy(blue_length);
+      console.log(n1);
     }
     else if (shotType == -1)
     {
       //Tourné de l'extérieur vers l'intérieur
-      var n1 = 1 / obj.p;
+      var n1; //L'indice de réfraction du milieu source (le milieu de destination est supposé être 1)
+      if(!ray.cauchy_color) n1 = 1 / obj.p;
+      if(ray.cauchy_color == "red") n1 = 1 / cauchy(red_length);
+      if(ray.cauchy_color == "green") n1 = 1 / cauchy(green_length);
+      if(ray.cauchy_color == "blue") n1 = 1 / cauchy(blue_length);
+      console.log(n1);
     }
     else if (shotType == 0)
     {
       //Cela équivaut à ne pas être tourné (par exemple, les deux interfaces se chevauchent)
       var n1 = 1;
+      console.log(n1);
     }
     else
     {
@@ -1555,12 +1581,25 @@ var canvasPainter = {
 
   //========================================Tirez sur la lumière======================================
   shoot: function(obj) {
-  var ray1 = graphs.ray(obj.p1, obj.p2);
-  ray1.brightness = 1;
-  ray1.gap = true;
-  ray1.isNew = true;
-  ray1.last_intersection = [];
-  addRay(ray1);
+  if(isCauchyActive) {
+    let rgb_ray = ["red_ray", "green_ray", "blue_ray"];
+    for(r of rgb_ray) {
+      let ray = graphs.ray(obj.p1, obj.p2);
+      ray.brightness = 1;
+      ray.gap = true;
+      ray.isNew = true;
+      ray.last_intersection = [];
+      ray.cauchy_color = r.substring(0, r.length - 4);
+      addRay(ray);
+    }
+  } else {
+    var ray1 = graphs.ray(obj.p1, obj.p2);
+    ray1.brightness = 1;
+    ray1.gap = true;
+    ray1.isNew = true;
+    ray1.last_intersection = [];
+    addRay(ray1);
+  }
   }
   };
 
@@ -2950,4 +2989,8 @@ function drawArrow(cvsLimit, graph) {
     }
   index++;
   }
+}
+
+function cauchy(lambda) {
+  return A_cauchy_coefficient + (B_cauchy_coefficient / Math.pow(lambda, 2))
 }

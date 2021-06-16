@@ -39,7 +39,13 @@
   const blue_length = 0.4;
   var A_cauchy_coefficient = 1;
   var B_cauchy_coefficient = 0;
-  const environment_coefficient = {"Eau":{A: 1.324, B: 0.00312}, "Verre":{A: 1.498, B: 0.00424}, "Air":{A: 1, B: 0}}
+  const environment_coefficient = 
+  {"Eau":{A: 1.324, B: 0.00312}, 
+  "Verre flint":{A: 1.67, B: 0.00743},
+  "Verre crown":{A: 1.5220, B: 0.00459}, 
+  "Plexiglas":{A: 1.4890, B: 0.00467}, 
+  "Diamant":{A: 2.3837, B: 0.01112}, 
+  "Air":{A: 1, B: 0}}
 
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
@@ -915,7 +921,13 @@
           {
             if (mode == 'light' || mode == 'extended_light')
             {
-              let color = waitingRays[j].regular ? 'rgb(128,236,255)' : 'rgb(255,255,128)';
+              let color;
+              if(!waitingRays[j].cauchy_color) color = "rgb(255, 255, 128)";
+              if(waitingRays[j].cauchy_color == "red") color = "red";
+              if(waitingRays[j].cauchy_color == "green") color = "green";
+              if(waitingRays[j].cauchy_color == "blue") color = "blue";
+              if(waitingRays[j].regular) color = 'rgb(128,236,255)';
+              
               canvasPainter.draw(waitingRays[j], color); //Dessine cette normale/lumière
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)
@@ -941,7 +953,12 @@
             //A ce moment, la lumière représentative frappera s_obj (objet) à s_point (position) après avoir passé s_len (distance).
             if (mode == 'light' || mode == 'extended_light')
             {
-              canvasPainter.draw(graphs.segment(waitingRays[j].p1, s_point), 'rgb(255,255,128)'); //Dessine cette lumière
+              let color_temp;
+              if(!waitingRays[j].cauchy_color) color_temp = "rgb(255, 255, 128)";
+              if(waitingRays[j].cauchy_color == "red") color_temp = "red";
+              if(waitingRays[j].cauchy_color == "green") color_temp = "green";
+              if(waitingRays[j].cauchy_color == "blue") color_temp = "blue";
+              canvasPainter.draw(graphs.segment(waitingRays[j].p1, s_point), color_temp); //Dessine cette lumière
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)
             {
