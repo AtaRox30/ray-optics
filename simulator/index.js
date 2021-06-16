@@ -40,12 +40,12 @@
   var A_cauchy_coefficient = 1;
   var B_cauchy_coefficient = 0;
   const environment_coefficient = 
-  {"Eau":{A: 1.324, B: 0.00312}, 
-  "Verre flint":{A: 1.67, B: 0.00743},
-  "Verre crown":{A: 1.5220, B: 0.00459}, 
-  "Plexiglas":{A: 1.4890, B: 0.00467}, 
-  "Diamant":{A: 2.3837, B: 0.01112}, 
-  "Air":{A: 1, B: 0}}
+  {"water":{A: 1.324, B: 0.00312}, 
+  "flint glass":{A: 1.67, B: 0.00743},
+  "crown glass":{A: 1.5220, B: 0.00459}, 
+  "plexiglas":{A: 1.4890, B: 0.00467}, 
+  "diamond":{A: 2.3837, B: 0.01112}, 
+  "air":{A: 1, B: 0}}
 
   var constructionPoint; //Créer la position de départ de l'objet
   var draggingObj = -1; //Le numéro de l'objet glissé (-1 signifie pas de glissement, -3 signifie tout l'écran, -4 signifie l'observateur)
@@ -927,7 +927,8 @@
               if(waitingRays[j].cauchy_color == "green") color = "green";
               if(waitingRays[j].cauchy_color == "blue") color = "blue";
               if(waitingRays[j].regular) color = 'rgb(128,236,255)';
-              
+
+              if(!isCauchyActive || (isCauchyActive && waitingRays[j].cauchy_color) || waitingRays[j].regular)
               canvasPainter.draw(waitingRays[j], color); //Dessine cette normale/lumière
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)
@@ -958,6 +959,7 @@
               if(waitingRays[j].cauchy_color == "red") color_temp = "red";
               if(waitingRays[j].cauchy_color == "green") color_temp = "green";
               if(waitingRays[j].cauchy_color == "blue") color_temp = "blue";
+              if(!isCauchyActive || (isCauchyActive && waitingRays[j].cauchy_color) || waitingRays[j].regular)
               canvasPainter.draw(graphs.segment(waitingRays[j].p1, s_point), color_temp); //Dessine cette lumière
             }
             if (mode == 'extended_light' && !waitingRays[j].isNew)

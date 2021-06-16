@@ -806,24 +806,24 @@ function createCauchyPanel() {
     });
     $(button).attr("type", "button");
     $(button).addClass("btn btn-primary");
-    $(button).text("Loi de cauchy");
+    $(button).text(getMsg("cauchy"));
     $(tdButton).append(button); $(trButton).append(tdButton); $(thead).append(trButton);
     
     let trHead = document.createElement("tr");
 
     let thMilieu = document.createElement("th");
     $(thMilieu).attr("scope", "col");
-    $(thMilieu).text("Milieu");
+    $(thMilieu).text(getMsg("environment"));
     $(trHead).append(thMilieu);
 
     let thCoefA = document.createElement("th");
     $(thCoefA).attr("scope", "col");
-    $(thCoefA).text("Coefficient A");
+    $(thCoefA).text(getMsg("A_coefficient"));
     $(trHead).append(thCoefA);
 
     let thCoefB = document.createElement("th");
     $(thCoefB).attr("scope", "col");
-    $(thCoefB).text("Coefficient B");
+    $(thCoefB).text(getMsg("B_coefficient"));
     $(trHead).append(thCoefB);
 
     $(thead).append(trHead); $(table).append(thead);
@@ -852,12 +852,12 @@ function createCauchyPanel() {
     $(select).addClass("form-select");
 
     let environment = Object.keys(environment_coefficient);
-    environment.splice(0, 0, "Personnalisé");
-    //["Personnalisé", "Air", "Eau", "Verre flint", "Verre crown", "Plexiglas", "Diamant"];
+    environment.splice(0, 0, "custom");
+    //["custom", "air", "water", "flint glass", "crown glass", "plexiglas", "diamond"];
     for(e of environment) {
         let option = document.createElement("option");
         $(option).attr("value", e);
-        $(option).text(e);
+        $(option).text(getMsg(e));
         $(select).append(option);
     }
 
@@ -872,12 +872,12 @@ function createCauchyPanel() {
         let value = $(this).val();
         let selectValue = $(select).val();
         if(selectValue != environment[0])
-        if(value != environment_coefficient[selectValue]["A"]) $(select).val("Personnalisé");
+        if(value != environment_coefficient[selectValue]["A"]) $(select).val(getMsg("custom"));
         A_cauchy_coefficient = Number.parseFloat(value);
     });
     $(inputCoeffA).attr("type", "text");
     $(inputCoeffA).attr("id", "coefficient_A");
-    $(inputCoeffA).attr("placeholder", "Coefficient A (sans dimmension)");
+    $(inputCoeffA).attr("placeholder", getMsg("A_coefficient_details"));
     $(inputCoeffA).val(A_cauchy_coefficient);
     $(inputCoeffA).addClass("form-control");
 
@@ -892,14 +892,19 @@ function createCauchyPanel() {
         let value = $(this).val();
         let selectValue = $(select).val();
         if(selectValue != environment[0])
-        if(value != environment_coefficient[selectValue]["B"]) $(select).val("Personnalisé");
+        if(value != environment_coefficient[selectValue]["B"]) $(select).val(getMsg("custom"));
         B_cauchy_coefficient = Number.parseFloat(value);
     });;
     $(inputCoeffB).attr("type", "text");
     $(inputCoeffB).attr("id", "coefficient_B");
-    $(inputCoeffB).attr("placeholder", "Coefficient B (en µm²)");
+    $(inputCoeffB).attr("placeholder", getMsg("B_coefficient_details"));
     $(inputCoeffB).val(B_cauchy_coefficient);
     $(inputCoeffB).addClass("form-control");
+
+    for(e of environment) {
+        if(e != "custom") if(environment_coefficient[e]["A"] == $(inputCoeffA).val() && environment_coefficient[e]["B"] == $(inputCoeffB).val())
+        $(select).val(e);
+    }
 
     $(divCoeffB).append(inputCoeffB); $(tdCoeffB).append(divCoeffB); $(trBody).append(tdCoeffB);
 
@@ -917,7 +922,7 @@ function displayCauchyPanel() {
     $("#cauchy").dialog({
         width: 500,
         height: 300,
-        title: "Loi de Cauchy",
+        title: getMsg("cauchy"),
         modal: true,
         close: function(e, ui) {
             $("#cauchy").remove();

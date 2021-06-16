@@ -430,5 +430,41 @@ locales["fr"] = {
   },
   "cauchy": {
     "message": "Loi de cauchy"
+  },
+  "environment": {
+    "message": "Milieu"
+  },
+  "A_coefficient": {
+    "message": "Coefficient A"
+  },
+  "B_coefficient": {
+    "message": "Coefficient B"
+  },
+  "custom": {
+    "message": "Personnalisé"
+  },
+  "A_coefficient_details": {
+    "message": "Coefficient A (sans dimension)"
+  },
+  "B_coefficient_details": {
+    "message": "Coefficient B (en µm²)"
+  },
+  "water": {
+    "message": "Eau"
+  },
+  "air": {
+    "message": "Air"
+  },
+  "flint glass": {
+    "message": "Verre flint"
+  },
+  "crown glass": {
+    "message": "Verre crown"
+  },
+  "diamond": {
+    "message": "Diamant"
+  },
+  "plexiglas": {
+    "message": "Plexiglas"
   }
 }

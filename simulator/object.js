@@ -1198,7 +1198,6 @@ var canvasPainter = {
       if(ray.cauchy_color == "red") n1 = cauchy(red_length);
       if(ray.cauchy_color == "green") n1 = cauchy(green_length);
       if(ray.cauchy_color == "blue") n1 = cauchy(blue_length);
-      console.log(n1);
     }
     else if (shotType == -1)
     {
@@ -1208,7 +1207,6 @@ var canvasPainter = {
       if(ray.cauchy_color == "red") n1 = 1 / cauchy(red_length);
       if(ray.cauchy_color == "green") n1 = 1 / cauchy(green_length);
       if(ray.cauchy_color == "blue") n1 = 1 / cauchy(blue_length);
-      console.log(n1);
     }
     else if (shotType == 0)
     {
