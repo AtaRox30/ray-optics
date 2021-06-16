@@ -870,9 +870,7 @@ function createCauchyPanel() {
 
     let inputCoeffA = $(document.createElement("input")).on("input", function() {
         let value = $(this).val();
-        let selectValue = $(select).val();
-        if(selectValue != environment[0])
-        if(value != environment_coefficient[selectValue]["A"]) $(select).val(getMsg("custom"));
+        $(select).val("custom");
         A_cauchy_coefficient = Number.parseFloat(value);
     });
     $(inputCoeffA).attr("type", "text");
@@ -890,9 +888,7 @@ function createCauchyPanel() {
 
     let inputCoeffB = $(document.createElement("input")).on("input", function() {
         let value = $(this).val();
-        let selectValue = $(select).val();
-        if(selectValue != environment[0])
-        if(value != environment_coefficient[selectValue]["B"]) $(select).val(getMsg("custom"));
+        $(select).val("custom");
         B_cauchy_coefficient = Number.parseFloat(value);
     });;
     $(inputCoeffB).attr("type", "text");
