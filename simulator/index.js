@@ -692,8 +692,16 @@
     let toPath = objs[selectedObj].path[nearestSeg.path.to]
 
     //If the intersection is out of bounds, return
-    if((sideFunction.m > 0) && ((intersection.x > fromPath.x) || (intersection.x < toPath.x))) return
-    if((sideFunction.m < 0) && ((intersection.x < fromPath.x) || (intersection.x > toPath.x))) return
+    let isIn = false;
+    if(sideFunction.m > 0) {
+      if((intersection.x > fromPath.x) && (intersection.x < toPath.x)) isIn = true;
+      if((intersection.x < fromPath.x) && (intersection.x > toPath.x)) isIn = true;
+    }
+    if(sideFunction.m < 0) {
+      if((intersection.x < fromPath.x) && (intersection.x > toPath.x)) isIn = true;
+      if((intersection.x > fromPath.x) && (intersection.x < toPath.x)) isIn = true;
+    }
+    if(!isIn) return
     draw();
     ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
     ctx.fillStyle = "red";
@@ -701,7 +709,6 @@
   
   function doARotationOnASingleElement(angleRad) {
       drawRotationPoint()
-      console.log(objs[selectedObj])
       for(pt of objs[selectedObj].path) {
           //Do a rotation arround the rotation point
           let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);

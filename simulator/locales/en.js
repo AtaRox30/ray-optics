@@ -229,7 +229,8 @@ locales["en"] = {
     "message": "Processing...<br>Click here to stop."
   },
   "footer_message": {
-    "message": "Developed by <a href='https://github.com/ricktu288' style='color:rgba(255,255,255,0.25)'>ricktu288</a>, <a href='https://github.com/j3soon' style='color:rgba(255,255,255,0.25)'>j3soon</a>"
+    "message": "Developed by <a href='https://github.com/ricktu288' style='color:rgba(255,255,255,0.25)'>ricktu288</a>, <a href='https://github.com/j3soon' style='color:rgba(255,255,255,0.25)'>j3soon</a> | " +
+    "Development of this software as been funded by ANR (Agence Nationale de la Recherche) grant , in the scope of NCU (Nouveaux Cursus Universitaires) 'Hybridation des formations de l'enseignement supérieur' call for projects, as work conducted inside  HTTP (Hybridation Technologique et Travaux Pratiques) project [ANR-20-NCUN-0001]."
   },
   "homepage": {
     "message": "Home"
