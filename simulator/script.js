@@ -15,6 +15,7 @@ function customRefractor(instructions) {
     let translatedCoord = {};
     translatedCoord.x = instructions[0].coord.x * centimeterInPixel;
     translatedCoord.y = instructions[0].coord.y * centimeterInPixel;
+    translatedCoord.arc = false;
     path.push(translatedCoord);
     for(let index = 1; index < instructions.length; index++) {
         let ins = instructions[index];
@@ -22,6 +23,7 @@ function customRefractor(instructions) {
             let coord = {};
             coord.x = Math.round(ins.coord.x * centimeterInPixel);
             coord.y = Math.round(ins.coord.y * centimeterInPixel);
+            coord.arc = false;
             path.push(coord);
         } 
         else {
@@ -31,6 +33,7 @@ function customRefractor(instructions) {
             let newCoord = {};
             newCoord.x = Math.round(path[index-1].x + ins.length * centimeterInPixel * Math.cos((Math.PI * totalangle)/180));
             newCoord.y = Math.round(path[index-1].y + ins.length * centimeterInPixel * Math.sin((Math.PI * totalangle)/180));
+            newCoord.arc = false;
             path.push(newCoord);
         }
     }

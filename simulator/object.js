@@ -639,7 +639,7 @@
     }
     ctx.lineWidth = 1;
 
-
+    
     for (var i = 0; i < obj.path.length; i++)
     {
       if (typeof obj.path[i].arc != 'undefined')
