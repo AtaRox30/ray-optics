@@ -639,7 +639,7 @@
     }
     ctx.lineWidth = 1;
 
-    
+
     for (var i = 0; i < obj.path.length; i++)
     {
       if (typeof obj.path[i].arc != 'undefined')
@@ -2526,14 +2526,6 @@ function getTwoExtreme(coordTab) {
   return {"minX":minX, "minY":minY, "maxX":maxX, "maxY":maxY};
 }
 
-function affine(x1, y1, x2, y2) {
-  let slope = (y2 - y1)/(x2 - x1);
-  let constant = y1 - (slope * x1);
-  if(constant == Infinity) constant = y1;
-  if(constant == -Infinity) constant = y1;
-  return {m: slope, p: constant};
-}
-
 function getIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
   let affine_1 = graphs.affineFunctionOfTwoPoints(x1, x2, y1, y2);
   let affine_2 = graphs.affineFunctionOfTwoPoints(x3, x4, y3, y4);
@@ -2576,7 +2568,7 @@ function isInRefractor(pt, path) {
 
 function isInHalplane(pt, p1, p2) {
   let p1isAbove = p1.y > p2.y;
-  let aff = affine(p1.x, p1.y, p2.x, p2.y);
+  let aff = graphs.affineFunctionOfTwoPoints(p1.x, p2.x, p1.y, p2.y)
   let isClick = false;
   if(aff.m < 0) {
     if(p1isAbove && (aff.m * pt.x + aff.p) < pt.y) isClick = true;

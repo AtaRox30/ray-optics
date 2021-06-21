@@ -119,9 +119,6 @@ var graphs = {
     affineFunctionOfTwoPoints : function(x1, x2, y1, y2) {
         let slope = (y2 - y1)/(x2 - x1);
         let constant = y1 - (slope * x1);
-        if([Infinity, -Infinity].includes(constant)) {
-          constant = x1;
-        }
         return {m: slope, p: constant};
     },
   

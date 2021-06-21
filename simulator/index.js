@@ -684,6 +684,7 @@
   function choosingRotationPoint() {
     //Theses functions are used to get the intersection of the choosen side and the perpedicular line passing by the mouse
     let sideFunction = nearestSeg.affine;
+    console.log(nearestSeg.affine)
     let perpendicularToMouse = graphs.perpendicularOfLine(sideFunction.m, mouse.x, mouse.y);
     let intersection = graphs.intersection(sideFunction, perpendicularToMouse);
     rotationPoint_ = intersection;
@@ -928,6 +929,7 @@
               if(waitingRays[j].cauchy_color == "red") color = "red";
               if(waitingRays[j].cauchy_color == "green") color = "green";
               if(waitingRays[j].cauchy_color == "blue") color = "blue";
+              if(waitingRays[j].cauchy_color && waitingRays[j].last_intersection.length == 0) color = "white";
               if(waitingRays[j].regular) color = 'rgb(128,236,255)';
 
               if(!isCauchyActive || (isCauchyActive && waitingRays[j].cauchy_color) || waitingRays[j].regular)
