@@ -693,14 +693,8 @@
 
     //If the intersection is out of bounds, return
     let isIn = false;
-    if(sideFunction.m > 0) {
-      if((intersection.x > fromPath.x) && (intersection.x < toPath.x)) isIn = true;
-      if((intersection.x < fromPath.x) && (intersection.x > toPath.x)) isIn = true;
-    }
-    if(sideFunction.m < 0) {
-      if((intersection.x < fromPath.x) && (intersection.x > toPath.x)) isIn = true;
-      if((intersection.x > fromPath.x) && (intersection.x < toPath.x)) isIn = true;
-    }
+    if((intersection.x > fromPath.x) && (intersection.x < toPath.x)) isIn = true;
+    if((intersection.x < fromPath.x) && (intersection.x > toPath.x)) isIn = true;
     if(!isIn) return
     draw();
     ctx.fillRect(intersection.x-2, intersection.y-2, 3, 3);
