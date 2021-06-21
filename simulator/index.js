@@ -701,6 +701,7 @@
   
   function doARotationOnASingleElement(angleRad) {
       drawRotationPoint()
+      console.log(objs[selectedObj])
       for(pt of objs[selectedObj].path) {
           //Do a rotation arround the rotation point
           let newCoord = graphs.rotateArround(pt, rotationPoint, angleRad);
@@ -959,6 +960,7 @@
               if(waitingRays[j].cauchy_color == "red") color_temp = "red";
               if(waitingRays[j].cauchy_color == "green") color_temp = "green";
               if(waitingRays[j].cauchy_color == "blue") color_temp = "blue";
+              if(waitingRays[j].cauchy_color && waitingRays[j].last_intersection.length == 1) color_temp = "white";
               if(!isCauchyActive || (isCauchyActive && waitingRays[j].cauchy_color) || waitingRays[j].regular)
               canvasPainter.draw(graphs.segment(waitingRays[j].p1, s_point), color_temp); //Dessine cette lumière
             }
