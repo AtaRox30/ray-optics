@@ -1894,13 +1894,13 @@
   function init_i18n() {
     if (navigator.language) {
       var browser_lang = navigator.language;
+      lang = browser_lang.toLowerCase().substring(0, 2);
       if (browser_lang.toLowerCase() == 'zh-tw') {
         lang = 'zh-TW';
       }
       if (browser_lang.toLowerCase() == 'zh-cn') {
         lang = 'zh-CN';
       }
-      lang = browser_lang.toLowerCase().substring(0, 2);
     }
     var url_lang = location.search.substr(1)
     if (url_lang && locales[url_lang]) {

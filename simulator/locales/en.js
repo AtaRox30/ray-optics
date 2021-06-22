@@ -269,7 +269,7 @@ locales["en"] = {
     "message": "A mirror whose shape is part of a circle, which is defined by three points. (Drag or click to create. First 2 points define the gap between arc's edges, the last point defines the arc's size.)"
   },
   "tool_idealmirror_popover": {
-    "message": "The idealized 'curved' mirror which obeys exactly the mirror equation (1/p + 1/q = 1/f). The focal length (in pixels) can be set directly. (Drag or click to create.)"
+    "message": "The idealized 'curved' mirror which obeys exactly the mirror equation (1/p + 1/q = 1/f). The focal length (in centimeters) can be set directly. (Drag or click to create.)"
   },
   "tool_halfplane_popover": {
     "message": "Simulate the the refraction and reflection of light on a surface. The intensities are calculated by assuming unpolarized. (Drag or click to create.)"
@@ -281,13 +281,13 @@ locales["en"] = {
     "message": "Glass with any shapes constructed from line segments and circular arcs, including prisms and 'spherical' lenses. (Click to create segment, drag to create arc, click on the starting point when finish drawing.)"
   },
   "tool_lens_popover": {
-    "message": "An ideal lens which obeys exactly the thin lens equation (1/p + 1/q = 1/f). The focal length (in pixels) can be set directly. (Drag or click to create.)"
+    "message": "An ideal lens which obeys exactly the thin lens equation (1/p + 1/q = 1/f). The focal length (in centimeters) can be set directly. (Drag or click to create.)"
   },
   "tool_blackline_popover": {
     "message": "A line-segment light blocker which absorbs the incident rays. (Drag or click to create.)"
   },
   "tool_ruler_popover": {
-    "message": "A ruler from a point for zero and another point. The scale is in pixels. (Drag or click to create.)"
+    "message": "A ruler from a point for zero and another point. The scale is in centimeters. (Drag or click to create.)"
   },
   "tool_protractor_popover": {
     "message": "A protractor defined from center and another point for the zero direction. The scale is in degrees. (Drag or click to create.)"

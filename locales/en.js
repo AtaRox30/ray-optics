@@ -61,7 +61,7 @@ locales["en"] = {
     "message": "Ideal curved mirror"
   },
   "ideal_curved_mirror_desc": {
-    "message": "The idealized \"curved\" mirror which obeys exactly the mirror equation (1/p + 1/q = 1/f). The focal length (in pixels) can be set directly."
+    "message": "The idealized \"curved\" mirror which obeys exactly the mirror equation (1/p + 1/q = 1/f). The focal length (in centimeters) can be set directly."
   },
   "glass_halfplane": {
     "message": "Glass"
@@ -85,7 +85,7 @@ locales["en"] = {
     "message": "Glass (Ideal lens)"
   },
   "ideal_lens_desc": {
-    "message": "An ideal lens which obeys exactly the thin lens equation (1/p + 1/q = 1/f). The focal length (in pixels) can be set directly."
+    "message": "An ideal lens which obeys exactly the thin lens equation (1/p + 1/q = 1/f). The focal length (in centimeters) can be set directly."
   },
   "blocker": {
     "message": "Blocker"
@@ -97,7 +97,7 @@ locales["en"] = {
     "message": "Ruler"
   },
   "ruler_desc": {
-    "message": "A ruler from a point for zero and another point. The scale is in pixels."
+    "message": "A ruler from a point for zero and another point. The scale is in centimeters."
   },
   "protractor": {
     "message": "Protractor"

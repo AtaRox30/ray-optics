@@ -269,7 +269,7 @@ locales["fr"] = {
     "message": "Un miroir dont la forme est un arc circulaire, qui est définit par trois points. (Glisser ou cliquer pour le créer. Les deux premiers points définissent l'espace entre les bords de l'arc, le dernier point définit la taille de l'arc.)"
   },
   "tool_idealmirror_popover": {
-    "message": "Un miroir 'courbé' qui obéit exactement à l'équation (1/p + 1/q = 1/f). La distance focale (en pixels) peut être défini directement. (Glisser ou cliquer pour le créer.)"
+    "message": "Un miroir 'courbé' qui obéit exactement à l'équation (1/p + 1/q = 1/f). La distance focale (en centimètres) peut être défini directement. (Glisser ou cliquer pour le créer.)"
   },
   "tool_halfplane_popover": {
     "message": "Simule la réfraction et la reflexion de la lumière sur une surface. L'intensité est calculée en l'assumant non-polarisée. (Glisser ou cliquer pour le créer.)"
@@ -281,13 +281,13 @@ locales["fr"] = {
     "message": "Verre avec une forme quelconque construite avec des segments et des arcs circulaires, prismes et lentilles spherique inclus. (Cliquer pour crée un segment, glisser pour crée un arc, cliquer sur le point de depart pour finir de dessiner.)"
   },
   "tool_lens_popover": {
-    "message": "Une lentille obéissant exactement à l'équation de lentille (1/p' + 1/p = 1/f'). La distance focale (en pixels) peut être défini directement. (Glisser ou cliquer pour le créer.)"
+    "message": "Une lentille obéissant exactement à l'équation de lentille (1/p' + 1/p = 1/f'). La distance focale (en centimètres) peut être défini directement. (Glisser ou cliquer pour le créer.)"
   },
   "tool_blackline_popover": {
     "message": "Un segment absorbant les rayons incidents. (Glisser ou cliquer pour le créer.)"
   },
   "tool_ruler_popover": {
-    "message": "Une règle de zéro à un autre point. L'échelle est en pixels. (Glisser ou cliquer pour le créer.)"
+    "message": "Une règle de zéro à un autre point. L'échelle est en centimètres. (Glisser ou cliquer pour le créer.)"
   },
   "tool_protractor_popover": {
     "message": "Un rapporteur défini par le centre et un autre point pour la direction zero. L'echelle est en degrès. (Glisser ou cliquer pour le créer.)"

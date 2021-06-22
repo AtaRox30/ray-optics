@@ -297,6 +297,7 @@
       <span class="caret"></span></button>
       <ul class="dropdown-menu">
         <li><a href="#" onclick="setLang('en');event.preventDefault();">English</a></li>
+        <li><a href="#" onclick="setLang('fr');event.preventDefault();">Français</a></li>
         <li><a href="#" onclick="setLang('zh-TW');event.preventDefault();">正體中文</a></li>
         <li><a href="#" onclick="setLang('zh-CN');event.preventDefault();">简体中文</a></li>
       </ul>
@@ -304,7 +305,7 @@
   </div>
 </div>
 
-
+<script src="locales/fr.js"></script>
 <script src="locales/en.js"></script>
 <script src="locales/zh_CN.js"></script>
 <script src="locales/zh_TW.js"></script>
@@ -333,10 +334,11 @@ function setLang(lang) {
 }
 if (navigator.language) {
   browser_lang = navigator.language;
-  if (browser_lang.toLowerCase() == 'zh-tw') {
+  default_lang = browser_lang.toLowerCase().substring(0, 2);
+  if (navigator.language.toLowerCase() == 'zh-tw') {
     default_lang = 'zh-TW';
   }
-  if (browser_lang.toLowerCase() == 'zh-cn') {
+  if (navigator.language.toLowerCase() == 'zh-cn') {
     default_lang = 'zh-CN';
   }
 }
