@@ -4,7 +4,7 @@
   var mouse_lastmousedown; //Position de la souris lors du dernier clic de la souris
   var objs = []; //objet
   var objCount = 0; //Nombre d'objets
-  const centimeterInPixel = 37.7928949;
+  const centimeterInPixel = 60; //This way, one centimeter equal to a square on grid
 
   //Multiple select
   var selectGr = [] // {name:, elements:[{}, {}]}, {name:, elements:[{}, {}]}
