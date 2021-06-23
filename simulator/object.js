@@ -2407,8 +2407,7 @@
   move: objTypes['lineobj'].move,
   dragging: objTypes['lineobj'].dragging,
   clicked: function(obj, mouse_nogrid, mouse, draggingPart) {
-    if (mouse_nogrid.x > obj.p1.x && mouse_nogrid.x < obj.p2.x && mouse_nogrid.y < obj.p1.y && mouse_nogrid.y > (obj.p1.y - 10))
-    {
+    if(mouseOnPoint(mouse_nogrid, graphs.point(obj.p1.x, obj.p1.y))) {
       draggingPart.part = 0;
       draggingPart.mouse0 = mouse; //Position de la souris au début du glissement
       draggingPart.mouse1 = mouse; //La position de la souris du point précédent lors du glissement
@@ -2422,6 +2421,7 @@
   draw: function(obj, canvas) {
   ctx.font = "16px Verdana";
   ctx.fillText(obj.text, obj.p1.x, obj.p1.y);
+  ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3)
   ctx.fillStyle = 'rgb(255,0,0)';
   },
   };
