@@ -343,13 +343,13 @@ locales["fr"] = {
     "message": "Ligne"
   },
   "tool_regular_popover": {
-    "message": "Une ligne simple traversant n'importe quel matière, sans être affectée."
+    "message": "Une ligne simple, utilisable comme délimiteur/marqueur."
   },
   "tool_text": {
     "message": "Texte"
   },
   "tool_text_popover": {
-    "message": "Affiche une légende"
+    "message": "Une légende, pour un objet quelconque."
   },
   "save_canvas": {
     "message": "Exporter la scène"

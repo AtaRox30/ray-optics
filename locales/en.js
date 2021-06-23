@@ -141,4 +141,16 @@ locales["en"] = {
   "footer_message": {
     "message": "Developed by <a href='https://github.com/ricktu288' style='color:rgba(255,255,255,0.25)'>ricktu288</a>, <a href='https://github.com/j3soon' style='color:rgba(255,255,255,0.25)'>j3soon</a>"
   },
+  "line": {
+    "message": "Line"
+  },
+  "line_desc": {
+    "message": "A simple line crossing any matter, without being affected."
+  },
+  "text": {
+    "message": "Text"
+  },
+  "text_desc": {
+    "message": "Display a caption."
+  }
 };
