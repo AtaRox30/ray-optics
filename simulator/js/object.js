@@ -2420,6 +2420,7 @@
   //=================================Dessiner des objets sur le canevas====================================
   draw: function(obj, canvas) {
   ctx.font = "16px Verdana";
+  ctx.fillStyle = "red";
   ctx.fillText(obj.text, obj.p1.x, obj.p1.y);
   ctx.fillRect(obj.p1.x - 2, obj.p1.y - 2, 3, 3)
   ctx.fillStyle = 'rgb(255,0,0)';
